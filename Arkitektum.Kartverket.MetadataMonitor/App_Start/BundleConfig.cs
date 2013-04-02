@@ -38,6 +38,12 @@ namespace Arkitektum.Kartverket.MetadataMonitor
                         "~/Content/themes/base/jquery.ui.datepicker.css",
                         "~/Content/themes/base/jquery.ui.progressbar.css",
                         "~/Content/themes/base/jquery.ui.theme.css"));
+
+            /* setup bundle for twitter bootstrap */
+            bundles.Add(new StyleBundle("~/Content/bootstrap/css/bundle").Include(
+                "~/Content/bootstrap/css/bootstrap.css",
+                "~/Content/bootstrap/css/bootstrap-responsive.css"));
+            bundles.Add(new ScriptBundle("~/Content/bootstrap/js/bundle").Include("~/Content/bootstrap/js/bootstrap.js"));
         }
     }
 }
