@@ -6,6 +6,8 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Quartz;
+using Quartz.Impl;
 
 namespace Arkitektum.Kartverket.MetadataMonitor
 {
@@ -23,5 +25,6 @@ namespace Arkitektum.Kartverket.MetadataMonitor
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
     }
 }

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Web;
 using System.Xml.Linq;
 
-namespace Arkitektum.Kartverket.MetadataMonitor.Services
+namespace Arkitektum.Kartverket.MetadataCore.Validate
 {
     public class InspireValidator
     {
@@ -20,12 +17,16 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Services
 
             bool isOk = IsResponseOk(xmlDoc);
 
+            ValidationResult result = new ValidationResult(urlToMetadataFile);
+            result.Timestamp = DateTime.Now;
+
         }
 
         private bool IsResponseOk(XDocument xmlDoc)
         {
 
             
+
 
             throw new NotImplementedException();
         }
