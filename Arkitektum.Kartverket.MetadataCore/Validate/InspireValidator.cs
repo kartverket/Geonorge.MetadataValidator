@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -10,27 +11,18 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
     {
         private const string InspireServiceUrl = "http://inspire-geoportal.ec.europa.eu/GeoportalProxyWebServices/resources/INSPIREResourceTester";
 
-        public void Validate(string urlToMetadataFile)
+        public ValidationResult Validate(string urlToMetadataFile)
         {
+            Trace.WriteLine("Running INSPIRE Validation on url: " + urlToMetadataFile);
+
             string responseBody = RunHttpRequest(urlToMetadataFile); 
             XDocument xmlDoc = XDocument.Parse(responseBody);
 
-            bool isOk = IsResponseOk(xmlDoc);
+            ValidationResult result = new InspireValidationResponseParser().ParseValidationResponse(urlToMetadataFile, xmlDoc);
 
-            ValidationResult result = new ValidationResult(urlToMetadataFile);
-            result.Timestamp = DateTime.Now;
-
+            return result;
         }
-
-        private bool IsResponseOk(XDocument xmlDoc)
-        {
-
-            
-
-
-            throw new NotImplementedException();
-        }
-
+        
         public string RunHttpRequest(string urlToMetadataFile)
         {
             string boundary = "----MetadataMonitor";

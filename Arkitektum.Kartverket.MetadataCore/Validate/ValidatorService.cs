@@ -45,7 +45,10 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 
         private void ValidateMetadata(string message)
         {
-            throw new NotImplementedException();
+            var validationResult = new InspireValidator().Validate(message);
+
+
+            // save validation result here!
         }
 
     }
