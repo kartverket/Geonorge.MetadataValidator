@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 
@@ -8,17 +7,24 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 {
     public class ValidatorService
     {
-        readonly CloudStorageAccount _storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
+        private readonly ValidationResultRepository _validationResultRepository;
 
-        public void AddToValidationQueue()
+        public ValidatorService(ValidationResultRepository validationResultRepository)
+        {
+            _validationResultRepository = validationResultRepository;
+        }
+
+        public ValidatorService() : this(new ValidationResultRepository()) { }
+        
+        public void AddToValidationQueue(string uuid)
         {
             Trace.WriteLine("AddToValidationQueue");
 
-            CloudQueueClient queueClient = _storageAccount.CreateCloudQueueClient();
+            CloudQueueClient queueClient = GetCloudStorageAccount().CreateCloudQueueClient();
             CloudQueue queue = queueClient.GetQueueReference("validate");
             queue.CreateIfNotExists();
 
-            CloudQueueMessage message = new CloudQueueMessage("http://www.geonorge.no/geonetwork/srv/no/iso19139.xml?id=21523");
+            CloudQueueMessage message = new CloudQueueMessage(uuid);
             queue.AddMessage(message);
         }
 
@@ -26,7 +32,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
         {
             Trace.WriteLine("RunValidateOnQueueMessages");
 
-            CloudQueueClient queueClient = _storageAccount.CreateCloudQueueClient();
+            CloudQueueClient queueClient = GetCloudStorageAccount().CreateCloudQueueClient();
             CloudQueue queue = queueClient.GetQueueReference("validate");
 
             if (queue.Exists())
@@ -43,13 +49,16 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             
         }
 
-        private void ValidateMetadata(string message)
+        private void ValidateMetadata(string uuid)
         {
-            var validationResult = new InspireValidator().Validate(message);
+            var validationResult = new InspireValidator().Validate(uuid);
 
-
-            // save validation result here!
+            _validationResultRepository.SaveValidationResult(validationResult);   
         }
 
+        private static CloudStorageAccount GetCloudStorageAccount()
+        {
+            return CloudStorageUtil.GetCloudStorageAccount();
+        }
     }
 }

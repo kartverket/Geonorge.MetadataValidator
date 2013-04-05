@@ -5,7 +5,24 @@
 <h2>Index</h2>
 
 <form method="POST" action="/Validator/Start">
+    <label for="uuid">uuid</label><input type="text" name="uuid" />
     <input type="submit" value="start"/>
 </form>
 
 <p>Message=@ViewBag.Message</p>
+
+<h2>Results</h2>
+@if (ViewBag.Results != null)
+{
+    foreach (var result in ViewBag.Results)
+    {
+        <p>Url=@result.RowKey</p>
+        <p>OK = @result.ValidateOk</p>
+        <p>Timestamp = @result.ValidateTimestamp</p>
+        <p>ErrorMessages = @result.ErrorMessages</p>
+    }
+}
+else
+{
+    <p>No results!</p>
+}

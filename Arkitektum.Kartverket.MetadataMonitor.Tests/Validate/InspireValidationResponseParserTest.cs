@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Arkitektum.Kartverket.MetadataCore.Validate;
@@ -16,7 +15,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Tests.Validate
 
             Trace.WriteLine(doc.ToString());
 
-            ValidationResult result = new InspireValidationResponseParser().ParseValidationResponse("", doc);
+            ValidationResult result = new InspireValidationResponseParser().ParseValidationResponse("21344-2424","http://", doc);
 
             Assert.IsTrue(result.ValidateOk);
         }
@@ -28,7 +27,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Tests.Validate
 
             Trace.WriteLine(doc.ToString());
 
-            ValidationResult result = new InspireValidationResponseParser().ParseValidationResponse("", doc);
+            ValidationResult result = new InspireValidationResponseParser().ParseValidationResponse("21344-2424", "http://", doc);
 
             Assert.IsFalse(result.ValidateOk);
         }

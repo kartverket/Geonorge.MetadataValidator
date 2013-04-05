@@ -11,15 +11,28 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
     {
         private const string InspireServiceUrl = "http://inspire-geoportal.ec.europa.eu/GeoportalProxyWebServices/resources/INSPIREResourceTester";
 
-        public ValidationResult Validate(string urlToMetadataFile)
+        public ValidationResult Validate(string uuid)
         {
+            string urlToMetadataFile = "http://www.geonorge.no/geonetwork/srv/no/iso19139.xml?uuid=" + uuid;
             Trace.WriteLine("Running INSPIRE Validation on url: " + urlToMetadataFile);
 
-            string responseBody = RunHttpRequest(urlToMetadataFile); 
-            XDocument xmlDoc = XDocument.Parse(responseBody);
+            ValidationResult result = null;
 
-            ValidationResult result = new InspireValidationResponseParser().ParseValidationResponse(urlToMetadataFile, xmlDoc);
+            try
+            {
+                string responseBody = RunHttpRequest(urlToMetadataFile);
 
+                XDocument xmlDoc = XDocument.Parse(responseBody);
+
+                result = new InspireValidationResponseParser().ParseValidationResponse(uuid, urlToMetadataFile, xmlDoc);
+
+            }
+            catch (Exception)
+            {
+                result = new ValidationResult(uuid);
+                result.Url = urlToMetadataFile;
+                result.ValidateTimestamp = DateTime.Now;
+            }
             return result;
         }
         

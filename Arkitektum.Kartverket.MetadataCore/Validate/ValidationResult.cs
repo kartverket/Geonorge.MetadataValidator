@@ -9,13 +9,15 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 {
     public class ValidationResult : TableEntity
     {
-        public ValidationResult(string url)
+        public ValidationResult(string uuid)
         {
-            this.RowKey = url;
+            this.PartitionKey = "GeoNorge";
+            this.RowKey = uuid;
         }
 
         public ValidationResult() {}
 
+        public string Url { get; set; }
         public DateTime ValidateTimestamp { get; set; }
         public bool ValidateOk { get; set; }
         public string ErrorMessages { get; set; }

@@ -14,19 +14,19 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
         public static readonly XNamespace NsGeo = "http://inspire.ec.europa.eu/schemas/geoportal/1.0";
         public static readonly XNamespace NsRdsi = "http://inspire.ec.europa.eu/schemas/rdsi/1.0";
 
-        public ValidationResult ParseValidationResponse(string url, XDocument xmlDoc)
+        public ValidationResult ParseValidationResponse(string uuid, string url, XDocument xmlDoc)
         {
-            var errors = GetErrors(xmlDoc);
+            var result = new ValidationResult(uuid);
+            result.Url = url;
+            result.ValidateTimestamp = DateTime.Now;
 
-            var result = new ValidationResult(url);
+            var errors = GetErrors(xmlDoc);
 
             result.ValidateOk = !errors.Any();
 
             if (!result.ValidateOk)
                 result.ErrorMessages = String.Join("\r\n", errors);
-
-            result.ValidateTimestamp = DateTime.Now;
-
+            
             Trace.WriteLine("Validation result=" + result.ValidateOk);
 
             return result;
