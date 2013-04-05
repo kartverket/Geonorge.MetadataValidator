@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<Arkitektum.Kartverket.MetadataMonitor.Models.ValidationResultModel>
+@{
     ViewBag.Title = "Index";
 }
 
@@ -12,15 +13,35 @@
 <p>Message=@ViewBag.Message</p>
 
 <h2>Results</h2>
-@if (ViewBag.Results != null)
+
+    
+
+@if (Model.Any())
 {
-    foreach (var result in ViewBag.Results)
-    {
-        <p>Url=@result.RowKey</p>
-        <p>OK = @result.ValidateOk</p>
-        <p>Timestamp = @result.ValidateTimestamp</p>
-        <p>ErrorMessages = @result.ErrorMessages</p>
-    }
+    <table class="table">
+        <thead>
+            <td>uuid</td><td>Status</td><td>Timestamp</td><td>ErrorMessages</td>
+        </thead>
+        @foreach (var result in Model)
+        {
+        <tr>
+            <td>@result.Uuid</td>
+            <td>@result.ValidateOk</td>
+            <td>@result.ValidateTimestamp</td>
+            <td>
+                @if (result.ErrorMessages != null)
+                {
+                    <ul>
+                        @foreach (var error in result.ErrorMessages)
+                        {
+                            <li>@error</li>
+                        }
+                    </ul>    
+                }
+            </td>
+        </tr>
+        }
+    </table>
 }
 else
 {

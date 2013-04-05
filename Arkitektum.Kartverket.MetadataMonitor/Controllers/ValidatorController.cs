@@ -1,5 +1,7 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using Arkitektum.Kartverket.MetadataCore.Validate;
+using Arkitektum.Kartverket.MetadataMonitor.Models;
 
 namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 {
@@ -20,9 +22,15 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
         {
             ViewBag.Message = message;
 
-            ViewBag.Results = _validationResultRepository.GetValidationResults();
+            var results = _validationResultRepository.GetValidationResults();
 
-            return View();
+            List<ValidationResultModel> model = new List<ValidationResultModel>();
+            foreach (var result in results)
+            {
+                model.Add(new ValidationResultModel(result));
+            }
+
+            return View(model);
         }
 
         [HttpPost]

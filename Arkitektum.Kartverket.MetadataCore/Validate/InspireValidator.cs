@@ -27,7 +27,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
                 result = new InspireValidationResponseParser().ParseValidationResponse(uuid, urlToMetadataFile, xmlDoc);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 result = new ValidationResult(uuid);
                 result.Url = urlToMetadataFile;
