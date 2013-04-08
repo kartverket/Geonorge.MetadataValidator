@@ -75,6 +75,167 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="xsd2\xsd\basicTypes.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\coordinateOperations.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\coordinateReferenceSystems.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\coordinateSystems.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\coverage.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\csw-discovery.xdbproj" />
+    <None Include="xsd2\xsd\csw-discovery.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\csw-publication.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\csw.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\dataQuality.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\datums.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\dcmes.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\dcmi-terms.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\defaultStyle.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\dictionary.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\direction.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\dynamicFeature.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\expr.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\feature.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\filter.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\filterAll.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\filterCapabilities.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\geometryAggregates.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\geometryBasic0d1d.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\geometryBasic2d.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\geometryComplexes.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\geometryPrimitives.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\gml.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\gmlBase.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\grids.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\measures.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\observation.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\ows19115subset.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\owsAll.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\owsCommon.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\owsDataIdentification.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\owsExceptionReport.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\owsGetCapabilities.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\owsOperationsMetadata.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\owsServiceIdentification.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\owsServiceProvider.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\record.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\referenceSystems.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\results.discomap" />
+    <None Include="xsd2\xsd\smil20-language.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\smil20.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\sort.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\temporal.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\temporalReferenceSystems.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\temporalTopology.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\topology.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\units.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\valueObjects.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\xlink.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd2\xsd\xml.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="xsd\generate-classes.bat" />
     <None Include="xsd\xsd\csw\2.0.2\CSW-discovery.xsd">
       <SubType>Designer</SubType>
@@ -234,6 +395,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="xsd2\xsd\csw-discovery.xsd_NameMapping.cs.xml" />
     <Content Include="xsd\xsd\gml\3.1.1\base\ReadMe.txt" />
     <Content Include="xsd\xsd\ows\1.0.0\ReadMe.txt" />
     <Content Include="xsd\xsd\xlink\1.0.0\ReadMe.txt" />

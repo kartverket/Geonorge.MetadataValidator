@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" elementFormDefault="qualified" targetNamespace="http://www.opengis.net/ogc" version="1.1.3" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="Add" substitutionGroup="ogc:expression" type="ogc:BinaryOperatorType" />
+  <xsd:element name="Sub" substitutionGroup="ogc:expression" type="ogc:BinaryOperatorType" />
+  <xsd:element name="Mul" substitutionGroup="ogc:expression" type="ogc:BinaryOperatorType" />
+  <xsd:element name="Div" substitutionGroup="ogc:expression" type="ogc:BinaryOperatorType" />
+  <xsd:element name="PropertyName" substitutionGroup="ogc:expression" type="ogc:PropertyNameType" />
+  <xsd:element name="Function" substitutionGroup="ogc:expression" type="ogc:FunctionType" />
+  <xsd:element name="Literal" substitutionGroup="ogc:expression" type="ogc:LiteralType" />
+  <xsd:element abstract="true" name="expression" type="ogc:ExpressionType" />
+  <xsd:complexType name="ExpressionType" abstract="true" />
+  <xsd:complexType name="BinaryOperatorType">
+    <xsd:complexContent mixed="false">
+      <xsd:extension base="ogc:ExpressionType">
+        <xsd:sequence>
+          <xsd:element minOccurs="2" maxOccurs="2" ref="ogc:expression" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="FunctionType">
+    <xsd:complexContent mixed="false">
+      <xsd:extension base="ogc:ExpressionType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" ref="ogc:expression" />
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="LiteralType">
+    <xsd:complexContent mixed="true">
+      <xsd:extension base="ogc:ExpressionType">
+        <xsd:sequence>
+          <xsd:any minOccurs="0" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="PropertyNameType">
+    <xsd:complexContent mixed="true">
+      <xsd:extension base="ogc:ExpressionType" />
+    </xsd:complexContent>
+  </xsd:complexType>
+</xsd:schema>

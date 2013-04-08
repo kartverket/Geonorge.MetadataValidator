@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lxdb8:LXDBWizardProject xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xmlns:lxdb8="http://www.liquid-technologies.com/LTWizProjectLib8" ProjectVersion="11.0.7.4537" UseRelativePaths="true">
+	<lxdb8:Schema FullPathName=".\csw-discovery.xsd" SelectedSchemaType="XSD" XDRAllowAdditionalAttributes="false" XDRIgnoreSimpleElements="false" SelectedLanguage="CS">
+		<lxdb8:CPP CollectionMapping="Original" OutputPath=".\csw-discovery.xsd.Output\SourceCodeCPP" DocumentationOutputPath=".\csw-discovery.xsd.Output\DocumentationCPP" MappingFilePath=".\csw-discovery.xsd_NameMapping.cpp.xml" DefaultClassNamespace="cswdiscoveryLib"/>
+		<lxdb8:CSharp CollectionMapping="AppendCol" OutputPath="..\..\..\..\xsd\csw-discovery.xsd.Output\SourceCodeCS" DocumentationOutputPath=".\csw-discovery.xsd.Output\DocumentationCS" MappingFilePath=".\csw-discovery.xsd_NameMapping.cs.xml" DefaultClassNamespace="CSW" BaseNamespace="">
+			<lxdb8:PermProperty>
+				<lxdb8:Name>ProjectGUID</lxdb8:Name>
+				<lxdb8:Value>{887C655C-5CEB-46A5-BC90-D1CD47988F26}</lxdb8:Value>
+			</lxdb8:PermProperty>
+			<lxdb8:DotNetPlatformOptions>
+				<lxdb8:DotNetDevEnv>VS2012</lxdb8:DotNetDevEnv>
+				<lxdb8:DotNetPlatform>DotNet45</lxdb8:DotNetPlatform>
+			</lxdb8:DotNetPlatformOptions>
+		</lxdb8:CSharp>
+		<lxdb8:Java CollectionMapping="Original" OutputPath=".\csw-discovery.xsd.Output\SourceCodeJava" DocumentationOutputPath=".\csw-discovery.xsd.Output\DocumentationJava" MappingFilePath=".\csw-discovery.xsd_NameMapping.java.xml" DefaultPackageName="cswdiscoveryLib" BasePackage=""/>
+		<lxdb8:VBNet CollectionMapping="Original" OutputPath=".\csw-discovery.xsd.Output\SourceCodeVBNet" DocumentationOutputPath=".\csw-discovery.xsd.Output\DocumentationVBNet" MappingFilePath=".\csw-discovery.xsd_NameMapping.vbnet.xml" DefaultClassNamespace="cswdiscoveryLib" BaseNamespace="">
+			<lxdb8:DotNetPlatformOptions>
+				<lxdb8:DotNetDevEnv>VS2012</lxdb8:DotNetDevEnv>
+				<lxdb8:DotNetPlatform>DotNet45</lxdb8:DotNetPlatform>
+			</lxdb8:DotNetPlatformOptions>
+		</lxdb8:VBNet>
+		<lxdb8:VB6 CollectionMapping="Original" OutputPath=".\csw-discovery.xsd.Output\SourceCodeVB" DocumentationOutputPath=".\csw-discovery.xsd.Output\DocumentationVB" MappingFilePath=".\csw-discovery.xsd_NameMapping.vb6.xml" ComponentName="cswdiscoveryLib" Description="" MajorVersion="1" MinorVersion="0" Revision="0" ProductName=""/>
+	</lxdb8:Schema>
+	<lxdb8:Output CreateDocumentation="false" CreateSampleApplication="false" OutputDateInHeaderBlock="false" OutputProjectFiles="true" OutputFastInfosetTables="false" OutputPropertyEvents="false" OutputElmRefAsInterface="true" OutputPrimitiveClassesAsTextProperty="false"/>
+	<lxdb8:PostBuild BuildHelp="false" OpenHelp="false" OpenProject="true"/>
+</lxdb8:LXDBWizardProject>

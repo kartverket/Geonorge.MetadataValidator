@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" elementFormDefault="qualified" targetNamespace="http://www.opengis.net/cat/csw/2.0.2" version="2.0.2.2" id="csw" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:include schemaLocation="record.xsd" />
+  <xsd:include schemaLocation="CSW-discovery.xsd" />
+  <xsd:include schemaLocation="CSW-publication.xsd" />
+  <xsd:annotation>
+    <xsd:appinfo>csw.xsd 2012-07-21</xsd:appinfo>
+    <xsd:documentation>This XML Schema Document includes and imports, 
+         directly or indirectly, all the XML Schemas defined by the 
+         OpenGIS(r) Catalogue Services Specification.  
+         
+         The OpenGIS(r) Catalogue Services Specification is an OGC Standard. 
+         Copyright (c) 2007 Open Geospatial Consortium. 
+         To obtain additional rights of use, visit http://www.opengeospatial.org/legal/ 
+      </xsd:documentation>
+  </xsd:annotation>
+</xsd:schema>
