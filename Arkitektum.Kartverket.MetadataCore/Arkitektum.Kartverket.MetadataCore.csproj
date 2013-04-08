@@ -30,10 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LiquidTechnologies.Runtime.Net45, Version=11.0.7.4537, Culture=neutral, PublicKeyToken=64bee40f6e1c14f0, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\Liquid Technologies\Liquid XML 2013\XmlDataBinder11\Redist11\DotNet\LiquidTechnologies.Runtime.Net45.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Data.Edm.5.2.0\lib\net40\Microsoft.Data.Edm.dll</HintPath>
@@ -72,11 +68,7 @@
     <Compile Include="Validate\ValidationResult.cs" />
     <Compile Include="Validate\ValidationResultRepository.cs" />
     <Compile Include="Validate\ValidatorService.cs" />
-    <Compile Include="XsdClassGen.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>XsdClassGen.tt</DependentUpon>
-    </Compile>
+    <Compile Include="xsd2\xsd\csw.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -240,11 +232,6 @@
     </None>
     <None Include="xsd2\xsd\xml.xsd">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="XsdClassGen.mapping" />
-    <None Include="XsdClassGen.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>XsdClassGen.cs</LastGenOutput>
     </None>
     <None Include="xsd\generate-classes.bat" />
     <None Include="xsd\xsd\csw\2.0.2\CSW-discovery.xsd">
@@ -417,11 +404,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="xsd\generated\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -29,6 +29,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 
         private static string CreateGetCswRecordRequest(string uuid)
         {
+            /*
             GetRecordByIdType getRecordById = new GetRecordByIdType("GetRecordById");
             getRecordById.Service = "CSW";
             getRecordById.Version = "2.0.2";
@@ -38,7 +39,9 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             getRecordById.ElementSetName.PrimitiveValue = "full";
 
             string getCswRecordRequest = getRecordById.ToXml();
-            return getCswRecordRequest;
+            */
+
+            return "";
         }
 
         // deprecated
