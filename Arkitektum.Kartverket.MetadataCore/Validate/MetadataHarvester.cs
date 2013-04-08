@@ -2,9 +2,11 @@
 using System.IO;
 using System.Net;
 using System.Text;
-using csw;
-using ogc;
-using Enumerations = csw.Enumerations;
+//using csw;
+//using ogc;
+//using Enumerations = csw.Enumerations;
+using System.Xml.Serialization;
+using System.Xml;
 
 namespace Arkitektum.Kartverket.MetadataCore.Validate
 {
@@ -17,12 +19,12 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 
         }
     
-        private GetRecordsResponse RunSearch(string cswEndpoint)
+        private GetRecordsResponseType RunSearch(string cswEndpoint)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(cswEndpoint);
             request.Method = "POST";
             request.ContentType = "application/xml";
-            string requestBody = CreateRequestBody();
+            string requestBody = createRequestBody();
             Console.WriteLine(requestBody);
             byte[] byteArray = Encoding.UTF8.GetBytes(requestBody);
             request.ContentLength = byteArray.Length;
@@ -43,32 +45,32 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             return ParseResponseBody(responseBody);
         }
 
-        private string CreateRequestBody()
-        {
-            var getRecords = new GetRecords();
-            getRecords.ResultType = Enumerations.ResultType.Results;
+        //private string CreateRequestBody()
+        //{
+        //    var getRecords = new GetRecords();
+        //    getRecords.ResultType = Enumerations.ResultType.Results;
 
-            var typeChoice = new GetRecordsType_Type_Choice();
-            typeChoice.AbstractQuery = new SubGrpAbstractQuery();
-            typeChoice.AbstractQuery.Query = new Query();
-            typeChoice.AbstractQuery.Query.TypeNames = "csw:Record";
-            typeChoice.AbstractQuery.Query.Constraint = new Constraint();
-            typeChoice.AbstractQuery.Query.Constraint.Version = "1.1.0";
-            typeChoice.AbstractQuery.Query.Constraint.Filter = new Filter();
+        //    var typeChoice = new GetRecordsType_Type_Choice();
+        //    typeChoice.AbstractQuery = new SubGrpAbstractQuery();
+        //    typeChoice.AbstractQuery.Query = new Query();
+        //    typeChoice.AbstractQuery.Query.TypeNames = "csw:Record";
+        //    typeChoice.AbstractQuery.Query.Constraint = new Constraint();
+        //    typeChoice.AbstractQuery.Query.Constraint.Version = "1.1.0";
+        //    typeChoice.AbstractQuery.Query.Constraint.Filter = new Filter();
 
-            getRecords.GetRecordsType_Type_Choice = typeChoice;
+        //    getRecords.GetRecordsType_Type_Choice = typeChoice;
 
-            return getRecords.ToXml();
-        }
+        //    return getRecords.ToXml();
+        //}
 
-        private GetRecordsResponse ParseResponseBody(string responseBody)
-        {
-            var getRecordsResponse = new GetRecordsResponse();
-            getRecordsResponse.FromXml(responseBody);
-            return getRecordsResponse;
-        }
+        //private GetRecordsResponse ParseResponseBody(string responseBody)
+        //{
+        //    var getRecordsResponse = new GetRecordsResponse();
+        //    getRecordsResponse.FromXml(responseBody);
+        //    return getRecordsResponse;
+        //}
 
-/*
+
         private string createRequestBody()
         {
             var getRecords = new GetRecordsType();
@@ -106,7 +108,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             }
             return output;
         }
-        */
+        
 
     }
 }
