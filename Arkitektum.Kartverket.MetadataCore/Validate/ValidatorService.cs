@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Xml.Serialization;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 
@@ -47,6 +49,11 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
                 }
             }
             
+        }
+
+        public void HarvestMetadataAndAddToValidationQueue()
+        {
+
         }
 
         private void ValidateMetadata(string uuid)
