@@ -37,6 +37,9 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             string responseBody = reader.ReadToEnd();
             response.Close();
 
+            Console.WriteLine("Response:");
+            Console.WriteLine(responseBody);
+
             return ParseResponseBody(responseBody);
         }
 
@@ -50,6 +53,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             typeChoice.AbstractQuery.Query = new Query();
             typeChoice.AbstractQuery.Query.TypeNames = "csw:Record";
             typeChoice.AbstractQuery.Query.Constraint = new Constraint();
+            typeChoice.AbstractQuery.Query.Constraint.Version = "1.1.0";
             typeChoice.AbstractQuery.Query.Constraint.Filter = new Filter();
 
             getRecords.GetRecordsType_Type_Choice = typeChoice;
