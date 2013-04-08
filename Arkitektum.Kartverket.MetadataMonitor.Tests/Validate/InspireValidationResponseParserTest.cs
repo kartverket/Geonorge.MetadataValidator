@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Reflection;
+using System.Xml;
 using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Arkitektum.Kartverket.MetadataCore.Validate;
@@ -30,6 +32,21 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Tests.Validate
             ValidationResult result = new InspireValidationResponseParser().ParseValidationResponse("21344-2424", "http://", doc);
 
             Assert.IsFalse(result.ValidateOk);
+        }
+
+        [TestMethod]
+        public void ShouldReturnErrorMessageWhenResourceTypeIsUnknown()
+        {
+            var stream = GetType().Assembly.GetManifestResourceStream("Arkitektum.Kartverket.MetadataMonitor.Tests.Validate.inspire-unknown-resource-type.xml");
+            var doc = XDocument.Load(stream);
+            Trace.WriteLine(doc.ToString());
+
+            ValidationResult result = new InspireValidationResponseParser().ParseValidationResponse("21344-2424", "http://", doc);
+
+            Assert.IsFalse(result.ValidateOk);
+
+            Trace.WriteLine(result.ErrorMessages);
+            Assert.IsTrue(result.ErrorMessages.Contains("It was not possible to determine the resource type"));
         }
 
         private static XDocument CreateDocument(bool withError)

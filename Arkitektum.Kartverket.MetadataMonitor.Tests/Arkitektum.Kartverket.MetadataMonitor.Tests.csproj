@@ -104,9 +104,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
+    <EmbeddedResource Include="Validate\inspire-unknown-resource-type.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="Tmp.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="xml\inspire-unknown-resource-type.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

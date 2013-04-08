@@ -44,5 +44,11 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
             
             return RedirectToAction("Index", new {message = "Started!"});
         }
+
+        public ActionResult Harvest()
+        {
+            new MetadataHarvester().HarvestAndAddToValidationQueue();
+            return RedirectToAction("Index", new {message = "Harvesting started"});
+        }
     }
 }

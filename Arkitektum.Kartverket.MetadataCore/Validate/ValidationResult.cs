@@ -17,6 +17,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 
         public ValidationResult() {}
 
+        public string Title { get; set; }
         public string Url { get; set; }
         public DateTime ValidateTimestamp { get; set; }
         public bool ValidateOk { get; set; }

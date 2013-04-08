@@ -72,6 +72,11 @@
     <Compile Include="Validate\ValidationResult.cs" />
     <Compile Include="Validate\ValidationResultRepository.cs" />
     <Compile Include="Validate\ValidatorService.cs" />
+    <Compile Include="XsdClassGen.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>XsdClassGen.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -235,6 +240,11 @@
     </None>
     <None Include="xsd2\xsd\xml.xsd">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="XsdClassGen.mapping" />
+    <None Include="XsdClassGen.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>XsdClassGen.cs</LastGenOutput>
     </None>
     <None Include="xsd\generate-classes.bat" />
     <None Include="xsd\xsd\csw\2.0.2\CSW-discovery.xsd">
@@ -405,6 +415,9 @@
       <Project>{887c655c-5ceb-46a5-bc90-d1cd47988f26}</Project>
       <Name>CSW</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="xsd\generated\" />

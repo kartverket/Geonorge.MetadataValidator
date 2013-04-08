@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:Resource
+    xmlns="http://inspire.ec.europa.eu/schemas/common/1.0"
+    xmlns:ns2="http://inspire.ec.europa.eu/schemas/geoportal/1.0"
+    xmlns:ns3="http://inspire.ec.europa.eu/schemas/rdsi/1.0">
+  <ns2:ResourceReportResource>
+    <ns2:InspireValidationErrors>
+      <ns2:ValidationError>
+        <ns2:SourceOfRequirement>
+          <ns2:Specification
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="citationMDTG1.2_eng">
+            <Title>INSPIRE Metadata Implementing Rules: Technical Guidelines based on EN ISO 19115 and EN ISO 19119 (Version 1.2)</Title>
+            <DateOfPublication>2010-06-16</DateOfPublication>
+            <ResourceLocator xsi:type="resLocTGMD1.2_eng">
+              <URL>http://inspire.jrc.ec.europa.eu/documents/Metadata/INSPIRE_MD_IR_and_ISO_v1_2_20100616.pdf</URL>
+              <MediaType>application/pdf</MediaType>
+            </ResourceLocator>
+          </ns2:Specification>
+          <ns2:IntraDocumentLocator>
+            <ns2:Description>INSPIRE Specific Constraint SC2</ns2:Description>
+          </ns2:IntraDocumentLocator>
+        </ns2:SourceOfRequirement>
+        <ns2:GeoportalExceptionMessage>
+          <ns2:Message>It was not possible to determine the resource type</ns2:Message>
+          <ns2:ExceptionCode>error.geoportal.proxy.metadata.resourcetype.missing</ns2:ExceptionCode>
+          <ns2:GeoportalErrorCode>error.geoportal.proxy.error.generic</ns2:GeoportalErrorCode>
+          <ns2:EA_GUID>182B81BD-536E-4a28-92F2-CE484B29A04E</ns2:EA_GUID>
+        </ns2:GeoportalExceptionMessage>
+      </ns2:ValidationError>
+    </ns2:InspireValidationErrors>
+  </ns2:ResourceReportResource>
+  <ns2:AuditRecord>
+    <ns2:CreationDate>2013-04-08T13:43:28.569</ns2:CreationDate>
+    <ns2:LastUpdateDate>2013-04-08T13:43:28.677</ns2:LastUpdateDate>
+  </ns2:AuditRecord>
+  <ns2:SourceMetadataLocator>
+    <URL>../../../downloaded.xml</URL>
+    <MediaType>application/vnd.iso.19139+xml</MediaType>
+  </ns2:SourceMetadataLocator>
+  <ns2:GeoportalMetadataLocator>
+    <URL>/sandbox/INSPIRE-86d6abdc-a041-11e2-9edc-52540004b857_20130408-134327/unknownResourceTypes/1/resourceReport</URL>
+    <MediaType>application/vnd.eu.europa.ec.inspire.resource+xml</MediaType>
+    <LinkDescription></LinkDescription>
+    <FileName>inspire.geoportal.resource.xml</FileName>
+  </ns2:GeoportalMetadataLocator>
+  <ns2:RelatedResourceLocator>
+    <URL>..</URL>
+    <MediaType>application/vnd.eu.europa.ec.inspire.resource+xml</MediaType>
+  </ns2:RelatedResourceLocator>
+</ns2:Resource>

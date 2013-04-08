@@ -20,7 +20,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
         
         public void AddToValidationQueue(string uuid)
         {
-            Trace.WriteLine("AddToValidationQueue");
+            Trace.WriteLine("AddToValidationQueue: " + uuid);
 
             CloudQueueClient queueClient = GetCloudStorageAccount().CreateCloudQueueClient();
             CloudQueue queue = queueClient.GetQueueReference("validate");
@@ -58,7 +58,8 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 
         private void ValidateMetadata(string uuid)
         {
-            var validationResult = new InspireValidator().Validate(uuid);
+//            var validationResult = new InspireValidator().Validate(uuid);
+            var validationResult = new InspireValidator().RetrieveAndValidate(uuid);
 
             _validationResultRepository.SaveValidationResult(validationResult);   
         }
