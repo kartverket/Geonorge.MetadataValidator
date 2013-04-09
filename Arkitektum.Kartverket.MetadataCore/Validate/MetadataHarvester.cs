@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -8,6 +9,8 @@ using System.Text;
 //using Enumerations = csw.Enumerations;
 using System.Xml.Serialization;
 using System.Xml;
+using www.opengis.net.cat.csw._2._01._22;
+using www.opengis.net.ogc;
 
 namespace Arkitektum.Kartverket.MetadataCore.Validate
 {
@@ -15,14 +18,49 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
     {
         public const string GeoNorgeCswEndpoint = "http://www.geonorge.no/geonetwork/srv/en/csw";
 
+        private HttpRequestExecutor httpRequestExecutor;
+
+        public MetadataHarvester(HttpRequestExecutor httpRequestExecutor)
+        {
+            this.httpRequestExecutor = httpRequestExecutor;
+        }
+        public MetadataHarvester() : this(new HttpRequestExecutor()) { }
+
         public void HarvestAndAddToValidationQueue()
         {
+            var getRecords = new GetRecordsType();
+
+            getRecords.Nodes.
+                //.resultType = ResultType.results;
+
+            var query = new QueryType();
+            query.typeNames = new XmlQualifiedName[] { new XmlQualifiedName("Record", "csw") };
+
+            var queryConstraint = new QueryConstraintType();
+            queryConstraint.version = "1.1.0";
+            queryConstraint.Item = new FilterType(); // using empty filter to get all records
+            query.Constraint = queryConstraint;
+
+            getRecords.Item = query;
+            
+            var serializer = new XmlSerializer(typeof(GetRecordsType));
+
+            string output = null;
+            using (StringWriter writer = new StringWriter())
+            {
+                serializer.Serialize(writer, getRecords);
+                output = writer.ToString();
+            }
+            Trace.WriteLine(output);
+        }
+
+        /*
+            
             var firstSearchResponse = RunSearch(GeoNorgeCswEndpoint);
 
             var searchResults = firstSearchResponse.SearchResults;
 
             SendSearchResultsToValidation(searchResults);
-
             int counter = 0;
             int max = int.Parse(searchResults.numberOfRecordsMatched);
             int next = int.Parse(searchResults.nextRecord);
@@ -73,26 +111,8 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
     
         private GetRecordsResponseType RunSearch(string cswEndpoint)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(cswEndpoint);
-            request.Method = "POST";
-            request.ContentType = "application/xml";
-            string requestBody = createRequestBody();
-            Console.WriteLine(requestBody);
-            byte[] byteArray = Encoding.UTF8.GetBytes(requestBody);
-            request.ContentLength = byteArray.Length;
-            Stream dataStream = request.GetRequestStream();
-            dataStream.Write(byteArray, 0, byteArray.Length);
-            dataStream.Close();
-
-            WebResponse response = request.GetResponse();
-
-            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
-            StreamReader reader = new StreamReader(response.GetResponseStream());
-            string responseBody = reader.ReadToEnd();
-            response.Close();
-
-            Console.WriteLine("Response:");
-            Console.WriteLine(responseBody);
+            string responseBody = httpRequestExecutor.PostRequest(Constants.EndpointUrlGeoNorgeCsw, "application/xml", "application/xml",
+                                            createRequestBody());
 
             return ParseResponseBody(responseBody);
         }
@@ -163,6 +183,6 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             return output;
         }
         
-
+        */
     }
 }

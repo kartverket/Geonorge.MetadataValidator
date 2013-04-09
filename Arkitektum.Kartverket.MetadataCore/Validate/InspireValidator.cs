@@ -10,16 +10,24 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 {
     public class InspireValidator
     {
-        private const string InspireServiceUrl = "http://inspire-geoportal.ec.europa.eu/GeoportalProxyWebServices/resources/INSPIREResourceTester";
 
-        private const string GeoNorgeCswEndpoint = "http://www.geonorge.no/geonetwork/srv/en/csw";
+        private const string ContentTypeXml = "application/xml";
+
+        private HttpRequestExecutor httpRequestExecutor;
+
+        public InspireValidator(HttpRequestExecutor httpRequestExecutor)
+        {
+            this.httpRequestExecutor = httpRequestExecutor;
+        }
+
+        public InspireValidator() : this(new HttpRequestExecutor()) { }
+
 
         public ValidationResult RetrieveAndValidate(string uuid)
         {
             var getCswRecordRequest = CreateGetCswRecordRequest(uuid);
 
-            string cswRecordResponse = ExecuteHttpPostRequest(GeoNorgeCswEndpoint, "application/xml", "application/xml",
-                                                         getCswRecordRequest);
+            string cswRecordResponse = httpRequestExecutor.PostRequest(Constants.EndpointUrlGeoNorgeCsw, ContentTypeXml, ContentTypeXml, getCswRecordRequest);
             
             string inspireValidationResponse = RunInspireValidation(cswRecordResponse);
 
@@ -88,31 +96,8 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             
             string contentType = "multipart/form-data; boundary=" + boundary;
 
-            string responseBody = ExecuteHttpPostRequest(InspireServiceUrl, "application/xml", contentType, postData);
+            string responseBody = httpRequestExecutor.PostRequest(Constants.EndpointUrlInspire, "application/xml", contentType, postData);
 
-            return responseBody;
-        }
-
-
-        private string ExecuteHttpPostRequest(string url, string accept, string contentType, string postData)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "POST";
-            request.Accept = accept;
-            request.ContentType = contentType;
-            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-            request.ContentLength = byteArray.Length;
-            Stream dataStream = request.GetRequestStream();
-            dataStream.Write(byteArray, 0, byteArray.Length);
-            dataStream.Close();
-
-            WebResponse response = request.GetResponse();
-
-            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
-            StreamReader reader = new StreamReader(response.GetResponseStream());
-            string responseBody = reader.ReadToEnd();
-
-            response.Close();
             return responseBody;
         }
 
