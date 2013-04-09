@@ -13,7 +13,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
                 validationResult.RowKey, validationResult.ValidateOk));
             
             var table = GetCloudTable();
-            TableOperation insertOperation = TableOperation.InsertOrReplace(validationResult);
+            TableOperation insertOperation = TableOperation.InsertOrMerge(validationResult);
             try
             {
                 table.Execute(insertOperation);

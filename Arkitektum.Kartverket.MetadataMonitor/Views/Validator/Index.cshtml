@@ -20,26 +20,27 @@
 {
     <table class="table">
         <thead>
-            <td>uuid</td><td>Status</td><td>Timestamp</td><td>ErrorMessages</td>
+            <td>Title</td><td>uuid</td><td>Validates OK</td><td>Timestamp</td><td>ErrorMessages</td>
         </thead>
         @foreach (var result in Model)
         {
-        <tr>
-            <td>@result.Uuid</td>
-            <td>@result.ValidateOk</td>
-            <td>@result.ValidateTimestamp</td>
-            <td>
-                @if (result.ErrorMessages != null)
-                {
-                    <ul>
-                        @foreach (var error in result.ErrorMessages)
-                        {
-                            <li>@error</li>
-                        }
-                    </ul>    
-                }
-            </td>
-        </tr>
+            <tr>
+                <td><a href="http://www.geonorge.no/geonetwork?uuid=@result.Uuid" target="_blank">@result.Title</a></td>
+                <td>@result.Uuid</td>
+                <td>@result.ValidateOk</td>
+                <td>@result.ValidateTimestamp</td>
+                <td>
+                    @if (result.ErrorMessages != null)
+                    {
+                        <ul>
+                            @foreach (var error in result.ErrorMessages)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>    
+                    }
+                </td>
+            </tr>
         }
     </table>
 }

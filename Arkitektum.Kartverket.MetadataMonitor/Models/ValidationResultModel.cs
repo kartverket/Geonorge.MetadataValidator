@@ -12,6 +12,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         public ValidationResultModel(ValidationResult validationResult)
         {
             Uuid = validationResult.RowKey;
+            Title = validationResult.Title;
             Url = validationResult.Url;
             ValidateTimestamp = validationResult.ValidateTimestamp;
             ValidateOk = validationResult.ValidateOk;
@@ -20,6 +21,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         }
 
         public string Uuid { get; set; }
+        public string Title { get; set; }
         public string Url { get; set; }
         public DateTime ValidateTimestamp { get; set; }
         public bool ValidateOk { get; set; }

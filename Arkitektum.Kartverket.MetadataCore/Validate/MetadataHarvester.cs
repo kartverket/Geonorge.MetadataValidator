@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -12,11 +13,62 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 {
     public class MetadataHarvester
     {
+        public const string GeoNorgeCswEndpoint = "http://www.geonorge.no/geonetwork/srv/en/csw";
 
         public void HarvestAndAddToValidationQueue()
         {
-            var getRecordsResponse = RunSearch("http://www.geonorge.no/geonetwork/srv/en/csw");
+            var firstSearchResponse = RunSearch(GeoNorgeCswEndpoint);
 
+            var searchResults = firstSearchResponse.SearchResults;
+
+            SendSearchResultsToValidation(searchResults);
+
+            int counter = 0;
+            int max = int.Parse(searchResults.numberOfRecordsMatched);
+            int next = int.Parse(searchResults.nextRecord);
+            while (counter < 50 && next < max)
+            {
+                Trace.WriteLine("----------Counter=" + counter);
+                
+                max = int.Parse(searchResults.numberOfRecordsMatched);
+                next = int.Parse(searchResults.nextRecord);
+
+                var response = RunSearch(GeoNorgeCswEndpoint, next);
+//                searchResults = response.;
+//                SendSearchResultsToValidation(searchResults);
+
+
+                counter += int.Parse(searchResults.numberOfRecordsReturned);
+            }
+        }
+
+
+        private static void SendSearchResultsToValidation(SearchResultsType searchResults)
+        {
+            var enumerator = searchResults.Items;
+
+            Trace.WriteLine("------------LOOPING SEARCH RESULT--------------------");
+
+            foreach (var item in searchResults.Items)
+            {
+                SummaryRecordType summary = (SummaryRecordType) item;
+
+                var title = summary.title[0].Text[0];
+                var identifier = summary.identifier[0].Text[0];
+                Trace.WriteLine(title);
+                Trace.WriteLine(identifier);
+
+                ValidationResult result = new ValidationResult(identifier) {Title = title, ValidateTimestamp = DateTime.Now};
+                new ValidationResultRepository().SaveValidationResult(result);
+
+                new ValidatorService().AddToValidationQueue(identifier);
+            }
+        }
+
+
+        private GetRecordsResponseType RunSearch(string cswEndpoint, int intValue)
+        {
+            throw new NotImplementedException();
         }
     
         private GetRecordsResponseType RunSearch(string cswEndpoint)
@@ -81,6 +133,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             query.typeNames = new XmlQualifiedName[] { new XmlQualifiedName("Record", "csw") };
             
             var queryConstraint = new QueryConstraintType();
+            queryConstraint.version = "1.1.0";
             queryConstraint.Item = new FilterType(); // using empty filter to get all records
             query.Constraint = queryConstraint;
          
@@ -96,6 +149,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             }
             return output;
         }
+  
         private GetRecordsResponseType ParseResponseBody(string xmlSource)
         {
             
