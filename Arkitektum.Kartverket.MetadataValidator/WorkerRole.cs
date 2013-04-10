@@ -21,6 +21,7 @@ namespace Arkitektum.Kartverket.MetadataValidator
                 Thread.Sleep(10000);
                 Trace.WriteLine("Working", "Information");
 
+                //new MetadataHarvester().HarvestAndAddToValidationQueue();
                 new ValidatorService().RunValidateOnQueueMessages();
             }
         }

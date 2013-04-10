@@ -1,34 +1,52 @@
 ﻿@model List<Arkitektum.Kartverket.MetadataMonitor.Models.ValidationResultModel>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Valideringsresultater";
 }
 
-<h2>Index</h2>
+@if (ViewBag.Message != null)
+{
+<div class="alert alert-info">
+    <p>@ViewBag.Message</p>
+</div>
+}
 
-<form method="POST" action="/Validator/Start">
-    <label for="uuid">uuid</label><input type="text" name="uuid" />
-    <input type="submit" value="start"/>
+<form class="form-inline" method="POST" action="/Validator/Start">
+    <label for="uuid">
+        UUID <input type="text" name="uuid" />
+    </label>
+    <input type="submit" value="Start validering av metadata"/>
 </form>
-
-<p>Message=@ViewBag.Message</p>
-
-<h2>Results</h2>
-
-    
 
 @if (Model.Any())
 {
-    <table class="table">
+    <table class="table" style="table-layout: fixed">
         <thead>
-            <td>Title</td><td>uuid</td><td>Validates OK</td><td>Timestamp</td><td>ErrorMessages</td>
+            <th style="width: 25%">Tittel</th>
+            <th style="width: 15%">Standard</th>
+            <th style="width: 15%">Tidspunkt</th>
+            <th style="width: 5%">Status</th>
+            <th style="width: 40%">INSPIRE-feilmeldinger</th>
         </thead>
         @foreach (var result in Model)
         {
+            var linkText = result.Title;
+            if (linkText == null) { linkText = result.Uuid; }
+
+            var statusClass = "label-success";
+            var statusText = "OK";
+            if (result.ValidateOk == false)
+            {
+                statusClass = "label-important";
+                statusText = "FEIL";
+            }
+            
             <tr>
-                <td><a href="http://www.geonorge.no/geonetwork?uuid=@result.Uuid" target="_blank">@result.Title</a></td>
-                <td>@result.Uuid</td>
-                <td>@result.ValidateOk</td>
+                <td>
+                    <a href="http://www.geonorge.no/geonetwork?uuid=@result.Uuid" target="_blank">@linkText</a>
+                </td>
+                <td>@result.MetadataStandardName</td>
                 <td>@result.ValidateTimestamp</td>
+                <td><span class="label @statusClass">@statusText</span></td>
                 <td>
                     @if (result.ErrorMessages != null)
                     {

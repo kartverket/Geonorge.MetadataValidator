@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 
@@ -41,23 +42,33 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
                 {
                     Trace.WriteLine("Processing message on queue:" + message.AsString);
 
-                    ValidateMetadata(message.AsString);
+                    ValidateMetadata(message.AsString);    
 
                     queue.DeleteMessage(message);
+
+
                 }
             }
             
         }
 
-        private void ValidateMetadata(string uuid)
+        public void ValidateMetadata(string uuid)
         {
-//            var validationResult = new InspireValidator().Validate(uuid);
-            var validationResult = new InspireValidator().RetrieveAndValidate(uuid);
+            try
+            {
+                //            var validationResult = new InspireValidator().Validate(uuid);
+                var validationResult = new InspireValidator().RetrieveAndValidate(uuid);
 
-            _validationResultRepository.SaveValidationResult(validationResult);   
+                _validationResultRepository.SaveValidationResult(validationResult);
+            }
+            catch (WebException e)
+            {
+                Trace.WriteLine("Exception duing validation of metadata: " + e.Message);
+            }
         }
 
-        private static CloudStorageAccount GetCloudStorageAccount()
+        private static
+            CloudStorageAccount GetCloudStorageAccount()
         {
             return CloudStorageUtil.GetCloudStorageAccount();
         }

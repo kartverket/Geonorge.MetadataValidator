@@ -22,5 +22,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
         public DateTime ValidateTimestamp { get; set; }
         public bool ValidateOk { get; set; }
         public string ErrorMessages { get; set; }
+        public string MetadataStandardName { get; set; }
     }
+
 }

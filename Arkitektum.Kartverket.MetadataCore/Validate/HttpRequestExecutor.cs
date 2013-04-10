@@ -8,7 +8,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
     public class HttpRequestExecutor
     {
 
-        public string PostRequest(string url, string accept, string contentType, string postData)
+        public string PostRequest(string url, string accept, string contentType, string postData) 
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "POST";
@@ -20,15 +20,19 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             dataStream.Write(byteArray, 0, byteArray.Length);
             dataStream.Close();
 
+            // Trace.WriteLine(postData);
+            
             WebResponse response = request.GetResponse();
 
-            Trace.WriteLine(((HttpWebResponse)response).StatusDescription);
+            // Trace.WriteLine(((HttpWebResponse)response).StatusDescription);
             
             StreamReader reader = new StreamReader(response.GetResponseStream());
             string responseBody = reader.ReadToEnd();
 
             response.Close();
             
+            // Trace.WriteLine(responseBody);
+
             return responseBody;
         }
 

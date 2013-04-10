@@ -1,8 +1,54 @@
-﻿@{
+﻿@model Arkitektum.Kartverket.MetadataMonitor.Models.DashboardViewModel
+@{
     ViewBag.Title = "Dashboard";
 }
+<div class="row">
+    <h4>INSPIRE validering av GeoNorge</h4>
+    <div class="span5">
+        
+        <canvas id="resultStatusChart" width="400" height="400"></canvas>
+    </div>
+    <div class="span4">
+        
+        <div class="results results-ok">
+            <div class="colorbox pull-left"></div>
+            <div class="description">
+                OK: @Model.totalResultOk
+            </div>
+        </div>
+        <div class="results results-failed">
+            <div class="colorbox pull-left"></div>
+            <div class="description">
+                FEIL: @Model.totalResultFailed
+            </div>
+        </div>
+        
+    </div>
+</div>
+<div class="row">
+    <div class="span8">
+        <a href="/validator" class="btn btn-primary pull-right">Vis valideringsresultater</a>        
+    </div>
+</div>
 
+@section scripts
+{
+    
 
-Dette er dashbordet!
-
-<a href="/validator">Gå til validator</a>
+    <script type="text/javascript">
+        var totalOk = @(Model.totalResultOk);
+        var totalFailed = @(Model.totalResultFailed);
+        var resultStatusData = [
+            {
+                value: totalOk,
+                color: "#69D2E7"
+            },
+            {
+                value: totalFailed,
+                color: "#F38630"
+            }
+        ];
+        var resultStatusCtx = $("#resultStatusChart").get(0).getContext("2d");
+        var resultStatusChart = new Chart(resultStatusCtx).Pie(resultStatusData, {});
+    </script>
+}

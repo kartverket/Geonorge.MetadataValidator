@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LiquidTechnologies.Runtime.Net45, Version=11.0.7.4537, Culture=neutral, PublicKeyToken=64bee40f6e1c14f0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\LiquidTechnologies.Runtime.Net45.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Data.Edm.5.2.0\lib\net40\Microsoft.Data.Edm.dll</HintPath>
@@ -45,6 +49,9 @@
     <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.WindowsAzure.Storage, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAzure.Storage.2.0.5.1\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Quartz">
+      <HintPath>..\packages\Quartz.2.1.2\lib\net40\Quartz.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -62,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="Validate\MetadataHarvesterJob.cs" />
     <Compile Include="Validate\CloudStorageUtil.cs" />
     <Compile Include="Validate\HttpRequestExecutor.cs" />
     <Compile Include="Validate\InspireValidationResponseParser.cs" />
@@ -71,7 +79,6 @@
     <Compile Include="Validate\ValidationResult.cs" />
     <Compile Include="Validate\ValidationResultRepository.cs" />
     <Compile Include="Validate\ValidatorService.cs" />
-    <Compile Include="xsd3-xsd2code\xsd\csw.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -236,6 +243,7 @@
     <None Include="xsd2\xsd\xml.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="xsd3-xsd2code\xsd\generate.bat" />
     <None Include="xsd\generate-classes.bat" />
     <None Include="xsd\xsd\csw\2.0.2\CSW-discovery.xsd">
       <SubType>Designer</SubType>
@@ -407,6 +415,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="xsd3-xsd2code\tmp\" />
     <Folder Include="xsd\generated\" />
   </ItemGroup>
   <ItemGroup />

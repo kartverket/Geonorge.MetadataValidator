@@ -16,8 +16,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Tests.Validate
             var doc = CreateDocument(false);
 
             Trace.WriteLine(doc.ToString());
-
-            ValidationResult result = new InspireValidationResponseParser().ParseValidationResponse("21344-2424","http://", doc);
+            ValidationResult result = new InspireValidationResponseParser().ParseValidationResponse(new ValidationResult(), doc);
 
             Assert.IsTrue(result.ValidateOk);
         }
@@ -29,7 +28,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Tests.Validate
 
             Trace.WriteLine(doc.ToString());
 
-            ValidationResult result = new InspireValidationResponseParser().ParseValidationResponse("21344-2424", "http://", doc);
+            ValidationResult result = new InspireValidationResponseParser().ParseValidationResponse(new ValidationResult(), doc);
 
             Assert.IsFalse(result.ValidateOk);
         }
@@ -41,7 +40,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Tests.Validate
             var doc = XDocument.Load(stream);
             Trace.WriteLine(doc.ToString());
 
-            ValidationResult result = new InspireValidationResponseParser().ParseValidationResponse("21344-2424", "http://", doc);
+            ValidationResult result = new InspireValidationResponseParser().ParseValidationResponse(new ValidationResult(), doc);
 
             Assert.IsFalse(result.ValidateOk);
 

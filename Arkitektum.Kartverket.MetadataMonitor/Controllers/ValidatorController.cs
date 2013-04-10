@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using Arkitektum.Kartverket.MetadataCore.Validate;
 using Arkitektum.Kartverket.MetadataMonitor.Models;
+using Quartz;
+using Quartz.Impl;
+using Quartz.Impl.Triggers;
 
 namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 {
@@ -24,13 +28,16 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 
             var results = _validationResultRepository.GetValidationResults();
 
-            List<ValidationResultModel> model = new List<ValidationResultModel>();
+            List<ValidationResultModel> resultModels = new List<ValidationResultModel>();
             foreach (var result in results)
             {
-                model.Add(new ValidationResultModel(result));
+                resultModels.Add(new ValidationResultModel(result));
             }
 
-            return View(model);
+            resultModels.Sort();
+            resultModels.Reverse();
+
+            return View(resultModels);
         }
 
         [HttpPost]
@@ -40,14 +47,50 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
                 uuid = "9d118d31-182c-495b-b7be-d819cc7444b1";
 
 
-            _validatorService.AddToValidationQueue(uuid);
+            _validatorService.ValidateMetadata(uuid);
             
             return RedirectToAction("Index", new {message = "Started!"});
         }
 
         public ActionResult Harvest()
         {
-            new MetadataHarvester().HarvestAndAddToValidationQueue();
+
+            var schedFact = new StdSchedulerFactory();
+
+            IScheduler sched = schedFact.GetScheduler();
+
+            var job = new JobDetailImpl("HarvestingJob", null, typeof(MetadataHarvesterJob));
+            
+            
+//            var trigger = new SimpleTriggerImpl("myTrigger", null, DateTime.UtcNow.AddSeconds(10), null, 0, TimeSpan.Zero);
+            var trigger = TriggerBuilder.Create().StartNow().WithIdentity("myTrigger").Build();
+            sched.ScheduleJob(job, trigger);
+            sched.Start();
+
+            /*
+            var schedFact = new StdSchedulerFactory();
+
+            IScheduler sched = schedFact.GetScheduler();
+
+
+            
+
+            var job = new JobDetailImpl("DailyJob", null, typeof(MetadataHarvesterJob));
+            var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+            var cronScheduleBuilder = CronScheduleBuilder.DailyAtHourAndMinute(14, 00)
+                                                          .InTimeZone(timeZoneInfo);
+            var trigger = TriggerBuilder.Create()
+                                        .StartNow()
+                                        .WithSchedule(cronScheduleBuilder)
+                                        .Build();
+
+            TriggerBuilder.Create().ForJob(job).StartNow();
+            ISimpleTrigger a = new SimpleTriggerImpl();
+
+            SimpleScheduleBuilder.Create().WithRepeatCount(1);
+            sched.ScheduleJob(job, trigger);
+            sched.Start();
+            */
             return RedirectToAction("Index", new {message = "Harvesting started"});
         }
     }

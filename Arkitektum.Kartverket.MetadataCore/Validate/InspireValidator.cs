@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
+﻿using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using csw;
@@ -13,11 +10,11 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 
         private const string ContentTypeXml = "application/xml";
 
-        private HttpRequestExecutor httpRequestExecutor;
+        private readonly HttpRequestExecutor _httpRequestExecutor;
 
-        public InspireValidator(HttpRequestExecutor httpRequestExecutor)
+        private InspireValidator(HttpRequestExecutor httpRequestExecutor)
         {
-            this.httpRequestExecutor = httpRequestExecutor;
+            _httpRequestExecutor = httpRequestExecutor;
         }
 
         public InspireValidator() : this(new HttpRequestExecutor()) { }
@@ -25,61 +22,82 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 
         public ValidationResult RetrieveAndValidate(string uuid)
         {
+            
             var getCswRecordRequest = CreateGetCswRecordRequest(uuid);
 
-            string cswRecordResponse = httpRequestExecutor.PostRequest(Constants.EndpointUrlGeoNorgeCsw, ContentTypeXml, ContentTypeXml, getCswRecordRequest);
-            
+            string cswRecordResponse = _httpRequestExecutor.PostRequest(Constants.EndpointUrlGeoNorgeCsw,
+                                                                        ContentTypeXml, ContentTypeXml,
+                                                                        getCswRecordRequest);
+
+            ValidationResult validationResult = ParseCswRecordResponse(uuid, cswRecordResponse);
             string inspireValidationResponse = RunInspireValidation(cswRecordResponse);
 
             XDocument xmlDoc = XDocument.Parse(inspireValidationResponse);
-            return new InspireValidationResponseParser().ParseValidationResponse(uuid, "", xmlDoc);
+            return new InspireValidationResponseParser().ParseValidationResponse(validationResult, xmlDoc);
+            
+        }
+
+        private ValidationResult ParseCswRecordResponse(string uuid, string cswRecordResponse)
+        {
+            XDocument cswRecord = XDocument.Parse(cswRecordResponse);
+
+            XNamespace gmd = "http://www.isotc211.org/2005/gmd";
+            XNamespace gco = "http://www.isotc211.org/2005/gco";
+
+            var metadataStandard = "ISO 19139";
+            var title = "unknown";
+            var url = "";
+
+            var metadataStandardElement = cswRecord.Descendants(gmd + "metadataStandardName");
+            if (metadataStandardElement.Any())
+            {
+                var metadataFirstElement = cswRecord.Descendants(gmd + "metadataStandardName").First();
+                if (metadataFirstElement != null)
+                {
+                    var content = metadataFirstElement.Element(gco + "CharacterString");
+                    if (content != null) { metadataStandard = content.Value; }
+                }
+    
+            }
+            var titleElement = cswRecord.Descendants(gmd + "title");
+            if (titleElement.Any())
+            {
+                var titleFirstElement = titleElement.First();
+                if (titleFirstElement != null)
+                {
+                    var content = titleFirstElement.Element(gco + "CharacterString");
+                    if (content != null)
+                    {
+                        title = content.Value;
+                    }
+                }
+            }
+            var urlElement = cswRecord.Descendants(gmd + "URL");
+            if (urlElement.Any())
+            {
+                var urlFirstElement = urlElement.First();
+                if (urlFirstElement != null)
+                {
+                    url = urlFirstElement.Value;
+                }
+            }
+
+            return new ValidationResult(uuid) { Title = title, Url = url, MetadataStandardName = metadataStandard };
         }
 
         private static string CreateGetCswRecordRequest(string uuid)
         {
-            /*
             GetRecordByIdType getRecordById = new GetRecordByIdType("GetRecordById");
             getRecordById.Service = "CSW";
             getRecordById.Version = "2.0.2";
             getRecordById.OutputSchema = "csw:IsoRecord";
             getRecordById.IdCol.Add(uuid);
-            getRecordById.ElementSetName = new ElementSetName();
-            getRecordById.ElementSetName.PrimitiveValue = "full";
+            getRecordById.ElementSetName = new ElementSetName { PrimitiveValue = "full" };
 
-            string getCswRecordRequest = getRecordById.ToXml();
-            */
-
-            return "";
+            return getRecordById.ToXml();
         }
 
-        // deprecated
-        public ValidationResult Validate(string uuid)
-        {
-            string urlToMetadataFile = "http://www.geonorge.no/geonetwork/srv/no/iso19139.xml?uuid=" + uuid;
-            Trace.WriteLine("Running INSPIRE Validation on url: " + urlToMetadataFile);
-
-            ValidationResult result = null;
-
-            try
-            {
-                string responseBody = RunInspireValidation(urlToMetadataFile);
-                Trace.WriteLine("INSPIRE Validator response:");
-                Trace.WriteLine(responseBody);
-                XDocument xmlDoc = XDocument.Parse(responseBody);
-
-                result = new InspireValidationResponseParser().ParseValidationResponse(uuid, urlToMetadataFile, xmlDoc);
-
-            }
-            catch (Exception e)
-            {
-                result = new ValidationResult(uuid);
-                result.Url = urlToMetadataFile;
-                result.ValidateTimestamp = DateTime.Now;
-            }
-            return result;
-        }
-
-        public string RunInspireValidation(string data)
+        private string RunInspireValidation(string data)
         {
             string boundary = "----MetadataMonitor";
             StringBuilder builder = new StringBuilder();
@@ -96,7 +114,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             
             string contentType = "multipart/form-data; boundary=" + boundary;
 
-            string responseBody = httpRequestExecutor.PostRequest(Constants.EndpointUrlInspire, "application/xml", contentType, postData);
+            string responseBody = _httpRequestExecutor.PostRequest(Constants.EndpointUrlInspire, "application/xml", contentType, postData);
 
             return responseBody;
         }

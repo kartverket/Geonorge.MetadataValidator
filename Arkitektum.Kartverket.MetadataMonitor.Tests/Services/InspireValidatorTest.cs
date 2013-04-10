@@ -9,7 +9,6 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Tests.Services
         [TestMethod]
         public void TestMethod1()
         {
-            new InspireValidator().Validate("http://www.geonorge.no/geonetwork/srv/no/iso19139.xml?id=21523");
         }
     }
 }
