@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using csw;
+using Arkitektum.CSW;
 
 namespace Arkitektum.Kartverket.MetadataCore.Validate
 {
@@ -24,7 +24,6 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
         {
             
             var getCswRecordRequest = CreateGetCswRecordRequest(uuid);
-
             string cswRecordResponse = _httpRequestExecutor.PostRequest(Constants.EndpointUrlGeoNorgeCsw,
                                                                         ContentTypeXml, ContentTypeXml,
                                                                         getCswRecordRequest);
@@ -34,7 +33,6 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 
             XDocument xmlDoc = XDocument.Parse(inspireValidationResponse);
             return new InspireValidationResponseParser().ParseValidationResponse(validationResult, xmlDoc);
-            
         }
 
         private ValidationResult ParseCswRecordResponse(string uuid, string cswRecordResponse)
@@ -87,16 +85,16 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 
         private static string CreateGetCswRecordRequest(string uuid)
         {
-            GetRecordByIdType getRecordById = new GetRecordByIdType("GetRecordById");
-            getRecordById.Service = "CSW";
-            getRecordById.Version = "2.0.2";
-            getRecordById.OutputSchema = "csw:IsoRecord";
-            getRecordById.IdCol.Add(uuid);
-            getRecordById.ElementSetName = new ElementSetName { PrimitiveValue = "full" };
+            GetRecordByIdType getRecordbyId = new GetRecordByIdType();
+            getRecordbyId.service = "CSW";
+            getRecordbyId.version = "2.0.2";
+            getRecordbyId.outputSchema = "csw:IsoRecord";
+            getRecordbyId.Id = new[] { uuid };
+            getRecordbyId.ElementSetName = new ElementSetNameType { Value = ElementSetType.full };
 
-            return getRecordById.ToXml();
+            return SerializeUtil.SerializeToString(getRecordbyId);
         }
-
+        
         private string RunInspireValidation(string data)
         {
             string boundary = "----MetadataMonitor";

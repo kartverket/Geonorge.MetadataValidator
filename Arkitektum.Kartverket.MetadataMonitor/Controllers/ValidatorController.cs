@@ -49,7 +49,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 
             _validatorService.ValidateMetadata(uuid);
             
-            return RedirectToAction("Index", new {message = "Started!"});
+            return RedirectToAction("Index", new {message = "Validering gjennomført!"});
         }
 
         public ActionResult Harvest()
@@ -91,7 +91,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
             sched.ScheduleJob(job, trigger);
             sched.Start();
             */
-            return RedirectToAction("Index", new {message = "Harvesting started"});
+            return RedirectToAction("Index", new {message = "Harvesting av metadata er startet!"});
         }
     }
 }

@@ -1,2 +1,0 @@
-"C:\Program Files (x86)\Microsoft SDKs\Windows\v8.0A\bin\NETFX 4.0 Tools\xsd.exe"  csw.xsd dcmes.xsd dcmi-terms.xsd  gml.xsd xlink.xsd smil20-language.xsd smil20.xsd filterAll.xsd owsAll.xsd /c /language:C# 
-pause

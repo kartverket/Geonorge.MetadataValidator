@@ -18,11 +18,11 @@ namespace Arkitektum.Kartverket.MetadataValidator
 
             while (true)
             {
-                Thread.Sleep(10000);
+                Thread.Sleep(60000);
                 Trace.WriteLine("Working", "Information");
 
                 //new MetadataHarvester().HarvestAndAddToValidationQueue();
-                new ValidatorService().RunValidateOnQueueMessages();
+                //new ValidatorService().RunValidateOnQueueMessages();
             }
         }
 

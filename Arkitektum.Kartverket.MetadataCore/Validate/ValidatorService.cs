@@ -45,8 +45,6 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
                     ValidateMetadata(message.AsString);    
 
                     queue.DeleteMessage(message);
-
-
                 }
             }
             
@@ -56,14 +54,13 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
         {
             try
             {
-                //            var validationResult = new InspireValidator().Validate(uuid);
                 var validationResult = new InspireValidator().RetrieveAndValidate(uuid);
 
                 _validationResultRepository.SaveValidationResult(validationResult);
             }
             catch (WebException e)
             {
-                Trace.WriteLine("Exception duing validation of metadata: " + e.Message);
+                Trace.WriteLine("Exception during validation of metadata: " + e.Message);
             }
         }
 
