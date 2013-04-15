@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Arkitektum.CSW;
+using www.ogc.net.csw;
 
 namespace Arkitektum.Kartverket.MetadataCore.Validate
 {
@@ -29,10 +32,17 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
                                                                         getCswRecordRequest);
 
             ValidationResult validationResult = ParseCswRecordResponse(uuid, cswRecordResponse);
-            string inspireValidationResponse = RunInspireValidation(cswRecordResponse);
+            if (validationResult.ValidateOk)
+            {
+                string inspireValidationResponse = RunInspireValidation(cswRecordResponse);
 
-            XDocument xmlDoc = XDocument.Parse(inspireValidationResponse);
-            return new InspireValidationResponseParser().ParseValidationResponse(validationResult, xmlDoc);
+                XDocument xmlDoc = XDocument.Parse(inspireValidationResponse);
+                return new InspireValidationResponseParser().ParseValidationResponse(validationResult, xmlDoc);    
+            } else
+            {
+                return validationResult;
+            }
+            
         }
 
         private ValidationResult ParseCswRecordResponse(string uuid, string cswRecordResponse)
@@ -80,7 +90,29 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
                 }
             }
 
-            return new ValidationResult(uuid) { Title = title, Url = url, MetadataStandardName = metadataStandard };
+            XNamespace ows = "http://www.opengis.net/ows";
+
+            List<string> errors = new List<string>();
+            var owsExceptions = cswRecord.Descendants(ows + "Exception");
+            foreach (var owsException in owsExceptions)
+            {
+                var exceptionText = owsException.Value;
+                if (!string.IsNullOrEmpty(exceptionText))
+                {
+                    errors.Add(exceptionText);
+                }
+            }
+            string errorsMessages = String.Join("\r\n", errors);
+            bool validateOk = !errors.Any();
+            return new ValidationResult(uuid)
+                {
+                    Title = title, 
+                    Url = url, 
+                    MetadataStandardName = metadataStandard, 
+                    ErrorMessages = errorsMessages, 
+                    ValidateOk = validateOk,
+                    ValidateTimestamp = DateTime.Now
+                };
         }
 
         private static string CreateGetCswRecordRequest(string uuid)

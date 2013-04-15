@@ -16,10 +16,8 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Tests.Services
         {
 
 
-            GetRecordByIdType TestObj = new GetRecordByIdType();
 
-            Console.WriteLine(SerializeUtil.SerializeToString(TestObj));
-
+            new InspireValidator().RetrieveAndValidate("202cf0db-8055-438c-a00a-e7cf40a8b1bc");
         }
     }
 }

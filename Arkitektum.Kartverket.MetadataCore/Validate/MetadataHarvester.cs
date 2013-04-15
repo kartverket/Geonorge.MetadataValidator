@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
-using System.Xml;
 using Arkitektum.CSW;
+using www.ogc.net.csw;
 
 namespace Arkitektum.Kartverket.MetadataCore.Validate
 {

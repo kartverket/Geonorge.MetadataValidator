@@ -20,17 +20,24 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             dataStream.Write(byteArray, 0, byteArray.Length);
             dataStream.Close();
 
+            Trace.WriteLine("HTTP request:");
+            Trace.WriteLine(url);
+            Trace.WriteLine("Method: " + request.Method);
+            Trace.WriteLine("Accept: " + request.Accept);
+            Trace.WriteLine("Content-Type: " + request.ContentType);
+            Trace.WriteLine("Data:");
             Trace.WriteLine(postData);
             
             WebResponse response = request.GetResponse();
 
-            // Trace.WriteLine(((HttpWebResponse)response).StatusDescription);
+            Trace.WriteLine("Response code:" + ((HttpWebResponse)response).StatusDescription);
             
             StreamReader reader = new StreamReader(response.GetResponseStream());
             string responseBody = reader.ReadToEnd();
 
             response.Close();
             
+            Trace.WriteLine("Data:");
             Trace.WriteLine(responseBody);
 
             return responseBody;

@@ -31,8 +31,8 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
         private IEnumerable<string> GetErrors(XDocument xmlDoc)
         {
             List<string> errors = new List<string>();
-            var elements = xmlDoc.Descendants(NsGeo + "ValidationError").Descendants(NsGeo + "GeoportalExceptionMessage");
-            foreach (var element in elements)
+            var geoPortalExceptions = xmlDoc.Descendants(NsGeo + "ValidationError").Descendants(NsGeo + "GeoportalExceptionMessage");
+            foreach (var element in geoPortalExceptions)
             {
                 var messageElement = element.Element(NsGeo + "Message");
                 if (messageElement != null)
@@ -44,7 +44,6 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
                     }
                 }
             }
-            
             return errors;
         }
     }
