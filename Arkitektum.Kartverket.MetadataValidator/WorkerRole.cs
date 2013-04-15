@@ -18,11 +18,10 @@ namespace Arkitektum.Kartverket.MetadataValidator
 
             while (true)
             {
-                Thread.Sleep(3600000);
+                Thread.Sleep(300000);
                 Trace.WriteLine("Working", "Information");
 
-                //new MetadataHarvester().HarvestAndAddToValidationQueue();
-                //new ValidatorService().RunValidateOnQueueMessages();
+                new ValidatorService().RunValidateOnQueueMessages();
             }
         }
 
@@ -34,7 +33,7 @@ namespace Arkitektum.Kartverket.MetadataValidator
             // For information on handling configuration changes
             // see the MSDN topic at http://go.microsoft.com/fwlink/?LinkId=166357.
 
-            ConfigureScheduler();
+           // ConfigureScheduler();
 
 
             return base.OnStart();

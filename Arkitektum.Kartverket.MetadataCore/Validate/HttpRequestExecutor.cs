@@ -20,7 +20,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             dataStream.Write(byteArray, 0, byteArray.Length);
             dataStream.Close();
 
-            // Trace.WriteLine(postData);
+            Trace.WriteLine(postData);
             
             WebResponse response = request.GetResponse();
 
@@ -31,7 +31,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 
             response.Close();
             
-            // Trace.WriteLine(responseBody);
+            Trace.WriteLine(responseBody);
 
             return responseBody;
         }

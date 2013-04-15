@@ -9,6 +9,7 @@ namespace Arkitektum.Kartverket.MetadataCore
     public class Constants
     {
         public const string EndpointUrlInspire = "http://inspire-geoportal.ec.europa.eu/GeoportalProxyWebServices/resources/INSPIREResourceTester";
-        public const string EndpointUrlGeoNorgeCsw = "http://www.geonorge.no/geonetwork/srv/en/csw";
+        //public const string EndpointUrlGeoNorgeCsw = "http://www.geonorge.no/geonetwork/srv/en/csw";
+        public const string EndpointUrlGeoNorgeCsw = "http://beta.geonorge.no/geonetwork/srv/eng/csw"; // notice change from 'en' to 'eng'!
     }
 }

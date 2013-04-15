@@ -87,8 +87,12 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
             getRecords.startPosition = startPosition.ToString(CultureInfo.InvariantCulture);
 
             var query = new QueryType();
-            query.typeNames = new[] { new XmlQualifiedName("Record", "csw") };
-            
+         /*   query.typeNames = new[]
+                {
+                    //new XmlQualifiedName("csw:Record", "http://www.opengis.net/cat/csw/2.0.2")
+                    new XmlQualifiedName("csw:Record")
+                };
+           */ 
             var queryConstraint = new QueryConstraintType();
             queryConstraint.version = "1.1.0";
             queryConstraint.Item = new FilterType(); // using empty filter to get all records
