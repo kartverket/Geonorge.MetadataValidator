@@ -18,7 +18,7 @@ namespace Arkitektum.Kartverket.MetadataValidator
 
             while (true)
             {
-                Thread.Sleep(60000);
+                Thread.Sleep(3600000);
                 Trace.WriteLine("Working", "Information");
 
                 //new MetadataHarvester().HarvestAndAddToValidationQueue();
