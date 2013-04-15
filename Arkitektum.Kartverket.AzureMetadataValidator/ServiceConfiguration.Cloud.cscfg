@@ -3,14 +3,14 @@
   <Role name="Arkitektum.Kartverket.MetadataValidator">
     <Instances count="1" />
     <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=kartverketmetadata;AccountKey=uV3YI4dobfJG1UkdmvACqGMArgaBChdckDcWDBrYhLbYDYXc/sJg0C3npPj4iqr9+idN576pYr86E2qiql7enA==" />
       <Setting name="StorageConnectionString" value="DefaultEndpointsProtocol=https;AccountName=kartverketmetadata;AccountKey=uV3YI4dobfJG1UkdmvACqGMArgaBChdckDcWDBrYhLbYDYXc/sJg0C3npPj4iqr9+idN576pYr86E2qiql7enA==" />
     </ConfigurationSettings>
   </Role>
   <Role name="Arkitektum.Kartverket.MetadataMonitor">
     <Instances count="1" />
     <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=kartverketmetadata;AccountKey=uV3YI4dobfJG1UkdmvACqGMArgaBChdckDcWDBrYhLbYDYXc/sJg0C3npPj4iqr9+idN576pYr86E2qiql7enA==" />
       <Setting name="StorageConnectionString" value="DefaultEndpointsProtocol=https;AccountName=kartverketmetadata;AccountKey=uV3YI4dobfJG1UkdmvACqGMArgaBChdckDcWDBrYhLbYDYXc/sJg0C3npPj4iqr9+idN576pYr86E2qiql7enA==" />
     </ConfigurationSettings>
   </Role>
