@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arkitektum.Kartverket.Metad
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arkitektum.Kartverket.MetadataCore", "Arkitektum.Kartverket.MetadataCore\Arkitektum.Kartverket.MetadataCore.csproj", "{BD41F9D8-8000-4976-9021-99BD6984F02E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetadataDesktopUtil", "MetadataDesktopUtil\MetadataDesktopUtil.csproj", "{99EE6B88-1EA3-4092-A593-52EDFF4E0EDA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{BD41F9D8-8000-4976-9021-99BD6984F02E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD41F9D8-8000-4976-9021-99BD6984F02E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD41F9D8-8000-4976-9021-99BD6984F02E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99EE6B88-1EA3-4092-A593-52EDFF4E0EDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99EE6B88-1EA3-4092-A593-52EDFF4E0EDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99EE6B88-1EA3-4092-A593-52EDFF4E0EDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99EE6B88-1EA3-4092-A593-52EDFF4E0EDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

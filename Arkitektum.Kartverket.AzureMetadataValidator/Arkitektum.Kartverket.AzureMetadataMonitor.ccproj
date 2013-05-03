@@ -58,7 +58,7 @@
     <Folder Include="Profiles" />
   </ItemGroup>
   <ItemGroup>
-    <PublishProfile Include="Profiles\kartverket-metadataStaging.azurePubxml" />
+    <PublishProfile Include="Profiles\kartverket-metadataProduction.azurePubxml" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
