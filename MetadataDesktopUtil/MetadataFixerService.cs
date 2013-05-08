@@ -33,8 +33,8 @@ namespace MetadataDesktopUtil
             GetRecordsResponseType firstSearchResponse = RunSearch();
             var searchResults = firstSearchResponse.SearchResults;
 
-            //int numberOfRecordsMatched = int.Parse(searchResults.numberOfRecordsMatched);
-            int numberOfRecordsMatched = 10;
+            int numberOfRecordsMatched = int.Parse(searchResults.numberOfRecordsMatched);
+            //int numberOfRecordsMatched = 10;
             int next = int.Parse(searchResults.nextRecord);
             int processed = 0;
             
@@ -79,9 +79,9 @@ namespace MetadataDesktopUtil
             {
                 _metadataFixer.FixMetadataEntry(metadataEntry);
                 processed++;
-                float rawValue = ((float)processed / (float)numberOfRecordsMatched) * 10f;
+                float rawValue = ((float)processed / (float)numberOfRecordsMatched) * 100f;
                 Log.Info("RawValue=" + rawValue);
-                _worker.ReportProgress((int)rawValue);
+                _worker.ReportProgress((int)rawValue, processed + " av " + numberOfRecordsMatched);
 
             }
             return processed;

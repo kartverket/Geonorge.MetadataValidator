@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using Arkitektum.GIS.Lib.SerializeUtil;
 using www.opengis.net;
@@ -35,46 +36,53 @@ namespace MetadataDesktopUtil
 
                 Log.Info("Start fixing of " + entry);
                 MD_Metadata_Type metadata = GetMetadataRecord(entry.Uuid);
-
-                bool isDirty = AddMissingResourceType(metadata);
-                isDirty |= AddMissingLanguage(metadata);
-
-                if (isDirty)
+                if (metadata != null)
                 {
-                    Log.Info("Metadata has been updated.");
+                    bool isDirty = AddMissingResourceType(metadata);
+                    isDirty |= AddMissingLanguage(metadata);
+
+                    if (isDirty)
+                    {
+                        Log.Info("Metadata has been updated.");
 
 
-                    TransactionType cswTransaction = new TransactionType
-                        {
-                            service = "CSW",
-                            version = "2.0.2",
-                            Items = new object[] {new UpdateType {Items = new object[] {metadata}}}
-                        };
+                        TransactionType cswTransaction = new TransactionType
+                            {
+                                service = "CSW",
+                                version = "2.0.2",
+                                Items = new object[] {new UpdateType {Items = new object[] {metadata}}}
+                            };
 
 
-                    XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-                    ns.Add("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-                    ns.Add("gmd", "http://www.isotc211.org/2005/gmd");
-                    ns.Add("gco", "http://www.isotc211.org/2005/gco");
-                    ns.Add("gml", "http://www.opengis.net/gml");
-                    ns.Add("gts", "http://www.isotc211.org/2005/gts");
+                        XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+                        ns.Add("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+                        ns.Add("gmd", "http://www.isotc211.org/2005/gmd");
+                        ns.Add("gco", "http://www.isotc211.org/2005/gco");
+                        ns.Add("gml", "http://www.opengis.net/gml");
+                        ns.Add("gts", "http://www.isotc211.org/2005/gts");
 
-                    string serializedUpdateTransaction = SerializeUtil.SerializeToString(cswTransaction, ns);
-                    Log.Debug(serializedUpdateTransaction);
+                        string serializedUpdateTransaction = SerializeUtil.SerializeToString(cswTransaction, ns);
+                        Log.Debug(serializedUpdateTransaction);
 
-                    GeoNetworkAuthenticate();
-                    string cswUpdateResponse =
-                        _httpRequestExecutor.PostRequest(_geonetworkEndpoint + "srv/eng/csw-publication", ContentTypeXml,
-                                                         ContentTypeXml,
-                                                         serializedUpdateTransaction, _sessionCookie);
-                    Log.Debug(cswUpdateResponse);
+                        GeoNetworkAuthenticate();
+                        string cswUpdateResponse =
+                            _httpRequestExecutor.PostRequest(_geonetworkEndpoint + "srv/eng/csw-publication",
+                                                             ContentTypeXml,
+                                                             ContentTypeXml,
+                                                             serializedUpdateTransaction, _sessionCookie);
+                        Log.Debug(cswUpdateResponse);
 
+                    }
+                    Log.Info("Finished fixing of " + entry);
                 }
-                Log.Info("Finished fixing of " + entry);
+                else
+                {
+                    Log.Error("Unable to fetch metadata record for " + entry);
+                }
             }
             catch (Exception e)
             {
-                Log.Error("Exception while fixing metadata.", e);
+                Log.Error("Exception while fixing metadata for " + entry, e);
             }
         }
 
@@ -234,22 +242,38 @@ namespace MetadataDesktopUtil
             return metadataHasBeenUpdated;
         }
 
-        
-        private MD_Metadata_Type GetMetadataRecord(string uuid) 
+
+        private MD_Metadata_Type GetMetadataRecord(string uuid)
         {
             var getCswRecordRequest = CreateGetCswRecordRequest(uuid);
-            string cswRecordResponse = _httpRequestExecutor.PostRequest(_geonetworkEndpoint + "srv/eng/csw", ContentTypeXml, ContentTypeXml,
+            string cswRecordResponse = _httpRequestExecutor.PostRequest(_geonetworkEndpoint + "srv/eng/csw",
+                                                                        ContentTypeXml, ContentTypeXml,
                                                                         getCswRecordRequest);
-            
+
             Log.Debug("CSW GetRecordByIdResponse: " + cswRecordResponse);
+            try
+            {
+                /* Quick and dirty hacks to fix exceptions in serialization due to invalid xml */
 
-            GetRecordByIdResponseType response =
-                SerializeUtil.DeserializeFromString<GetRecordByIdResponseType>(cswRecordResponse);
+                Regex fixWrongDecimalInRealElements = new Regex("<gco:Real>([0-9]+),([0-9]+)</gco:Real>");
 
-            MD_Metadata_Type metadataType = (MD_Metadata_Type) response.Items[0];
-            return metadataType;
+                var fixedResponse = cswRecordResponse.Replace("<gco:Boolean />", "<gco:Boolean>false</gco:Boolean>")
+                    .Replace("<gco:Real />", "<gco:Real>0.0</gco:Real>")
+                    .Replace("<gco:DateTime />", "");
+
+                var fixedResponse2 = fixWrongDecimalInRealElements.Replace(fixedResponse, "<gco:Real>$1.$2</gco:Real>");
+
+                GetRecordByIdResponseType response =
+                SerializeUtil.DeserializeFromString<GetRecordByIdResponseType>(fixedResponse2);
+                
+                return (MD_Metadata_Type)response.Items[0];
+            }
+            catch (Exception e)
+            {
+                Log.Error("Exception while serializing xml: " + e.Message, e);
+            }
+            return null;
         }
-
 
         private static string CreateGetCswRecordRequest(string uuid)
         {

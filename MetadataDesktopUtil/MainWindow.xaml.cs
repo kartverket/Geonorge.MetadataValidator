@@ -30,7 +30,7 @@ namespace MetadataDesktopUtil
         {
             Log.Info("Updating progress: " + progressChangedEventArgs.ProgressPercentage);
             Dispatcher.BeginInvoke((Action)(() => ProgressBar1.Value = progressChangedEventArgs.ProgressPercentage));
-            
+            UpdateStatus((string)progressChangedEventArgs.UserState);
             
         }
 
