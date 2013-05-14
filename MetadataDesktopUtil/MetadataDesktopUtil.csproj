@@ -48,6 +48,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>MetadataDesktopUtil.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Arkitektum.GIS.Lib.MetadataCSW">
       <HintPath>..\lib\Arkitektum.GIS.Lib.MetadataCSW.dll</HintPath>

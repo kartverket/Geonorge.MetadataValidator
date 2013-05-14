@@ -32,19 +32,19 @@ namespace MetadataDesktopUtil
         {
             try
             {
-
-
                 Log.Info("Start fixing of " + entry);
                 MD_Metadata_Type metadata = GetMetadataRecord(entry.Uuid);
                 if (metadata != null)
                 {
                     bool isDirty = AddMissingResourceType(metadata);
                     isDirty |= AddMissingLanguage(metadata);
+                    isDirty |= AddMissingConformity(metadata);
 
                     if (isDirty)
                     {
-                        Log.Info("Metadata has been updated.");
 
+
+                        Log.Info("Metadata is dirty, running CSW update transaction now.");
 
                         TransactionType cswTransaction = new TransactionType
                             {
@@ -62,9 +62,12 @@ namespace MetadataDesktopUtil
                         ns.Add("gts", "http://www.isotc211.org/2005/gts");
 
                         string serializedUpdateTransaction = SerializeUtil.SerializeToString(cswTransaction, ns);
-                        Log.Debug(serializedUpdateTransaction);
 
                         GeoNetworkAuthenticate();
+                        
+                        Log.Info("CSW Update Transaction");
+                        Log.Debug(serializedUpdateTransaction);
+
                         string cswUpdateResponse =
                             _httpRequestExecutor.PostRequest(_geonetworkEndpoint + "srv/eng/csw-publication",
                                                              ContentTypeXml,
@@ -72,8 +75,13 @@ namespace MetadataDesktopUtil
                                                              serializedUpdateTransaction, _sessionCookie);
                         Log.Debug(cswUpdateResponse);
 
+                        Log.Info("Metadata has been updated.");
+
                     }
-                    Log.Info("Finished fixing of " + entry);
+                    else
+                    {
+                        Log.Info("Metadata remains untouched.");
+                    }
                 }
                 else
                 {
@@ -84,40 +92,148 @@ namespace MetadataDesktopUtil
             {
                 Log.Error("Exception while fixing metadata for " + entry, e);
             }
+            Log.Info("Finished fixing of " + entry);
+        }
+
+        private bool IsDataset(MD_Metadata_Type metadata)
+        {
+            bool isDataset = false;
+            if (metadata.hierarchyLevel != null && metadata.hierarchyLevel.Any())
+            {
+                var firstElement = metadata.hierarchyLevel[0];
+                if (firstElement != null)
+                {
+                    if (firstElement.MD_ScopeCode != null)
+                    {
+                        var scopeCode = firstElement.MD_ScopeCode;
+                        if (scopeCode.codeListValue == "dataset")
+                        {
+                            isDataset = true;
+                        }
+                    }
+                }
+            }
+            return isDataset;
+        }
+
+        private bool AddMissingConformity(MD_Metadata_Type metadata)
+        {
+            bool metadataHasBeenUpdated = false;
+
+            if (IsDataset(metadata) && metadata.dataQualityInfo == null)
+            {
+                metadata.dataQualityInfo = new[] {
+                    new DQ_DataQuality_PropertyType {
+                        DQ_DataQuality = new DQ_DataQuality_Type
+                        {
+                            scope = new DQ_Scope_PropertyType
+                                {
+                                    DQ_Scope = new DQ_Scope_Type
+                                        {
+                                            level = new MD_ScopeCode_PropertyType
+                                                {
+                                                    MD_ScopeCode = new CodeListValue_Type
+                                                        {
+                                                            codeListValue = "dataset",
+                                                            codeList = "http://schemas.opengis.net/iso/19139/20070417/resources/Codelist/gmxCodelists.xml#MD_ScopeCode"
+                                                        }
+                                                }
+                                        }
+                                } ,
+                            lineage = new LI_Lineage_PropertyType
+                            {
+                                LI_Lineage = new LI_Lineage_Type
+                                    {
+                                        statement = new CharacterString_PropertyType { CharacterString = "Ingen prosseshistorie tilgjenglig." }
+                                    }
+                            },
+                            report = new DQ_Element_PropertyType[]
+                                { new DQ_Element_PropertyType
+                                    {
+                                        AbstractDQ_Element = new DQ_DomainConsistency_Type
+                                            {
+                                                result = new DQ_Result_PropertyType[]{ new DQ_Result_PropertyType
+                                                    {
+                                                        AbstractDQ_Result = new DQ_ConformanceResult_Type
+                                                            {
+                                                                explanation = new CharacterString_PropertyType
+                                                                    {
+                                                                        CharacterString = "See the referenced specification"
+                                                                    },
+                                                                pass = new Boolean_PropertyType { Boolean = true},
+                                                                specification = new CI_Citation_PropertyType
+                                                                    {
+                                                                        CI_Citation = new CI_Citation_Type
+                                                                            {
+                                                                                title = new CharacterString_PropertyType
+                                                                                    {
+                                                                                        CharacterString = "COMMISSION REGULATION (EU) No 1089/2010 of 23 November 2010 implementing Directive 2007/2/EC of the European Parliament and of the Council as regards interoperability of spatial data sets and services"
+                                                                                    },
+                                                                                    date = new CI_Date_PropertyType[]
+                                                                                        {
+                                                                                            new CI_Date_PropertyType
+                                                                                                {
+                                                                                                    CI_Date = new CI_Date_Type
+                                                                                                        {
+                                                                                                            date = new Date_PropertyType
+                                                                                                                {
+                                                                                                                    Item = "2010-12-08"
+                                                                                                                },
+                                                                                                            dateType = new CI_DateTypeCode_PropertyType
+                                                                                                                {
+                                                                                                                    CI_DateTypeCode = new CodeListValue_Type { codeList = "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/ML_gmxCodelists.xml#CI_DateTypeCode", codeListValue = "publication"}
+                                                                                                                }
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                            }
+                                                                    }
+                                                            }
+                                                    } }
+                                            }
+                                    }
+                            }
+                        }
+                    }
+                };
+
+                metadataHasBeenUpdated = true;
+            }
+
+            return metadataHasBeenUpdated;
         }
 
         private void GeoNetworkAuthenticate()
         {
             if (_sessionCookie == null)
             {
-                //"srv/en/xml.user.logout"
-                HttpWebResponse logoutResponse = _httpRequestExecutor.FullGetRequest(_geonetworkEndpoint + "srv/eng/xml.user.logout", "application/xml", "text/plain");
-                Trace.WriteLine("logoutResponse: " + logoutResponse.StatusDescription);
+                HttpWebResponse logoutResponse =
+                    _httpRequestExecutor.FullGetRequest(_geonetworkEndpoint + "srv/eng/xml.user.logout",
+                                                        "application/xml", "text/plain");
+                Log.Debug("logoutResponse: " + logoutResponse.StatusDescription);
 
-                HttpWebResponse response = _httpRequestExecutor.FullPostRequest(_geonetworkEndpoint + "srv/eng/xml.user.login", "application/xml", "application/x-www-form-urlencoded", "username=admin&password=admin");
+                HttpWebResponse response =
+                    _httpRequestExecutor.FullPostRequest(_geonetworkEndpoint + "srv/eng/xml.user.login",
+                                                         "application/xml", "application/x-www-form-urlencoded",
+                                                         "username=arkitektum&password=geoportal3800");
 
                 Cookie sessionCookie = response.Cookies["JSESSIONID"];
                 if (sessionCookie == null)
                 {
-
-
-                    Trace.WriteLine("Response code:" + response.StatusDescription);
-
                     StreamReader reader = new StreamReader(response.GetResponseStream());
                     string responseBody = reader.ReadToEnd();
 
                     response.Close();
-
-                    Trace.WriteLine("Data:");
-                    Trace.WriteLine(responseBody);
-
                     throw new Exception("Authentication failed - no session cookie available!");
                 }
 
-                _sessionCookie = sessionCookie;    
+                _sessionCookie = sessionCookie;
 
-                Log.Debug("Session Cookie: " + _sessionCookie);
-
+                Log.Debug("Authenticated, session cookie: " + _sessionCookie);
+            }
+            else
+            {
+                Log.Info("Already authenticated, using existing session cookie: " + _sessionCookie);
             }
         }
 
@@ -234,8 +350,13 @@ namespace MetadataDesktopUtil
                     if (!isDatasetResourceType)
                     {
                         // geonetwork validation want this field when hierarchyLevel is not 'dataset'
-                        metadata.hierarchyLevelName = new[] { new CharacterString_PropertyType { CharacterString = codeListValue } };
+                        metadata.hierarchyLevelName = new[]
+                            {new CharacterString_PropertyType {CharacterString = codeListValue}};
                     }
+                }
+                else
+                {
+                    Log.Info("Unable to determine resource type.");
                 }
             }
 
@@ -250,7 +371,7 @@ namespace MetadataDesktopUtil
                                                                         ContentTypeXml, ContentTypeXml,
                                                                         getCswRecordRequest);
 
-            Log.Debug("CSW GetRecordByIdResponse: " + cswRecordResponse);
+            //Log.Debug("CSW GetRecordByIdResponse: " + cswRecordResponse);
             try
             {
                 /* Quick and dirty hacks to fix exceptions in serialization due to invalid xml */

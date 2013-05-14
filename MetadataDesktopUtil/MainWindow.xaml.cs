@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Net;
 using System.Windows;
 
 namespace MetadataDesktopUtil
@@ -23,7 +24,7 @@ namespace MetadataDesktopUtil
        
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            worker.RunWorkerAsync(ServerUrlTextBox.Text);
+            worker.RunWorkerAsync(new [] {ServerUrlTextBox.Text, UuidTextBox.Text});
         }
 
         private void UpdateWorkerProgress(object sender, ProgressChangedEventArgs progressChangedEventArgs)
@@ -36,10 +37,27 @@ namespace MetadataDesktopUtil
 
         private void FixMetadataWorker(object sender, DoWorkEventArgs eventArgs)
         {
+            ServicePointManager.Expect100Continue = false;
+
+
             UpdateStatus("Startet!");
             DisableStartButton();
-            MetadataFixerService metadataFixerService = new MetadataFixerService((string)eventArgs.Argument, worker);
-            metadataFixerService.SearchForAllEntries();
+            string[] args = (string[]) eventArgs.Argument;
+            var serverUrl = args[0];
+            var uuid = args[1];
+
+            
+            if (string.IsNullOrEmpty(uuid))
+            {
+                MetadataFixerService metadataFixerService = new MetadataFixerService(serverUrl, worker);
+                metadataFixerService.SearchForAllEntries();
+            }
+            else
+            {
+                var metadataFixer = new MetadataFixer(serverUrl);
+                metadataFixer.FixMetadataEntry(new MetadataEntry { Title = "unknown", Uuid = uuid});
+            }
+            
             EnableStartButton();
             
 

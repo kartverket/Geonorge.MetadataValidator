@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Net;
 using Arkitektum.GIS.Lib.SerializeUtil;
 using www.opengis.net;
 
@@ -48,28 +49,7 @@ namespace MetadataDesktopUtil
                 processed = ProcessMetadataEntries(entries, processed, numberOfRecordsMatched);
                 next = int.Parse(searchResponse.SearchResults.nextRecord);
             }
-            // entries.ForEach(_metadataFixer.FixMetadataEntry);
-
-            /* 
-            int counter = 0;
-            int max = int.Parse(searchResults.numberOfRecordsMatched);
-            int next = int.Parse(searchResults.nextRecord);
-            while (next < max)
-            {
-                Trace.WriteLine("----------Counter=" + counter);
-
-                max = int.Parse(searchResults.numberOfRecordsMatched);
-                next = int.Parse(searchResults.nextRecord);
-                int numberOfRecordsReturned = int.Parse(searchResults.numberOfRecordsReturned);
-                counter += numberOfRecordsReturned;
-                
-                if (numberOfRecordsReturned < 0) break;
-             
-                var response = RunSearch(next);
-                searchResults = response.SearchResults;
-                ParseSearchResults(searchResults);
-            }
-            * */
+           
         }
 
         private int ProcessMetadataEntries(List<MetadataEntry> entries, int processed, int numberOfRecordsMatched)
@@ -80,9 +60,7 @@ namespace MetadataDesktopUtil
                 _metadataFixer.FixMetadataEntry(metadataEntry);
                 processed++;
                 float rawValue = ((float)processed / (float)numberOfRecordsMatched) * 100f;
-                Log.Info("RawValue=" + rawValue);
                 _worker.ReportProgress((int)rawValue, processed + " av " + numberOfRecordsMatched);
-
             }
             return processed;
         }
