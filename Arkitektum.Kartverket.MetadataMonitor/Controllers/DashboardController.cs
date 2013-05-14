@@ -29,14 +29,43 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
             var totalMetadata19115 = results.Count(n => n.MetadataStandardName.Equals("ISO 19115:2003/19139"));
             var totalMetadataOther = totalResultCount - totalMetadata19115 - totalMetadata19139;
 
+            var errorUnknownResourceType =
+                results.Count(n => n.ErrorMessages.Contains("It was not possible to determine the resource type"));
+            var errorNotSupportedResourceType =
+                results.Count(n => n.ErrorMessages.Contains("The resource type code \"software\" is not supported"));
+            var errorMissingSpatialDataTheme =
+                results.Count(n => n.ErrorMessages.Contains("The metadata element \"Inspire Spatial Data Theme\" is missing"));
+            var errorMissingConditionsForAccess =
+                results.Count(n => n.ErrorMessages.Contains("The metadata element \"Conditions For Access And Use\" is missing"));
+            var errorMissingResponsibleOrganisation =
+                results.Count(n => n.ErrorMessages.Contains("The metadata element \"Responsible Organisation\" is missing"));
+            var errorMissingLanguage =
+                results.Count(n => n.ErrorMessages.Contains("The metadata element \"Metadata Language\" is missing"));
+            var errorMissingResourceIdentifier =
+                results.Count(n => n.ErrorMessages.Contains("The metadata element \"Unique Resource Identifier\" is missing"));
+            var errorMissingLineage =
+                results.Count(n => n.ErrorMessages.Contains("The metadata element \"Lineage\" is missing"));
+            var errorMissingConformity =
+                results.Count(n => n.ErrorMessages.Contains("The metadata element \"Conformity\" is missing"));
+
+
             var model = new DashboardViewModel
                 {
-                    totalResultCount = totalResultCount, 
-                    totalResultOk = totalResultOk, 
-                    totalResultFailed = totalResultFailed,
-                    totalMetadata19139 = totalMetadata19139,
-                    totalMetadata19115 = totalMetadata19115,
-                    totalMetadataOther = totalMetadataOther
+                    TotalResultCount = totalResultCount, 
+                    TotalResultOk = totalResultOk, 
+                    TotalResultFailed = totalResultFailed,
+                    TotalMetadata19139 = totalMetadata19139,
+                    TotalMetadata19115 = totalMetadata19115,
+                    TotalMetadataOther = totalMetadataOther,
+                    ErrorUnknownResourceType = errorUnknownResourceType,
+                    ErrorNotSupportedResourceType = errorNotSupportedResourceType,
+                    ErrorMissingSpatialDataTheme = errorMissingSpatialDataTheme,
+                    ErrorMissingConditionsForAccess = errorMissingConditionsForAccess,
+                    ErrorMissingResponsibleOrganisation = errorMissingResponsibleOrganisation,
+                    ErrorMissingLanguage = errorMissingLanguage,
+                    ErrorMissingResourceIdentifier = errorMissingResourceIdentifier,
+                    ErrorMissingLineage = errorMissingLineage,
+                    ErrorMissingConformity = errorMissingConformity
                 };
 
             return View(model);

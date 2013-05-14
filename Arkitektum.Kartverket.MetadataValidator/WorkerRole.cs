@@ -18,7 +18,7 @@ namespace Arkitektum.Kartverket.MetadataValidator
 
             while (true)
             {
-                Thread.Sleep(300000);
+                Thread.Sleep(300000); // run every 5 minute
                 Trace.WriteLine("Working", "Information");
 
                 new ValidatorService().RunValidateOnQueueMessages();

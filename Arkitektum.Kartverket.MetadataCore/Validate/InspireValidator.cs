@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using Arkitektum.CSW;
-using www.ogc.net.csw;
+using Arkitektum.GIS.Lib.SerializeUtil;
+using www.opengis.net;
 
 namespace Arkitektum.Kartverket.MetadataCore.Validate
 {
@@ -38,11 +38,8 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 
                 XDocument xmlDoc = XDocument.Parse(inspireValidationResponse);
                 return new InspireValidationResponseParser().ParseValidationResponse(validationResult, xmlDoc);    
-            } else
-            {
-                return validationResult;
-            }
-            
+            } 
+            return validationResult;           
         }
 
         private ValidationResult ParseCswRecordResponse(string uuid, string cswRecordResponse)

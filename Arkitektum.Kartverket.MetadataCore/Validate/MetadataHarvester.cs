@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
-using Arkitektum.CSW;
-using www.ogc.net.csw;
+using Arkitektum.GIS.Lib.SerializeUtil;
+using www.opengis.net;
 
 namespace Arkitektum.Kartverket.MetadataCore.Validate
 {
@@ -49,17 +49,25 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
         private static void SendSearchResultsToValidation(SearchResultsType searchResults)
         {
             Trace.WriteLine("------------LOOPING SEARCH RESULT--------------------");
-            foreach (var item in searchResults.Items)
+            if (searchResults.Items != null)
             {
-                SummaryRecordType summary = (SummaryRecordType) item;
+                foreach (var item in searchResults.Items)
+                {
+                    SummaryRecordType summary = (SummaryRecordType) item;
 
-                var title = summary.title[0].Text[0];
-                var identifier = summary.identifier[0].Text[0];
+                    var title = summary.title[0].Text[0];
+                    var identifier = summary.identifier[0].Text[0];
 
-                Trace.WriteLine("[Identifier=" + identifier + "], [Title=" + title + "]");
-                
-                new ValidatorService().AddToValidationQueue(identifier);
+                    Trace.WriteLine("[Identifier=" + identifier + "], [Title=" + title + "]");
+
+                    new ValidatorService().AddToValidationQueue(identifier);
+                }
             }
+            else
+            {
+                Trace.WriteLine("Search result was empty, end of search.");
+            }
+            
         }
         
 
@@ -83,7 +91,7 @@ namespace Arkitektum.Kartverket.MetadataCore.Validate
 
             var getRecords = new GetRecordsType();
 
-            getRecords.resultType = ResultType.results;
+            getRecords.resultType = ResultType1.results;
             getRecords.startPosition = startPosition.ToString(CultureInfo.InvariantCulture);
 
             var query = new QueryType();
