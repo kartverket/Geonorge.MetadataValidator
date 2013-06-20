@@ -1,0 +1,53 @@
+﻿@model Arkitektum.Kartverket.MetadataMonitor.Models.DashboardViewModel
+@{
+    ViewBag.Title = "Dashboard";
+}
+<div class="row">
+    <h4>INSPIRE-validering av metadata fra www.geonorge.no</h4>
+    <div class="span5">
+        <canvas id="resultStatusChart" width="400" height="400"></canvas>
+    </div>
+    <div class="span4">
+        <div class="results results-ok">
+            <div class="colorbox pull-left"></div>
+            <div class="description">OK: @Model.TotalResultOk</div>
+        </div>
+        <div class="results results-failed">
+            <div class="colorbox pull-left"></div>
+            <div class="description">FEIL: @Model.TotalResultFailed</div>
+        </div>
+        <div class="results results-unknown">
+            <div class="colorbox pull-left"></div>
+            <div class="description">Ikke validert: @Model.TotalNotApplicableForInspire</div>
+        </div>
+        <div class="results pull-left">
+            <p>Totalt <b>@Model.TotalResultCount</b> metadata undersøkt.</p>
+            <a href="/validator" class="btn btn-primary">Vis valideringsresultater</a>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        var totalOk = @(Model.TotalResultOk);
+        var totalFailed = @(Model.TotalResultFailed);
+        var totalNotApplicable = @(Model.TotalNotApplicableForInspire);
+        var resultStatusData = [
+            {
+                value: totalOk,
+                color: "#69D2E7"
+            },
+            {
+                value: totalFailed,
+                color: "#F38630"
+            },
+            {
+                value: totalNotApplicable,
+                color: "#ccc"
+            }
+        ];
+        var resultStatusCtx = $("#resultStatusChart").get(0).getContext("2d");
+        var resultStatusChart = new Chart(resultStatusCtx).Pie(resultStatusData, {});
+    </script>
+}

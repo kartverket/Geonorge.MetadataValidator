@@ -1,0 +1,125 @@
+﻿@model Arkitektum.Kartverket.MetadataMonitor.Models.ValidatorResultPageModel
+@{
+    ViewBag.Title = "INSPIRE Valideringsresultater";
+}
+
+@if (ViewBag.Message != null)
+{
+<div class="row">
+    <div class="alert alert-info span6">
+        <p>@ViewBag.Message</p>
+    </div>        
+</div>
+}
+
+<form class="form-inline" method="GET" action="/Validator/">
+    Organisasjon: @Html.DropDownList("organization", (SelectList) ViewBag.Organizations, "", new { style="width: 300px;"})
+    <label for="status">Status:
+        @Html.DropDownList("status", (SelectList) ViewBag.StatusOptions, "", new { style="width:110px"})
+    </label>
+    
+    <input type="submit" value="Søk" class="btn "/>
+</form>
+
+@if (Model.ValidationResults.Any())
+{
+    <div>
+        <p class="">@Model.ValidationResults.Count resultater</p>
+    </div>
+    <table class="table sortable" style="table-layout: fixed">
+        <thead>
+            <tr>
+                <th style="width: 25%">Tittel</th>
+                <th style="width: 20%">Organisasjon</th>
+                <th style="width: 5%">XML</th>
+                <th style="width: 10%">Ressurstype</th>
+                <th style="width: 10%">Status</th>
+                <th style="width: 30%">INSPIRE-feilmeldinger</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var result in Model.ValidationResults)
+        {
+            var linkText = result.Title;
+            if (linkText == null) { linkText = result.Uuid; }
+            
+            var statusClass = "";
+            var statusText = "Ikke validert";
+            if (result.ValidateResult == 1)
+            {
+                statusClass = "label-success";
+                statusText = "OK";    
+            } else if (result.ValidateResult == 2)
+            {
+                statusClass = "label-important";
+                statusText = "FEIL";    
+            }
+            
+            <tr>
+                <td>
+                    <p>
+                        <a href="http://www.geonorge.no/geonetwork28?uuid=@result.Uuid" target="_blank">@linkText</a><br/>
+                        <span class="text-small">@result.Uuid</span>
+                    </p>
+                    
+                </td>
+                <td>
+                    <p>@result.Organization</p>
+                </td>
+                <td class="content-align-center">
+                    <a href="http://www.geonorge.no/geonetwork28/srv/eng/xml_iso19139?uuid=@result.Uuid" target="_blank">
+                        <i class="icon-file"></i>
+                    </a>
+                </td>
+                <td>@result.ResourceType</td>
+                <td><span class="label @statusClass">@statusText</span>
+                    <p class="text-small">@result.ValidateTimestamp.ToString("dd'.'MM'.'yyyy HH':'mm':'ss")</p>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <p><a href="@Url.Action("RunValidate", new { uuid = @result.Uuid})" class="btn btn-mini"><i class="icon-play"></i> Validering</a></p>    
+                    }
+                </td>
+                <td>
+                    @if (result.ErrorMessages != null)
+                    {
+                        <ul>
+                            @foreach (var error in result.ErrorMessages)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>    
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Ingen resultater.</p>
+}
+
+@section scripts
+{ 
+    <script src="~/Scripts/sorttable.js"></script>
+    <script src="~/Scripts/jquery.placeholder.js"></script>
+}
+
+@section navbar 
+{
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form method="POST" action="@Url.Action("Logout", "Account")" class="navbar-form pull-right">
+            <input type="submit" class="btn" value="Logg ut"/>
+        </form>
+    }
+    else
+    {
+        <form method="POST" action="@Url.Action("Login", "Account")" class="navbar-form pull-right">
+            <input type="text" name="username" placeholder="Brukernavn" style="width: 80px;"/>
+            <input type="password" name="password" placeholder="Passord" style="width: 80px;"/>
+            <input type="submit" class="btn" value="Logg inn"/>
+        </form>    
+    }
+}

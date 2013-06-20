@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>WindowsAzure.Storage</id>
     <version>1.7.0.0</version>
@@ -22,8 +22,5 @@
       <frameworkAssembly assemblyName="System.Xml" targetFramework="" />
       <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="" />
     </frameworkAssemblies>
-    <references>
-      <reference file="Microsoft.WindowsAzure.StorageClient.dll" />
-    </references>
   </metadata>
 </package>

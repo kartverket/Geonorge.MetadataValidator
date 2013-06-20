@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceConfiguration serviceName="MetadataMonitor" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="3" osVersion="*" schemaVersion="2012-10.1.8">
+  <Role name="MetadataMonitor">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=kartverketmetadata;AccountKey=rRaBSAD/ZzNpG2vosr0V2ElAKkLhLErtndXp9BEhUef5ncu+igZ1UewyYGKFz6NA6vH/wh4wZVHqx5HLd3swNg==" />
+      <Setting name="StorageConnectionString" value="DefaultEndpointsProtocol=https;AccountName=kartverketmetadata;AccountKey=rRaBSAD/ZzNpG2vosr0V2ElAKkLhLErtndXp9BEhUef5ncu+igZ1UewyYGKFz6NA6vH/wh4wZVHqx5HLd3swNg==" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername" value="arkitektumdev" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword" value="MIIBkQYJKoZIhvcNAQcDoIIBgjCCAX4CAQAxggFCMIIBPgIBADAmMBIxEDAOBgNVBAMTB0hlbm5pbmcCEBZbhNP7UParTnuxEsZl9r4wDQYJKoZIhvcNAQEBBQAEggEAvBHFncpLptQd4mSbwCDAQX8h7vcEYT4dUcU6tgSixiER3HX74VK72Y5V+2OiVksgHl/Na6HR9ztgGs00QkWq06leM8oqMbonsI3jGzMd+tMSz5pb6GOGYCCCxUGNhoelRQbuxLMFzSkN/+BCl4yYpEGL1ytZTFRw2bhOapZhpQVWVlmp239/3zO0Hev2xlQ61wh8PyxUTKjGvoRcBdKEa0VkAHRbXVVm6lfBYOYK6ShZPG3LiZyfVkaMAItA8IL58kGrDx3bsTOId1jP1ejmIUCL0qVNDOCSk+0dTnDUWlJrnSMoMlDILIoDU9EwG2jfOeQqUp6m5v2spIN8d4hkdDAzBgkqhkiG9w0BBwEwFAYIKoZIhvcNAwcECHxw2ZJebaeqgBBhVjXBcZPGyxEBd2+bEbmY" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration" value="2020-06-18T23:59:59.0000000+02:00" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled" value="true" />
+    </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="4D7050CCA2162C507142A396218EFF3215C66940" thumbprintAlgorithm="sha1" />
+    </Certificates>
+  </Role>
+</ServiceConfiguration>
