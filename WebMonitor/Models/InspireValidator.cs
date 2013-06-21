@@ -47,7 +47,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                 string inspireValidationResponse = RunInspireValidation(fixedResponse2);
 
                 XDocument xmlDoc = XDocument.Parse(inspireValidationResponse);
-                return new InspireValidationResponseParser().ParseValidationResponse(validationResult, xmlDoc);    
+                return new InspireValidationResponseParser(validationResult, xmlDoc).ParseValidationResponse();    
             } 
             return validationResult;           
         }
@@ -61,6 +61,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             var resourceType = "unknown";
             var validateOk = false;
             var organization = "unknown";
+            var inspireExcemption = false;
 
             MD_Metadata_Type metadata = getRecordResponse.Items[0] as MD_Metadata_Type;
             if (metadata != null)
@@ -78,6 +79,30 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                     {
                         organization = dataIdentification.pointOfContact[0].CI_ResponsibleParty.organisationName.CharacterString;
                     }
+
+                    if (dataIdentification.descriptiveKeywords != null)
+                    {
+                        foreach (var descriptiveKeyword in dataIdentification.descriptiveKeywords)
+                        {
+                            if (descriptiveKeyword.MD_Keywords != null && descriptiveKeyword.MD_Keywords.keyword != null)
+                            {
+                                foreach (var singleKeyword in descriptiveKeyword.MD_Keywords.keyword)
+                                {
+                                    if (singleKeyword.CharacterString != null)
+                                    {
+                                        if (singleKeyword.CharacterString.Equals("annet", StringComparison.InvariantCultureIgnoreCase))
+                                        {
+                                            inspireExcemption = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (inspireExcemption) 
+                                    break;
+                            }
+                        }
+                    }
+                        
                 }
     
                 if (metadata.hierarchyLevel != null && metadata.hierarchyLevel[0] != null)
@@ -93,7 +118,8 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                     ResourceType = resourceType,
                     ValidateResult = -1,
                     ValidateTimestamp = DateTime.Now,
-                    Organization = organization
+                    Organization = organization,
+                    InspireExemption = inspireExcemption
                 };
         }
 

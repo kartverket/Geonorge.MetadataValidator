@@ -19,7 +19,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         public int ValidateResult { get; set; }
         public string ResourceType { get; set; }
         public string Organization { get; set; }
-
+        public bool InspireExemption { get; set; }
 
         public bool IsResourceTypeApplicableForValidation()
         {
