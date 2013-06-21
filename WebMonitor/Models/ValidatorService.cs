@@ -97,7 +97,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         public GetRecordsResponseType RunSearch(int startPosition)
         {
             Trace.WriteLine("Running search with start position: " + startPosition);
-            string responseBody = _httpRequestExecutor.PostRequest(Constants.EndpointUrlGeoNorgeCsw + "srv/eng/csw", "application/xml", "application/xml",
+            string responseBody = _httpRequestExecutor.PostRequest(Constants.EndpointUrlGeoNorgeCsw, "application/xml", "application/xml",
                                             CreateRequestBody(startPosition));
 
 

@@ -11,7 +11,6 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
     {
 
         private const string ContentTypeXml = "application/xml";
-        private const string EndpointUrlGeoNorgeCsw = "http://beta.geonorge.no/geonetwork/srv/eng/csw";
         private readonly HttpRequestExecutor _httpRequestExecutor;
 
         private InspireValidator(HttpRequestExecutor httpRequestExecutor)
@@ -26,7 +25,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         {
             
             var getCswRecordRequest = CreateGetCswRecordRequest(uuid);
-            string cswRecordResponse = _httpRequestExecutor.PostRequest(EndpointUrlGeoNorgeCsw,
+            string cswRecordResponse = _httpRequestExecutor.PostRequest(Constants.EndpointUrlGeoNorgeCsw,
                                                                         ContentTypeXml, ContentTypeXml,
                                                                         getCswRecordRequest);
 

@@ -9,7 +9,6 @@ namespace Arkitektum.Kartverket.MetadataMonitor
     public class WebRole : RoleEntryPoint
     {
         private MyWorkerThread workerThread;
-        /*
         public override bool OnStart()
         {
             workerThread = new MyWorkerThread();
@@ -24,9 +23,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor
             // End the thread
             workerThread.WaitHandle.Set();
         }
-        */
     }
-
 
     class MyWorkerThread
     {
