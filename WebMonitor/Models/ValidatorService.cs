@@ -2,36 +2,32 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Net;
-using System.Threading.Tasks;
 using Arkitektum.GIS.Lib.SerializeUtil;
-using Microsoft.WindowsAzure.Storage;
 using www.opengis.net;
 
 namespace Arkitektum.Kartverket.MetadataMonitor.Models
 {
     public class ValidatorService
     {
-        private readonly ValidationResultRepository _validationResultRepository;
+        private readonly MetadataRepository _metadataRepository;
         private readonly HttpRequestExecutor _httpRequestExecutor;
 
-        public ValidatorService(ValidationResultRepository validationResultRepository, HttpRequestExecutor httpRequestExecutor)
+        private ValidatorService(MetadataRepository metadataRepository, HttpRequestExecutor httpRequestExecutor)
         {
-            _validationResultRepository = validationResultRepository;
+            _metadataRepository = metadataRepository;
             _httpRequestExecutor = httpRequestExecutor;
         }
 
-        public ValidatorService() : this(new ValidationResultRepository(), new HttpRequestExecutor()) { }
+        public ValidatorService() : this(new MetadataRepository(), new HttpRequestExecutor()) { }
         
         public void ValidateMetadata(string uuid)
         {
             try
             {
-                var validationResult = new InspireValidator().RetrieveAndValidate(uuid);
-
-                _validationResultRepository.SaveValidationResult(validationResult);
+                MetadataEntry metadataEntry = new InspireValidator().RetrieveAndValidate(uuid);
+                _metadataRepository.SaveMetadata(metadataEntry);
             }
-            catch (WebException e)
+            catch (Exception e)
             {
                 Trace.WriteLine("Exception during validation of metadata: " + e.Message);
             }
@@ -110,12 +106,6 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         }
 
 
-        private static
-            CloudStorageAccount GetCloudStorageAccount()
-        {
-            return CloudStorageUtil.GetCloudStorageAccount();
-        }
-
         public string CreateRequestBody(int startPosition)
         {
 
@@ -136,7 +126,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         }
     }
 
-    public class MetadataEntry
+    public class MetadataEntry2
     {
         public string Title { get; set; }
         public string Uuid { get; set; }

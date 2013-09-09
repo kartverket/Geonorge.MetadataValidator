@@ -2,52 +2,146 @@
 @{
     ViewBag.Title = "Dashboard";
 }
+
+<h1>Validering av metadata fra www.geonorge.no</h1>
+
 <div class="row">
-    <h4>INSPIRE-validering av metadata fra www.geonorge.no</h4>
-    <div class="span5">
-        <canvas id="resultStatusChart" width="400" height="400"></canvas>
+    
+    
+
+
+    <div class="span2">
+        <h4>INSPIRE</h4>
+        <canvas id="inspireChart" width="200" height="200"></canvas>
+        
+        
+
     </div>
     <div class="span4">
         <div class="results results-ok">
             <div class="colorbox pull-left"></div>
-            <div class="description">OK: @Model.TotalResultOk</div>
+            <div class="description">OK: @Model.TotalInspireOk</div>
         </div>
         <div class="results results-failed">
             <div class="colorbox pull-left"></div>
-            <div class="description">FEIL: @Model.TotalResultFailed</div>
+            <div class="description">FEIL: @Model.TotalInspireFailed</div>
         </div>
-        <div class="results results-unknown">
+    </div>
+
+  
+    <div class="span2">
+    <h4>Norge Digitalt</h4>
+    <canvas id="norgeDigitaltChart" width="200" height="200"></canvas>
+        
+
+
+    </div>
+    <div class="span4">
+        <div class="results results-ok">
             <div class="colorbox pull-left"></div>
-            <div class="description">Ikke validert: @Model.TotalNotApplicableForInspire</div>
+            <div class="description">OK: @Model.TotalNdOk</div>
         </div>
-        <div class="results pull-left">
-            <p>Totalt <b>@Model.TotalResultCount</b> metadata undersøkt.</p>
-            <a href="/validator" class="btn btn-primary">Vis valideringsresultater</a>
+        <div class="results results-failed">
+            <div class="colorbox pull-left"></div>
+            <div class="description">FEIL: @Model.TotalNdFailed</div>
         </div>
     </div>
 </div>
 
+<div class="row">
+    <div class="span4">
+        <table class="table">
+            <thead>
+                <th>INSPIRE</th>
+                <th>OK</th>
+                <th>Feil</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Tjeneste</td>
+                    <td>@Model.InspireService.Ok</td>
+                    <td>@Model.InspireService.Failed</td>
+                </tr>
+                <tr>
+                    <td>Datasett</td>
+                    <td>@Model.InspireDataset.Ok</td>
+                    <td>@Model.InspireDataset.Failed</td>
+                </tr>
+                <tr>
+                    <td>Serie</td>
+                    <td>@Model.InspireSeries.Ok</td>
+                    <td>@Model.InspireSeries.Failed</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="span4 offset2">
+            <table class="table">
+        <thead>
+            <th>Norge Digitalt</th>
+            <th>OK</th>
+            <th>Feil</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Tjeneste</td>
+                <td>@Model.NdService.Ok</td>
+                <td>@Model.NdService.Failed</td>
+            </tr>
+            <tr>
+                <td>Datasett</td>
+                <td>@Model.NdDataset.Ok</td>
+                <td>@Model.NdDataset.Failed</td>
+            </tr>
+            <tr>
+                <td>Serie</td>
+                <td>@Model.NdSeries.Ok</td>
+                <td>@Model.NdSeries.Failed</td>
+            </tr>
+            <tr>
+                <td>Applikasjoner</td>
+                <td>@Model.NdSoftware.Ok</td>
+                <td>@Model.NdSoftware.Failed</td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+
+
+<p>Totalt <b>@Model.TotalResultCount</b> metadata undersøkt.</p>
+<a href="/validator" class="btn btn-primary">Vis valideringsresultater</a>
+
+
+ 
+
+
 @section scripts
 {
     <script type="text/javascript">
-        var totalOk = @(Model.TotalResultOk);
-        var totalFailed = @(Model.TotalResultFailed);
-        var totalNotApplicable = @(Model.TotalNotApplicableForInspire);
-        var resultStatusData = [
-            {
-                value: totalOk,
-                color: "#69D2E7"
-            },
-            {
-                value: totalFailed,
-                color: "#F38630"
-            },
-            {
-                value: totalNotApplicable,
-                color: "#ccc"
-            }
-        ];
-        var resultStatusCtx = $("#resultStatusChart").get(0).getContext("2d");
-        var resultStatusChart = new Chart(resultStatusCtx).Pie(resultStatusData, {});
+        /*color: "#69D2E7" blue*/
+        var createChart = function(ok, failed, canvas) {
+            console.log("Canvas=" + canvas);
+            var resultStatusData = [
+                {
+                    value: ok,
+                    color: "#32B25D"
+                },
+                {
+                    value: failed,
+                    color: "#F38630"
+                }
+            ];
+            var resultStatusCtx = $("#" + canvas).get(0).getContext("2d");
+            var resultStatusChart = new Chart(resultStatusCtx).Pie(resultStatusData, {});
+        };
+
+        $(function() {
+            createChart(@(Model.TotalInspireOk), @(Model.TotalInspireFailed), "inspireChart");
+        
+            createChart(@(Model.TotalNdOk), @(Model.TotalNdFailed), "norgeDigitaltChart");
+        });
+        
+        
     </script>
 }

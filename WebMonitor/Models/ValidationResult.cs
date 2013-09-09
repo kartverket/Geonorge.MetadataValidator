@@ -1,27 +1,15 @@
 ﻿using System;
-using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Arkitektum.Kartverket.MetadataMonitor.Models
 {
-    public class ValidationResult : TableEntity
+    public class ValidationResult
     {
-        public ValidationResult(string uuid)
-        {
-            PartitionKey = "GeoNorge";
-            RowKey = uuid;
-        }
-
-        public ValidationResult() { }
-
-        public string Title { get; set; }
-        public DateTime ValidateTimestamp { get; set; }
-        public string ErrorMessages { get; set; }
-        public int ValidateResult { get; set; }
-        public string ResourceType { get; set; }
-        public string Organization { get; set; }
-        public bool InspireExemption { get; set; }
-
-        public bool IsResourceTypeApplicableForValidation()
+        public int Result { get; set; }
+        public DateTime Timestamp { get; set; }
+        public string Messages { get; set; }
+        
+/*
+        public bool IsResourceTypeApplicableForInspireValidation()
         {
             // ReSharper disable ReplaceWithSingleAssignment.False
             bool result = false;
@@ -36,6 +24,27 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         public bool IsOk()
         {
             return ValidateResult == 1;
+        }
+
+        public bool isNotValidated()
+        {
+            return ValidateResult == -1;
+        }
+
+        public bool IsResourceType(string incomingResourceType)
+        {
+            return ResourceType != null && ResourceType.Equals(incomingResourceType);
+        }
+ * */
+
+        public bool IsOk()
+        {
+            return Result == 1;
+        }
+
+        public bool IsNotValidated()
+        {
+            return Result == -1;
         }
     }
 

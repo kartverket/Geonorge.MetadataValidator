@@ -6,7 +6,6 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
     {
         public string Organization { get; set; }
         public int? Status { get; set; }
-        public List<ValidationResultModel> ValidationResults { get; set; }
 
         public IEnumerable<string> Organizations { get; set; }
     }

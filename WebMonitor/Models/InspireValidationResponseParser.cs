@@ -13,30 +13,27 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         public static readonly XNamespace NsGeo = "http://inspire.ec.europa.eu/schemas/geoportal/1.0";
         public static readonly XNamespace NsRdsi = "http://inspire.ec.europa.eu/schemas/rdsi/1.0";
 
-        private readonly ValidationResult _validationResult;
         private readonly XDocument _inspireValidationResponse;
-        private List<string> _errors; 
 
-        public InspireValidationResponseParser(ValidationResult validationResult, XDocument inspireValidationResponse)
+        public InspireValidationResponseParser(XDocument inspireValidationResponse)
         {
-            _validationResult = validationResult;
             _inspireValidationResponse = inspireValidationResponse;
         }
 
         public ValidationResult ParseValidationResponse()
         {
-            _validationResult.ValidateTimestamp = DateTime.Now;
+            var errors = GetErrors(_inspireValidationResponse);
 
-            _errors = GetErrors(_inspireValidationResponse);
+            var validationResult = new ValidationResult();
+            validationResult.Result = ComputeValidationResult(errors);
 
-            _validationResult.ValidateResult = ComputeValidationResult();
 
-            if (!_validationResult.IsOk())
-                _validationResult.ErrorMessages = String.Join("\r\n", _errors);
+            if (!validationResult.IsOk())
+                validationResult.Messages = String.Join("\r\n", errors);
 
-            Trace.WriteLine("Validation result=" + _validationResult.ValidateResult);
+            Trace.WriteLine("Validation result=" + validationResult.Result);
 
-            return _validationResult;
+            return validationResult;
         }
 
         private List<string> GetErrors(XDocument xmlDoc)
@@ -58,26 +55,25 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             return errors;
         }
         
-        private int ComputeValidationResult()
+        private int ComputeValidationResult(List<string> errors)
         {
-            if (_validationResult.InspireExemption)
+            /*
+            if (errors.Any())
             {
-                if (_errors.Any())
+                var removeIndex = -1;
+                for (var i = 0; i < errors.Count(); i++)
                 {
-                    var removeIndex = -1;
-                    for (var i = 0; i < _errors.Count(); i++)
+                    var error = errors[i];
+                    if (error.Contains("Inspire Spatial Data Theme\" is missing"))
                     {
-                        var error = _errors[i];
-                        if (error.Contains("Inspire Spatial Data Theme\" is missing"))
-                        {
-                            removeIndex = i;
-                        }
+                        removeIndex = i;
                     }
-                    if (removeIndex != -1)
-                        _errors.RemoveAt(removeIndex);
                 }
+                if (removeIndex != -1)
+                    errors.RemoveAt(removeIndex);
             }
-            return !_errors.Any() ? 1 : 2;
+            */
+            return !errors.Any() ? 1 : 0;
         }
 
     }

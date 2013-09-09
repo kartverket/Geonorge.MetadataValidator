@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Arkitektum.Kartverket.MetadataMonitor.Models;
 
@@ -6,35 +7,55 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 {
     public class DashboardController : Controller
     {
+        private readonly MetadataRepository _metadataRepository;
 
-        private readonly ValidationResultRepository _validationResultRepository;
-
-        private DashboardController(ValidationResultRepository validationResultRepository)
+        private DashboardController(MetadataRepository metadataRepository)
         {
-            _validationResultRepository = validationResultRepository;
+            _metadataRepository = metadataRepository;
         }
 
-        public DashboardController() : this(new ValidationResultRepository()) { }
+        public DashboardController() : this(new MetadataRepository()) { }
 
         public ActionResult Index()
         {
-            var results = _validationResultRepository.GetValidationResults(null, null);
+            var results = _metadataRepository.GetMetadataListWithLatestValidationResult();
 
             var totalResultCount = results.Count();
-            var totalResultNotValidated = results.Count(n => n.ValidateResult == -1);
-            var totalResultOk = results.Count(n => n.ValidateResult == 1);
+            var totalResultNotValidated = results.Count(n => n.isNotValidated());
+            var totalResultOk = results.Count(n => n.IsOk());
             var totalResultFailed = totalResultCount - totalResultNotValidated - totalResultOk;
-            
+
+            var inspireResults = results.Where(n => n.InspireResource);
+            var norgeDigitaltResults = results.Where(n => n.InspireResource == false);
+
             var model = new DashboardViewModel
                 {
-                    TotalResultCount = totalResultCount, 
-                    TotalResultOk = totalResultOk, 
+                    TotalResultCount = totalResultCount,
+                    TotalResultOk = totalResultOk,
                     TotalResultFailed = totalResultFailed,
-                    TotalNotApplicableForInspire = totalResultNotValidated
+                    TotalNotApplicableForInspire = totalResultNotValidated,
+                    
+                    InspireService = GetResultsForResourceType(inspireResults, "service"),
+                    InspireDataset = GetResultsForResourceType(inspireResults, "dataset"),
+                    InspireSeries = GetResultsForResourceType(inspireResults, "series"),
+                    NdService = GetResultsForResourceType(norgeDigitaltResults, "service"),
+                    NdDataset = GetResultsForResourceType(norgeDigitaltResults, "dataset"),
+                    NdSeries = GetResultsForResourceType(norgeDigitaltResults, "series"),
+                    NdSoftware = GetResultsForResourceType(norgeDigitaltResults, "software"),
                 };
-
             return View(model);
         }
-
+        
+        private static Result GetResultsForResourceType(IEnumerable<MetadataEntry> results, string resourceType)
+        {
+            var allResourceResults = results.Where(n => n.ResourceType == resourceType);
+            var resourceResults = new Result()
+                {
+                    Failed = allResourceResults.Count(n => !n.IsOk()),
+                    Ok = allResourceResults.Count(n => n.IsOk()),
+                    Unknown = allResourceResults.Count(n => n.isNotValidated())
+                };
+            return resourceResults;
+        }
     }
 }

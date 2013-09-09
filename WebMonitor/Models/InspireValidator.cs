@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -21,7 +22,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         public InspireValidator() : this(new HttpRequestExecutor()) { }
 
 
-        public ValidationResult RetrieveAndValidate(string uuid)
+        public MetadataEntry RetrieveAndValidate(string uuid)
         {
             
             var getCswRecordRequest = CreateGetCswRecordRequest(uuid);
@@ -41,29 +42,33 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             var fixedResponse2 = fixWrongDecimalInRealElements.Replace(fixedResponse, "<gco:Real>$1.$2</gco:Real>");
 
 
-            ValidationResult validationResult = ParseCswRecordResponse(uuid, fixedResponse2);
-            if (validationResult.IsResourceTypeApplicableForValidation())
+            GetRecordByIdResponseType getRecordResponse = SerializeUtil.DeserializeFromString<GetRecordByIdResponseType>(fixedResponse2);
+            MD_Metadata_Type metadata = getRecordResponse.Items[0] as MD_Metadata_Type;
+            
+            MetadataEntry metadataEntry = ParseCswRecordResponse(uuid, metadata);
+            ValidationResult validationResult;
+            if (metadataEntry.InspireResource)
             {
                 string inspireValidationResponse = RunInspireValidation(fixedResponse2);
-
                 XDocument xmlDoc = XDocument.Parse(inspireValidationResponse);
-                return new InspireValidationResponseParser(validationResult, xmlDoc).ParseValidationResponse();    
-            } 
-            return validationResult;           
+                validationResult = new InspireValidationResponseParser(xmlDoc).ParseValidationResponse();
+            }
+            else
+            {
+                validationResult = new NorgeDigitaltValidator().Validate(metadata);
+            }
+            metadataEntry.ValidationResults.Add(validationResult);
+
+            return metadataEntry;
         }
 
-        private ValidationResult ParseCswRecordResponse(string uuid, string cswRecordResponse)
+        private MetadataEntry ParseCswRecordResponse(string uuid, MD_Metadata_Type metadata)
         {
-    
-            GetRecordByIdResponseType getRecordResponse = SerializeUtil.DeserializeFromString<GetRecordByIdResponseType>(cswRecordResponse);
-
             var title = "unknown";
             var resourceType = "unknown";
-            var validateOk = false;
             var organization = "unknown";
-            var inspireExcemption = false;
-
-            MD_Metadata_Type metadata = getRecordResponse.Items[0] as MD_Metadata_Type;
+            var inspireResource = true;
+            
             if (metadata != null)
             {
                 var dataIdentification = metadata.identificationInfo[0].AbstractMD_Identification;
@@ -92,12 +97,12 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                                     {
                                         if (singleKeyword.CharacterString.Equals("annet", StringComparison.InvariantCultureIgnoreCase))
                                         {
-                                            inspireExcemption = true;
+                                            inspireResource = false;
                                             break;
                                         }
                                     }
                                 }
-                                if (inspireExcemption) 
+                                if (!inspireResource) 
                                     break;
                             }
                         }
@@ -111,15 +116,14 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                 }
             }
 
-            return new ValidationResult(uuid)
+            return new MetadataEntry()
                 {
+                    Uuid = uuid,
                     Title = title, 
-                    ErrorMessages = null, 
                     ResourceType = resourceType,
-                    ValidateResult = -1,
-                    ValidateTimestamp = DateTime.Now,
-                    Organization = organization,
-                    InspireExemption = inspireExcemption
+                    ResponsibleOrganization = organization,
+                    InspireResource = inspireResource,
+                    ValidationResults = new List<ValidationResult>()
                 };
         }
 

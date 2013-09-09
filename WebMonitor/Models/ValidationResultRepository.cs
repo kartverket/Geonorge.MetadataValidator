@@ -1,22 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
+using Npgsql;
 
 namespace Arkitektum.Kartverket.MetadataMonitor.Models
 {
     public class ValidationResultRepository
     {
-        private readonly CloudStorageAccount _cloudStorageAccount;
-
-        public ValidationResultRepository()
-        {
-            _cloudStorageAccount = CloudStorageUtil.GetCloudStorageAccount();
-        }
 
         public void SaveValidationResult(ValidationResult validationResult)
         {
+            /*
             Trace.WriteLine(string.Format("Saving validation result for [uuid={0}] [result={1}] ", 
                 validationResult.RowKey, validationResult.ValidateResult));
             
@@ -29,11 +24,11 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             catch (StorageException e)
             {
                 Trace.WriteLine("Exception while saving validation result: " + e.Message);   
-            }
+            }*/
         }
 
         public IEnumerable<ValidationResult> GetValidationResults(int? status, string organization)
-        {
+        {/*
             var table = GetCloudTable();
             string baseFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "GeoNorge");
 
@@ -63,11 +58,13 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             var query = new TableQuery<ValidationResult>().Where(filter);
 
             return table.ExecuteQuery(query).ToArray(); // ToArray() forces execution of query
+          * */
+            return null;
         }
 
         public IEnumerable<string> GetAvailableOrganizations()
         {
-
+            /*
             var table = GetCloudTable();
             string baseFilter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "GeoNorge");
             
@@ -85,20 +82,8 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             var organizationsInAList = new List<string>(organizations.Keys);
             organizationsInAList.Sort();
             return organizationsInAList;
-        }
-
-
-        private CloudTable GetCloudTable()
-        {
-            CloudTableClient tableClient = GetCloudTableClient();
-            CloudTable table = tableClient.GetTableReference("validations");
-            table.CreateIfNotExists();
-            return table;
-        }
-
-        private CloudTableClient GetCloudTableClient()
-        {
-            return _cloudStorageAccount.CreateCloudTableClient();
+             * */
+            return null;
         }
     }
 }

@@ -9,25 +9,28 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 {
     public class ValidatorController : Controller
     {
-        private readonly ValidationResultRepository _validationResultRepository;
-        private ValidatorService _validatorService;
+        private readonly MetadataRepository _metadataRepository;
+        private readonly ValidatorService _validatorService;
 
-        private ValidatorController(ValidationResultRepository validationResultRepository, ValidatorService validatorService)
+        private ValidatorController(MetadataRepository metadataRepository, ValidatorService validatorService)
         {
-            _validationResultRepository = validationResultRepository;
+            _metadataRepository = metadataRepository;
             _validatorService = validatorService;
         }
 
-        public ValidatorController() : this(new ValidationResultRepository(), new ValidatorService()) { }
+        public ValidatorController() : this(new MetadataRepository(), new ValidatorService()) { }
 
         public ActionResult Index(string message, int? status, string organization)
         {
             ViewBag.Message = message;
             
-            var results = _validationResultRepository.GetValidationResults(status, organization);
+//            var results = _validationResultRepository.GetValidationResults(status, organization);
+
+            _metadataRepository.GetMetadataListWithLatestValidationResult(status, organization);
+
 
             var myTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
-
+            /*
             List<ValidationResultModel> resultModels = new List<ValidationResultModel>();
             foreach (var result in results)
             {
@@ -52,7 +55,8 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 
                 };
             ViewBag.StatusOptions = new SelectList(statusOptions, "Key", "Value", status);
-            return View(model);
+             */
+            return View(new ValidatorResultPageModel());
         }
 
         [HttpGet]
