@@ -71,6 +71,11 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             
             if (metadata != null)
             {
+                if (metadata.hierarchyLevel != null && metadata.hierarchyLevel[0] != null)
+                {
+                    resourceType = metadata.hierarchyLevel[0].MD_ScopeCode.codeListValue;
+                }
+
                 var dataIdentification = metadata.identificationInfo[0].AbstractMD_Identification;
                 if (dataIdentification != null)
                 {
@@ -110,10 +115,12 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                         
                 }
     
-                if (metadata.hierarchyLevel != null && metadata.hierarchyLevel[0] != null)
-                {
-                    resourceType = metadata.hierarchyLevel[0].MD_ScopeCode.codeListValue;
-                }
+                
+            }
+
+            if (inspireResource)
+            {
+                inspireResource = IsApplicableForInspireValidation(resourceType);
             }
 
             return new MetadataEntry()
@@ -125,6 +132,18 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                     InspireResource = inspireResource,
                     ValidationResults = new List<ValidationResult>()
                 };
+        }
+
+        private bool IsApplicableForInspireValidation(string resourceType)
+        {
+            // ReSharper disable ReplaceWithSingleAssignment.False
+            bool result = false;
+            if (resourceType != null && (resourceType == "dataset" || resourceType == "service" || resourceType == "series"))
+            {
+                result = true;
+            }
+            // ReSharper restore ReplaceWithSingleAssignment.False
+            return result;
         }
 
         private static string CreateGetCswRecordRequest(string uuid)

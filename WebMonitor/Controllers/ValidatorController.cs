@@ -20,55 +20,51 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 
         public ValidatorController() : this(new MetadataRepository(), new ValidatorService()) { }
 
-        public ActionResult Index(string message, int? status, string organization)
+        public ActionResult Index(string message, int? status, string organization, string resourceType)
         {
             ViewBag.Message = message;
             
-//            var results = _validationResultRepository.GetValidationResults(status, organization);
-
-            _metadataRepository.GetMetadataListWithLatestValidationResult(status, organization);
-
+            List<MetadataEntry> metadataEntries = _metadataRepository.GetMetadataListWithLatestValidationResult(status, organization, resourceType);
 
             var myTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
-            /*
-            List<ValidationResultModel> resultModels = new List<ValidationResultModel>();
-            foreach (var result in results)
-            {
-                resultModels.Add(new ValidationResultModel(myTimeZone, result));
-            }
-
-            resultModels.Sort();
-            resultModels.Reverse();
+            
 
             var model = new ValidatorResultPageModel()
                 {
                     Organization = organization,
                     Status = status,
-                    ValidationResults = resultModels,
+                    MetadataEntries = metadataEntries,
                 };
-            ViewBag.Organizations = new SelectList(_validationResultRepository.GetAvailableOrganizations(), organization);
+
+            ViewBag.Organizations = new SelectList(_metadataRepository.GetAvailableOrganizations(), organization);
             IDictionary<int, string> statusOptions = new Dictionary<int, string>
                 {
                     {1, "OK"},
-                    {2, "Feil"},
+                    {0, "Feil"},
                     {-1, "Ikke validert"}
 
                 };
             ViewBag.StatusOptions = new SelectList(statusOptions, "Key", "Value", status);
-             */
-            return View(new ValidatorResultPageModel());
+
+            List<string> resourceTypes = new List<string>()
+                {
+                    "service", "dataset", "series", "software"
+                };
+            ViewBag.ResourceTypes = new SelectList(resourceTypes, resourceType);
+
+            return View(model);
         }
 
         [HttpGet]
         [Authorize]
-        public ActionResult RunValidate(string uuid)
+        public ActionResult RunValidate(string uuid, string organization, int? status)
         {
             if (string.IsNullOrEmpty(uuid))
                 uuid = "9d118d31-182c-495b-b7be-d819cc7444b1";
 
             _validatorService.ValidateMetadata(uuid);
             
-            return RedirectToAction("Index", new {message = "Validering gjennomført!"});
+            return RedirectToAction("Index", new {message = "Validering gjennomført!", organization = organization, status = status});
         }
 
         [HttpGet]

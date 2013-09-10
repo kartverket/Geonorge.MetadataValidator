@@ -126,14 +126,4 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         }
     }
 
-    public class MetadataEntry2
-    {
-        public string Title { get; set; }
-        public string Uuid { get; set; }
-
-        public override string ToString()
-        {
-            return "MetadataEntry[Title=" + Title + ", Uuid=" + Uuid + "]";
-        }
-    }
 }

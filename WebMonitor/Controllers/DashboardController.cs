@@ -18,7 +18,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 
         public ActionResult Index()
         {
-            var results = _metadataRepository.GetMetadataListWithLatestValidationResult();
+            var results = _metadataRepository.GetMetadataListWithLatestValidationResult(null, null, null);
 
             var totalResultCount = results.Count();
             var totalResultNotValidated = results.Count(n => n.isNotValidated());

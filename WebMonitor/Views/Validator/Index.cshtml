@@ -13,44 +13,49 @@
 }
 
 <form class="form-inline" method="GET" action="/Validator/">
-    Organisasjon: @Html.DropDownList("organization", (SelectList) ViewBag.Organizations, "", new { style="width: 300px;"})
+    <label for="organization">Organisasjon: 
+        @Html.DropDownList("organization", (SelectList) ViewBag.Organizations, "", new { style="width: 300px;"})
+    </label>
     <label for="status">Status:
         @Html.DropDownList("status", (SelectList) ViewBag.StatusOptions, "", new { style="width:110px"})
     </label>
-    
+    <label for="resourceType">Ressurstype:
+        @Html.DropDownList("resourceType", (SelectList) ViewBag.ResourceTypes, "", new { style="width:110px"})
+    </label>
     <input type="submit" value="Søk" class="btn "/>
 </form>
 
-@if (false)
-{/*
+@if (Model.MetadataEntries.Any())
+{
     <div>
-        <p class="">@Model.ValidationResults.Count resultater</p>
+        <p class="">@Model.MetadataEntries.Count resultater</p>
     </div>
     <table class="table sortable" style="table-layout: fixed">
         <thead>
             <tr>
-                <th style="width: 20%">Tittel</th>
-                <th style="width: 20%">Organisasjon</th>
+                <th style="width: 25%">Tittel</th>
+                <th style="width: 15%">Organisasjon</th>
                 <th style="width: 5%">XML</th>
                 <th style="width: 10%">Ressurstype</th>
                 <th style="width: 10%">Type</th>
-                <th style="width: 5%">Status</th>
-                <th style="width: 30%">Feilmeldinger</th>
+                <th style="width: 10%">Status</th>
+                <th style="width: 25%">Feilmeldinger</th>
             </tr>
         </thead>
         <tbody>
-        @foreach (var result in Model.ValidationResults)
+        @foreach (var result in Model.MetadataEntries)
         {
             var linkText = result.Title;
             if (linkText == null) { linkText = result.Uuid; }
             
             var statusClass = "";
             var statusText = "Ikke validert";
-            if (result.ValidateResult == 1)
+            
+            if (result.IsOk())
             {
                 statusClass = "label-success";
                 statusText = "OK";    
-            } else if (result.ValidateResult == 2)
+            } else if (result.IsFailed())
             {
                 statusClass = "label-important";
                 statusText = "FEIL";    
@@ -60,32 +65,43 @@
                 <td>
                     <p>
                         <a href="http://www.geonorge.no/geonetwork/?uuid=@result.Uuid" target="_blank">@linkText</a><br/>
-                        <span class="text-small">@result.Uuid</span>
+                        <div class="text-small">@result.Uuid</div>
+                        
                     </p>
-                    
                 </td>
                 <td>
-                    <p>@result.Organization</p>
+                    <p>@result.ResponsibleOrganization</p>
                 </td>
                 <td class="content-align-center">
                     <a href="http://www.geonorge.no/geonetwork/srv/eng/xml_iso19139?uuid=@result.Uuid" target="_blank">
                         <i class="icon-file"></i>
                     </a>
                 </td>
-                <td>@result.ResourceType</td>
-                <td></td>
+                <td>
+                    <div>@result.ResourceType</div>
+                </td>
+                <td>
+                    @if (result.InspireResource)
+                        {
+                            <text>INSPIRE</text>
+                        }
+                        else
+                        {
+                            <text>Norge Digitalt</text>
+                        }
+                </td>
                 <td><span class="label @statusClass">@statusText</span>
-                    <p class="text-small">@result.ValidateTimestamp.ToString("dd'.'MM'.'yyyy HH':'mm':'ss")</p>
+                    <p class="text-small">@result.ValidationResults[0].Timestamp.ToString("dd'.'MM'.'yyyy HH':'mm':'ss")</p>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <p><a href="@Url.Action("RunValidate", new { uuid = @result.Uuid})" class="btn btn-mini"><i class="icon-play"></i> Validering</a></p>    
+                        <p><a href="@Url.Action("RunValidate", new { uuid = @result.Uuid, status=@Model.Status, organization=@Model.Organization, resourceType=@Model.ResourceType})" class="btn btn-mini"><i class="icon-play"></i> Validering</a></p>    
                     }
                 </td>
                 <td>
-                    @if (result.ErrorMessages != null)
+                    @if (result.ValidationResults[0].Messages != null)
                     {
                         <ul>
-                            @foreach (var error in result.ErrorMessages)
+                            @foreach (var error in result.ValidationResults[0].Messages.Split('\n'))
                             {
                                 <li>@error</li>
                             }
@@ -96,7 +112,7 @@
         }
         </tbody>
     </table>
-*/}
+}
 else
 {
     <p>Ingen resultater.</p>

@@ -11,18 +11,6 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         public bool InspireResource { get; set; }
         public List<ValidationResult> ValidationResults { get; set; }
 
-        public bool IsApplicableForInspireValidation()
-        {
-            // ReSharper disable ReplaceWithSingleAssignment.False
-            bool result = false;
-            if (ResourceType != null && (ResourceType == "dataset" || ResourceType == "service" || ResourceType == "series"))
-            {
-                result = true;
-            }
-            // ReSharper restore ReplaceWithSingleAssignment.False
-            return result;
-        }
-
         public bool IsOk()
         {
             bool result = false;
@@ -47,5 +35,16 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             return result;
         }
 
+        public bool IsFailed()
+        {
+            bool result = false;
+
+            if (ValidationResults != null && ValidationResults[0] != null)
+            {
+                var validationResult = ValidationResults[0];
+                result = validationResult.IsFailed();
+            }
+            return result;
+        }
     }
 }
