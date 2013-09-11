@@ -5,8 +5,7 @@
         public int TotalResultCount { get; set; }
         public int TotalResultOk { get; set; }
         public int TotalResultFailed { get; set; }
-        
-        public int TotalNotApplicableForInspire { get; set; }
+        public int TotalNotValidated { get; set; }
 
         /* INSPIRE */
         public Result InspireService { get; set; }

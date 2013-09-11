@@ -1,6 +1,7 @@
-﻿@model Arkitektum.Kartverket.MetadataMonitor.Models.ValidatorResultPageModel
+﻿@model Arkitektum.Kartverket.MetadataMonitor.Models.ValidatorResultViewModel
 @{
-    ViewBag.Title = "INSPIRE Valideringsresultater";
+    ViewBag.Title = "Valideringsresultater";
+    ViewBag.Description = "Valideringsresultater for metadata fra www.geonorge.no";
 }
 
 @if (ViewBag.Message != null)
@@ -12,24 +13,25 @@
 </div>
 }
 
-<form class="form-inline" method="GET" action="/Validator/">
-    <label for="organization">Organisasjon: 
-        @Html.DropDownList("organization", (SelectList) ViewBag.Organizations, "", new { style="width: 300px;"})
-    </label>
-    <label for="status">Status:
-        @Html.DropDownList("status", (SelectList) ViewBag.StatusOptions, "", new { style="width:110px"})
-    </label>
-    <label for="resourceType">Ressurstype:
-        @Html.DropDownList("resourceType", (SelectList) ViewBag.ResourceTypes, "", new { style="width:110px"})
-    </label>
-    <input type="submit" value="Søk" class="btn "/>
-</form>
+@section PageHeader
+{
+    <form class="form-inline" method="GET" action="@Url.Action("Index")">
+        <label for="organization">Organisasjon: 
+            @Html.DropDownList("organization", (SelectList) ViewBag.Organizations, "", new {style = "width: 300px;"})
+        </label>
+        <label for="status">Status:
+            @Html.DropDownList("status", (SelectList) ViewBag.StatusOptions, "", new {style = "width:110px"})
+        </label>
+        <label for="resource">Ressurstype:
+            @Html.DropDownList("resource", (SelectList) ViewBag.ResourceTypes, "", new {style = "width:110px"})
+        </label>
+        <input type="submit" value="Søk" class="btn btn-primary"/>
+    </form>
+     <p class="">@Model.MetadataEntries.Count resultater</p>
+}
 
 @if (Model.MetadataEntries.Any())
 {
-    <div>
-        <p class="">@Model.MetadataEntries.Count resultater</p>
-    </div>
     <table class="table sortable" style="table-layout: fixed">
         <thead>
             <tr>
@@ -94,7 +96,7 @@
                     <p class="text-small">@result.ValidationResults[0].Timestamp.ToString("dd'.'MM'.'yyyy HH':'mm':'ss")</p>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <p><a href="@Url.Action("RunValidate", new { uuid = @result.Uuid, status=@Model.Status, organization=@Model.Organization, resourceType=@Model.ResourceType})" class="btn btn-mini"><i class="icon-play"></i> Validering</a></p>    
+                        <p><a href="@Url.Action("RunValidate", new { uuid = @result.Uuid, status=@Model.Status, organization=@Model.Organization, resource=@Model.ResourceType})" class="btn btn-mini"><i class="icon-play"></i> Validering</a></p>    
                     }
                 </td>
                 <td>

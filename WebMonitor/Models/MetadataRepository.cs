@@ -286,7 +286,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
 
         public IEnumerable<string> GetAvailableOrganizations()
         {
-            const string sql = "SELECT DISTINCT responsible_organization FROM metadata";
+            const string sql = "SELECT DISTINCT responsible_organization FROM metadata ORDER BY responsible_organization ASC";
 
             List<string> organizations = new List<string>();
 

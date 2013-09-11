@@ -23,8 +23,8 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
             if (ModelState.IsValid)
             {
                
-                    string username = model.username;
-                    string password = model.password;
+                    string username = model.Username;
+                    string password = model.Password;
 
                     // Now if our password was enctypted or hashed we would have done the
                     // same operation on the user entered password here, But for now

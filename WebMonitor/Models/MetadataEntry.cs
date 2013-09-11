@@ -46,5 +46,15 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             }
             return result;
         }
+
+        public bool HasResourceType(string inputResourceType)
+        {
+            bool result = false;
+            if (!string.IsNullOrWhiteSpace(ResourceType) && !string.IsNullOrWhiteSpace(inputResourceType))
+            {
+                result = ResourceType == inputResourceType;
+            }
+            return result;
+        }
     }
 }

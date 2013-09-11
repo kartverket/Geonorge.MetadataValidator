@@ -2,7 +2,7 @@
 
 namespace Arkitektum.Kartverket.MetadataMonitor.Models
 {
-    public class ValidatorResultPageModel
+    public class ValidatorResultViewModel
     {
         public string Organization { get; set; }
         public int? Status { get; set; }

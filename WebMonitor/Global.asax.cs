@@ -1,9 +1,7 @@
-﻿using System.Data.Entity;
-using System.Web.Http;
+﻿using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using Arkitektum.Kartverket.MetadataMonitor.Models;
 
 namespace Arkitektum.Kartverket.MetadataMonitor
 {
@@ -17,8 +15,6 @@ namespace Arkitektum.Kartverket.MetadataMonitor
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-
-            Database.SetInitializer<MonitorDatabaseContext>(null); // npgsql does not support schema creation
         }
 
     }

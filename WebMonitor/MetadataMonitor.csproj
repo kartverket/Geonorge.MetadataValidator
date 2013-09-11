@@ -169,20 +169,17 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Auth\User.cs" />
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\DashboardViewModel.cs" />
     <Compile Include="Models\MetadataRepository.cs" />
-    <Compile Include="Models\MonitorDatabaseContext.cs" />
     <Compile Include="Models\HttpRequestExecutor.cs" />
     <Compile Include="Models\InspireValidationResponseParser.cs" />
     <Compile Include="Models\InspireValidator.cs" />
     <Compile Include="Models\MetadataEntry.cs" />
     <Compile Include="Models\NorgeDigitaltValidator.cs" />
     <Compile Include="Models\ValidationResult.cs" />
-    <Compile Include="Models\ValidationResultRepository.cs" />
-    <Compile Include="Models\ValidatorResultPageModel.cs" />
+    <Compile Include="Models\ValidatorResultViewModel.cs" />
     <Compile Include="Models\ValidatorService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -44,7 +44,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
 
             GetRecordByIdResponseType getRecordResponse = SerializeUtil.DeserializeFromString<GetRecordByIdResponseType>(fixedResponse2);
             MD_Metadata_Type metadata = getRecordResponse.Items[0] as MD_Metadata_Type;
-            
+
             MetadataEntry metadataEntry = ParseCswRecordResponse(uuid, metadata);
             ValidationResult validationResult;
             if (metadataEntry.InspireResource)
@@ -55,7 +55,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             }
             else
             {
-                validationResult = new NorgeDigitaltValidator().Validate(metadata);
+                validationResult = new NorgeDigitaltValidator().Validate(metadataEntry, metadata);
             }
             metadataEntry.ValidationResults.Add(validationResult);
 
@@ -87,7 +87,11 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                         && dataIdentification.pointOfContact[0].CI_ResponsibleParty.organisationName != null
                         && dataIdentification.pointOfContact[0].CI_ResponsibleParty.organisationName.CharacterString != null)
                     {
-                        organization = dataIdentification.pointOfContact[0].CI_ResponsibleParty.organisationName.CharacterString;
+                        var tmpOrganization = dataIdentification.pointOfContact[0].CI_ResponsibleParty.organisationName.CharacterString;
+                        if (!string.IsNullOrWhiteSpace(tmpOrganization))
+                        {
+                            organization = tmpOrganization;
+                        }
                     }
 
                     if (dataIdentification.descriptiveKeywords != null)

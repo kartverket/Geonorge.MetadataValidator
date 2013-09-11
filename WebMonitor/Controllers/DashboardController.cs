@@ -33,7 +33,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
                     TotalResultCount = totalResultCount,
                     TotalResultOk = totalResultOk,
                     TotalResultFailed = totalResultFailed,
-                    TotalNotApplicableForInspire = totalResultNotValidated,
+                    TotalNotValidated = totalResultNotValidated,
                     
                     InspireService = GetResultsForResourceType(inspireResults, "service"),
                     InspireDataset = GetResultsForResourceType(inspireResults, "dataset"),

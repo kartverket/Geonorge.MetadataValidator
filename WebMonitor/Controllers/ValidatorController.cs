@@ -20,19 +20,20 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 
         public ValidatorController() : this(new MetadataRepository(), new ValidatorService()) { }
 
-        public ActionResult Index(string message, int? status, string organization, string resourceType)
+        public ActionResult Index(string message, int? status, string organization, string resource)
         {
             ViewBag.Message = message;
             
-            List<MetadataEntry> metadataEntries = _metadataRepository.GetMetadataListWithLatestValidationResult(status, organization, resourceType);
+            List<MetadataEntry> metadataEntries = _metadataRepository.GetMetadataListWithLatestValidationResult(status, organization, resource);
 
             var myTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             
 
-            var model = new ValidatorResultPageModel()
+            var model = new ValidatorResultViewModel()
                 {
                     Organization = organization,
                     Status = status,
+                    ResourceType = resource,
                     MetadataEntries = metadataEntries,
                 };
 
@@ -48,23 +49,23 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 
             List<string> resourceTypes = new List<string>()
                 {
-                    "service", "dataset", "series", "software"
+                    "service", "dataset", "series", "software", "unknown"
                 };
-            ViewBag.ResourceTypes = new SelectList(resourceTypes, resourceType);
+            ViewBag.ResourceTypes = new SelectList(resourceTypes, resource);
 
             return View(model);
         }
 
         [HttpGet]
         [Authorize]
-        public ActionResult RunValidate(string uuid, string organization, int? status)
+        public ActionResult RunValidate(string uuid, string organization, string resource, int? status)
         {
             if (string.IsNullOrEmpty(uuid))
                 uuid = "9d118d31-182c-495b-b7be-d819cc7444b1";
 
             _validatorService.ValidateMetadata(uuid);
             
-            return RedirectToAction("Index", new {message = "Validering gjennomført!", organization = organization, status = status});
+            return RedirectToAction("Index", new {message = "Validering gjennomført!", organization = organization, status = status, resource = resource});
         }
 
         [HttpGet]

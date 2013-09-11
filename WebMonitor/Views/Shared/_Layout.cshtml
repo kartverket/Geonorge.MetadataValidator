@@ -2,10 +2,10 @@
 <html lang="no">
     <head>
         <meta charset="utf-8">
-        <title>@ViewBag.Title - geoNorge Metadata Monitor</title>
+        <title>@ViewBag.Title - GeoNorge Metadata Monitor</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="">
-        <meta name="author" content="">
+        <meta name="description" content="@ViewBag.Description">
+        <meta name="author" content="Arkitektum AS for Kartverket">
 
         @Styles.Render("~/Content/css")
         @Styles.Render("~/Content/bootstrap/css/bundle")
@@ -18,75 +18,32 @@
         <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
-
-        <style type="text/css">
-            body { background-color: #fff; }
-            .navbar-inner { border-radius: 0; }
-            .site-logo { float: right;}
-            .site-logo img { float: left; }
-
-            .results { margin: 50px; }
-            .results .colorbox {
-                width: 40px;
-                height: 40px;
-                border-radius: 10px;
-                margin-right: 10px;
-            }
-            .results .description {
-                font-size: 2em;
-                padding-top: 10px;
-                padding-left: 10px;
-            }
-
-            .results-ok .colorbox { background-color: #32B25D; }
-            .results-ok .description { color: #32B25D; }
-            .results-failed .colorbox { background-color: #F38630; }
-            .results-failed .description { color: #F38630; }
-            .results-unknown .colorbox { background-color: #CCC; }
-            .results-unknown .description { color: #CCC; }
-            .table td.content-align-center { text-align: center; }
-            .text-small { font-size: 0.7em; }
-            
-            thead {
-                background-color: #fafafa;
-                background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
-                background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
-                background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
-                background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
-                background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
-                background-repeat: repeat-x;
-                border: 1px solid #d4d4d4;
-                -webkit-border-radius: 4px;
-                -moz-border-radius: 4px;
-                border-radius: 4px;
-                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff2f2f2', GradientType=0);
-                -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
-                -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
-                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
-            }
-            .table thead:first-child tr:first-child th { border-top: 1px solid #d4d4d4; }
-            tbody tr:nth-child(even) {background: #eee}
-            tbody tr:nth-child(odd) {background: #FFF}
-
-           table.sortable thead{cursor:pointer}
-
-        </style>
     </head>
     <body>
         <div class="navbar">
             <div class="navbar-inner">
-                <a class="brand" href="/">geoNorge Metadata Monitor - @ViewBag.Title</a>
-
+                <a class="brand" href="@Url.Action("Index", "Dashboard")">
+                GeoNorge Metadata Monitor 
+                    @if (!string.IsNullOrWhiteSpace(ViewBag.Title))
+                    {
+                        <text> - @ViewBag.Title</text>
+                    }
+                </a>
                 @RenderSection("navbar", required: false)
-                
             </div>
         </div>
-
         <div class="container">
-            <div class="site-logo">
-                <a href="http://www.norgedigitalt.no" target="_blank"><img src="~/Content/ND_logo_76x75.gif" width="76" height="75" alt="Norge Digitalt logo"/></a>
-                <a href="http://www.kartverket.no" target="_blank"><img src="~/Content/logo-kartverket-100x75.png" width="100" height="75" alt="Kartverket logo"/></a>
-            </div>
+            <header class="clearfix">
+                <div class="pull-right">
+                    <a href="http://www.norgedigitalt.no" target="_blank"><img src="~/Content/ND_logo_76x75.gif" width="76" height="75" alt="Norge Digitalt logo"/></a>
+                    <a href="http://www.kartverket.no" target="_blank"><img src="~/Content/logo-kartverket-100x75.png" width="100" height="75" alt="Kartverket logo"/></a>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(ViewBag.PageHeader))
+                {
+                    <h1>@ViewBag.PageHeader</h1>
+                }
+                @RenderSection("PageHeader", required: false)
+            </header>
             @RenderBody()
             <hr>
             <footer>
