@@ -22,10 +22,14 @@
         <label for="status">Status:
             @Html.DropDownList("status", (SelectList) ViewBag.StatusOptions, "", new {style = "width:110px"})
         </label>
+        <br/>
         <label for="resource">Ressurstype:
             @Html.DropDownList("resource", (SelectList) ViewBag.ResourceTypes, "", new {style = "width:110px"})
         </label>
-        <input type="submit" value="Søk" class="btn btn-primary"/>
+        <label for="inspire">Tilhørighet:
+            @Html.DropDownList("inspire", (SelectList) ViewBag.InspireOptions, "", new {style = "width:150px"})
+        </label>
+        <input type="submit" value="Filtrer resultater" class="btn btn-primary"/>
     </form>
      <p class="">@Model.MetadataEntries.Count resultater</p>
 }
@@ -96,7 +100,18 @@
                     <p class="text-small">@result.ValidationResults[0].Timestamp.ToString("dd'.'MM'.'yyyy HH':'mm':'ss")</p>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <p><a href="@Url.Action("RunValidate", new { uuid = @result.Uuid, status=@Model.Status, organization=@Model.Organization, resource=@Model.ResourceType})" class="btn btn-mini"><i class="icon-play"></i> Validering</a></p>    
+                        <p>
+                            <a href="@Url.Action("RunValidate", new
+                                               {
+                                                   uuid = @result.Uuid, 
+                                                   status=@Model.Status, 
+                                                   organization=@Model.Organization, 
+                                                   resource=@Model.ResourceType,
+                                                   inspire = @Model.Inspire
+                                               })" class="btn btn-mini">
+                                      <i class="icon-play"></i> Validering
+                                  </a>
+                        </p>
                     }
                 </td>
                 <td>

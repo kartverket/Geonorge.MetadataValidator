@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Text;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -21,7 +22,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             return new NpgsqlConnection(_connectionString);
         }
 
-        public List<MetadataEntry> GetMetadataListWithLatestValidationResult(int? status, string organization, string resourceType)
+        public List<MetadataEntry> GetMetadataListWithLatestValidationResult(int? status, string organization, string resourceType, bool? inspireResource)
         {
             var metadataEntries = new List<MetadataEntry>();
 
@@ -29,14 +30,18 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             connection.Open();
             try
             {
-                var sql = SelectWhichSqlToUse(status, organization, resourceType);
-
+                var sql = SelectWhichSqlToUse(status, organization, resourceType, inspireResource);
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
-                    command.Parameters.Add(new NpgsqlParameter("status", NpgsqlDbType.Integer) {Value = status});
-                    command.Parameters.Add(new NpgsqlParameter("responsible_organization", NpgsqlDbType.Varchar) { Value = organization });
-                    command.Parameters.Add(new NpgsqlParameter("resourcetype", NpgsqlDbType.Varchar) { Value = resourceType });
+                    if (status.HasValue)
+                        command.Parameters.Add(new NpgsqlParameter("status", NpgsqlDbType.Integer) {Value = status});
+                    if (!string.IsNullOrWhiteSpace(organization))
+                        command.Parameters.Add(new NpgsqlParameter("responsible_organization", NpgsqlDbType.Varchar) { Value = organization });
+                    if (!string.IsNullOrWhiteSpace(resourceType))
+                        command.Parameters.Add(new NpgsqlParameter("resourcetype", NpgsqlDbType.Varchar) { Value = resourceType });
+                    if (inspireResource.HasValue)
+                        command.Parameters.Add(new NpgsqlParameter("inspire_resource", NpgsqlDbType.Boolean) { Value = inspireResource });
 
                     using (NpgsqlDataReader dr = command.ExecuteReader())
                     {
@@ -71,9 +76,9 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             return metadataEntries;
         }
 
-        private string SelectWhichSqlToUse(int? status, string organization, string resourceType)
+        private string SelectWhichSqlToUse(int? status, string organization, string resourceType, bool? inspireResource)
         {
-            const string sqlBase = "SELECT m.uuid, m.title, m.responsible_organization, m.resourcetype, m.inspire_resource, " +
+            string sql = "SELECT m.uuid, m.title, m.responsible_organization, m.resourcetype, m.inspire_resource, " +
                 "subQuery.result, subQuery.messages, subQuery.timestamp FROM metadata m " +
                 "INNER JOIN " +
                     "(SELECT res.uuid, res.result, res.messages, res.timestamp " +
@@ -87,98 +92,45 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                 "ON subQuery.uuid = m.uuid " +
                 " __META_CONDITIONS__ " +
                 "ORDER BY subQuery.timestamp desc";
-            /*
+            
+            sql = sql.Replace("__RESULT_CONDITIONS__", CreateResultConditionsSql(status));
 
-            const string sqlNoConditions = "SELECT m.uuid, m.title, m.responsible_organization, m.resourcetype, m.inspire_resource, " + 
-                "subQuery.result, subQuery.messages, subQuery.timestamp FROM metadata m " +
-                "INNER JOIN " +
-                    "(SELECT res.uuid, res.result, res.messages, res.timestamp " +
-                    "FROM validation_results res " +
-                    "WHERE (res.uuid, res.timestamp) IN " +
-                        "(SELECT v.uuid, MAX(timestamp) as timestamp " +
-                        "FROM validation_results v " +
-                        "GROUP BY v.uuid) " +
-                    ") AS subQuery " +
-                "ON subQuery.uuid = m.uuid " +
-                "ORDER BY subQuery.timestamp desc";
+            sql = sql.Replace("__META_CONDITIONS__", CreateMetaConditionsSql(organization, resourceType, inspireResource));
 
+            return sql;
+        }
 
-            const string sqlWithStatus = "SELECT m.uuid, m.title, m.responsible_organization, m.resourcetype, m.inspire_resource, " + 
-                "subQuery.result, subQuery.messages, subQuery.timestamp FROM metadata m " +
-                "INNER JOIN " +
-                    "(SELECT res.uuid, res.result, res.messages, res.timestamp " +
-                    "FROM validation_results res " +
-                    "WHERE (res.uuid, res.timestamp) IN " +
-                        "(SELECT v.uuid, MAX(timestamp) as timestamp " +
-                        "FROM validation_results v " +
-                        "GROUP BY v.uuid) " +
-                    "AND res.result = :status "+ 
-                    ") AS subQuery " +
-                "ON subQuery.uuid = m.uuid " +
-                "ORDER BY subQuery.timestamp desc";
+        private static string CreateResultConditionsSql(int? status)
+        {
+            var sqlResultConditions = "";
 
-            const string sqlWithOrganization = "SELECT m.uuid, m.title, m.responsible_organization, m.resourcetype, m.inspire_resource, " +
-                "subQuery.result, subQuery.messages, subQuery.timestamp FROM metadata m " +
-                "INNER JOIN " +
-                    "(SELECT res.uuid, res.result, res.messages, res.timestamp " +
-                    "FROM validation_results res " +
-                    "WHERE (res.uuid, res.timestamp) IN " +
-                        "(SELECT v.uuid, MAX(timestamp) as timestamp " +
-                        "FROM validation_results v " +
-                        "GROUP BY v.uuid) " +
-                    ") AS subQuery " +
-                "ON subQuery.uuid = m.uuid " +
-                "WHERE m.responsible_organization like :responsible_organization "+
-                "ORDER BY subQuery.timestamp desc";
-
-            const string sqlWithStatusAndOrganization = "SELECT m.uuid, m.title, m.responsible_organization, m.resourcetype, m.inspire_resource, " +
-                "subQuery.result, subQuery.messages, subQuery.timestamp FROM metadata m " +
-                "INNER JOIN " +
-                    "(SELECT res.uuid, res.result, res.messages, res.timestamp " +
-                    "FROM validation_results res " +
-                    "WHERE (res.uuid, res.timestamp) IN " +
-                        "(SELECT v.uuid, MAX(timestamp) as timestamp " +
-                        "FROM validation_results v " +
-                        "GROUP BY v.uuid) " +
-                    "AND res.result = :status " + 
-                    ") AS subQuery " +
-                "ON subQuery.uuid = m.uuid " +
-                "WHERE m.responsible_organization like :responsible_organization " +
-                "ORDER BY subQuery.timestamp desc";
-            */
-            var sql = sqlBase;
             if (status.HasValue)
             {
-                sql = sql.Replace("__RESULT_CONDITIONS__", "AND res.result = :status");
+                sqlResultConditions = "AND res.result = :status";
             }
-            else
-            {
-                sql = sql.Replace("__RESULT_CONDITIONS__", "");
-            }
-            
+            return sqlResultConditions;
+        }
+
+        private static string CreateMetaConditionsSql(string organization, string resourceType, bool? inspireResource)
+        {
+            List<string> metaConditions = new List<string>();
             if (!string.IsNullOrWhiteSpace(organization))
+                metaConditions.Add(" m.responsible_organization LIKE :responsible_organization ");
+
+            if (!string.IsNullOrWhiteSpace(resourceType))
+                metaConditions.Add(" m.resourcetype = :resourcetype ");
+
+            if (inspireResource.HasValue)
+                metaConditions.Add(" m.inspire_resource = :inspire_resource ");
+
+            StringBuilder metaConditionsSql = new StringBuilder();
+            for (int i = 0; i < metaConditions.Count; i++)
             {
-                if (!string.IsNullOrWhiteSpace(resourceType))
-                {
-                    sql = sql.Replace("__META_CONDITIONS__",
-                                      "WHERE m.responsible_organization like :responsible_organization " +
-                                      "AND m.resourcetype = :resourcetype");
-                }
-                else
-                {
-                    sql = sql.Replace("__META_CONDITIONS__",
-                                      "WHERE m.responsible_organization like :responsible_organization ");
-                }
-            } 
-            else if (!string.IsNullOrWhiteSpace(resourceType))
-            {
-                sql = sql.Replace("__META_CONDITIONS__", "WHERE m.resourcetype = :resourcetype");
+                metaConditionsSql.Append(i == 0 ? " WHERE " : " AND ");
+                metaConditionsSql.Append(metaConditions[i]);
             }
-            else
-            {
-                sql = sql.Replace("__META_CONDITIONS__", "");
-            }
-            return sql;
+
+            return metaConditionsSql.ToString();
         }
 
         public void SaveMetadata(MetadataEntry metadata)

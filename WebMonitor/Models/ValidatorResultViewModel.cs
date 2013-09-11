@@ -9,5 +9,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         public string ResourceType { get; set; }
 
         public List<MetadataEntry> MetadataEntries { get; set; }
+
+        public bool? Inspire { get; set; }
     }
 }

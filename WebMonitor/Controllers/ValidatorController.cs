@@ -20,11 +20,11 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 
         public ValidatorController() : this(new MetadataRepository(), new ValidatorService()) { }
 
-        public ActionResult Index(string message, int? status, string organization, string resource)
+        public ActionResult Index(string message, int? status, string organization, string resource, bool? inspire)
         {
             ViewBag.Message = message;
             
-            List<MetadataEntry> metadataEntries = _metadataRepository.GetMetadataListWithLatestValidationResult(status, organization, resource);
+            List<MetadataEntry> metadataEntries = _metadataRepository.GetMetadataListWithLatestValidationResult(status, organization, resource, inspire);
 
             var myTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             
@@ -34,6 +34,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
                     Organization = organization,
                     Status = status,
                     ResourceType = resource,
+                    Inspire = inspire,
                     MetadataEntries = metadataEntries,
                 };
 
@@ -43,7 +44,6 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
                     {1, "OK"},
                     {0, "Feil"},
                     {-1, "Ikke validert"}
-
                 };
             ViewBag.StatusOptions = new SelectList(statusOptions, "Key", "Value", status);
 
@@ -53,19 +53,33 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
                 };
             ViewBag.ResourceTypes = new SelectList(resourceTypes, resource);
 
+            IDictionary<bool, string> inspireOptions = new Dictionary<bool, string>
+                {
+                    {true, "Inspire"},
+                    {false, "Norge Digitalt"}
+                };
+            ViewBag.InspireOptions = new SelectList(inspireOptions, "Key", "Value", inspire);
+
             return View(model);
         }
 
         [HttpGet]
         [Authorize]
-        public ActionResult RunValidate(string uuid, string organization, string resource, int? status)
+        public ActionResult RunValidate(string uuid, string organization, string resource, int? status, bool? inspire)
         {
             if (string.IsNullOrEmpty(uuid))
                 uuid = "9d118d31-182c-495b-b7be-d819cc7444b1";
 
             _validatorService.ValidateMetadata(uuid);
             
-            return RedirectToAction("Index", new {message = "Validering gjennomført!", organization = organization, status = status, resource = resource});
+            return RedirectToAction("Index", new
+                {
+                    message = "Validering gjennomført!", 
+                    organization = organization, 
+                    status = status, 
+                    resource = resource,
+                    inspire = inspire
+                });
         }
 
         [HttpGet]
