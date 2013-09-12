@@ -83,7 +83,6 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public ActionResult ValidateAll()
         {
            new Thread(() => {
