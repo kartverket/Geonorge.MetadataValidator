@@ -4,7 +4,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
 {
     public class NorgeDigitaltValidator
     {
-        public ValidationResult Validate(MetadataEntry metadataEntry, MD_Metadata_Type metadata)
+        public ValidationResult Validate(MetadataEntry metadataEntry, MD_Metadata_Type metadata, string rawXmlProcessed)
         {
             ValidationResult validationResult = new ValidationResult();
             
@@ -14,8 +14,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             }
             else
             {
-                validationResult.Result = -1;
-                validationResult.Messages = "Unknown metadata record.";
+                validationResult = new InspireValidator().Validate(rawXmlProcessed);
             }
 
             return validationResult;

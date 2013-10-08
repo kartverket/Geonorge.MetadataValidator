@@ -24,7 +24,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         {
             try
             {
-                MetadataEntry metadataEntry = new InspireValidator().RetrieveAndValidate(uuid);
+                MetadataEntry metadataEntry = new MetadataValidator().RetrieveAndValidate(uuid);
                 _metadataRepository.SaveMetadata(metadataEntry);
             }
             catch (Exception e)
