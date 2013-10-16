@@ -14,7 +14,10 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             }
             else
             {
-                validationResult = new InspireValidator().Validate(rawXmlProcessed);
+
+                bool allowSpatialDataThemeError = true;
+                validationResult = new InspireValidator().Validate(rawXmlProcessed, allowSpatialDataThemeError);
+                
             }
 
             return validationResult;

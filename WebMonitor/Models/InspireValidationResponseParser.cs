@@ -20,12 +20,12 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             _inspireValidationResponse = inspireValidationResponse;
         }
 
-        public ValidationResult ParseValidationResponse()
+        public ValidationResult ParseValidationResponse(bool allowSpatialDataThemeError)
         {
             var errors = GetErrors(_inspireValidationResponse);
 
             var validationResult = new ValidationResult();
-            validationResult.Result = ComputeValidationResult(errors);
+            validationResult.Result = ComputeValidationResult(errors, allowSpatialDataThemeError);
 
 
             if (!validationResult.IsOk())
@@ -55,10 +55,9 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             return errors;
         }
         
-        private int ComputeValidationResult(List<string> errors)
+        private int ComputeValidationResult(List<string> errors, bool allowSpatialDataThemeError)
         {
-            /*
-            if (errors.Any())
+            if (errors.Any() && allowSpatialDataThemeError)
             {
                 var removeIndex = -1;
                 for (var i = 0; i < errors.Count(); i++)
@@ -67,12 +66,17 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                     if (error.Contains("Inspire Spatial Data Theme\" is missing"))
                     {
                         removeIndex = i;
+                        break;
                     }
                 }
                 if (removeIndex != -1)
+                {
                     errors.RemoveAt(removeIndex);
+                    
+                }
+                    
             }
-            */
+            
             return !errors.Any() ? 1 : 0;
         }
 

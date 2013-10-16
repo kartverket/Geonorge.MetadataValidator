@@ -29,7 +29,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             }
             catch (Exception e)
             {
-                Trace.WriteLine("Exception during validation of metadata: " + e.Message);
+                Trace.WriteLine("Exception during validation of metadata [uuid=" + uuid + "]: " + e.Message);
             }
         }
 

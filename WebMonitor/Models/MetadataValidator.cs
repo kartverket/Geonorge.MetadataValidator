@@ -43,13 +43,25 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
 
             MetadataEntry metadataEntry = ParseCswRecordResponse(uuid, metadata);
             ValidationResult validationResult;
-            if (metadataEntry.InspireResource)
+            if (metadataEntry.ResourceType == "unknown")
             {
-                validationResult = new InspireValidator(_httpRequestExecutor).Validate(rawXmlProcessed);
+                validationResult = new ValidationResult
+                    {
+                        Messages = "Unknown resource type, please check value of hierarchyLevel element.", 
+                        Result = -1, 
+                        Timestamp = DateTime.Now
+                    };
             }
             else
             {
-                validationResult = new NorgeDigitaltValidator().Validate(metadataEntry, metadata, rawXmlProcessed);
+                if (metadataEntry.InspireResource)
+                {
+                    validationResult = new InspireValidator(_httpRequestExecutor).Validate(rawXmlProcessed);
+                }
+                else
+                {
+                    validationResult = new NorgeDigitaltValidator().Validate(metadataEntry, metadata, rawXmlProcessed);
+                }    
             }
             metadataEntry.ValidationResults.Add(validationResult);
 
