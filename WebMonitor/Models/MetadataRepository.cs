@@ -114,6 +114,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         private static string CreateMetaConditionsSql(string organization, string resourceType, bool? inspireResource)
         {
             List<string> metaConditions = new List<string>();
+            metaConditions.Add(" m.active = true ");
             if (!string.IsNullOrWhiteSpace(organization))
                 metaConditions.Add(" m.responsible_organization LIKE :responsible_organization ");
 
@@ -186,7 +187,8 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                                "title = :title, " +
                                "responsible_organization = :responsible_organization, " +
                                "resourcetype = :resourcetype, " +
-                               "inspire_resource = :inspire_resource " +
+                               "inspire_resource = :inspire_resource, " +
+                               "active = true " + 
                                "WHERE uuid = :uuid";
             RunInsertUpdateMetadataCommand(metadata, sql, connection);
         }
@@ -194,8 +196,8 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         private void InsertMetadataInformation(MetadataEntry metadata, NpgsqlConnection connection)
         {
             const string sql =
-                "INSERT INTO metadata (uuid, title, responsible_organization, resourcetype, inspire_resource) VALUES " +
-                "(:uuid, :title, :responsible_organization, :resourcetype, :inspire_resource)";
+                "INSERT INTO metadata (uuid, title, responsible_organization, resourcetype, inspire_resource, active) VALUES " +
+                "(:uuid, :title, :responsible_organization, :resourcetype, :inspire_resource, true)";
             RunInsertUpdateMetadataCommand(metadata, sql, connection);
         }
 
@@ -263,6 +265,25 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             }
 
             return organizations;
+        }
+
+        public void DeactivateAllMetadata()
+        {
+            const string sql = "UPDATE metadata SET active = false";
+            NpgsqlConnection connection = GetConnection();
+            connection.Open();
+            try
+            {
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Arkitektum.GIS.Lib.SerializeUtil;
 using www.opengis.net;
@@ -8,6 +9,8 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
 {
     public class MetadataValidator
     {
+        private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private const string ContentTypeXml = "application/xml";
         private readonly HttpRequestExecutor _httpRequestExecutor;
 
@@ -21,50 +24,63 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
 
         public MetadataEntry RetrieveAndValidate(string uuid)
         {
-            
-            var getCswRecordRequest = CreateGetCswRecordRequest(uuid);
-            string cswRecordResponse = _httpRequestExecutor.PostRequest(Constants.EndpointUrlGeoNorgeCsw,
-                                                                        ContentTypeXml, ContentTypeXml,
-                                                                        getCswRecordRequest);
-
-            /* Quick and dirty hacks to fix exceptions in serialization due to invalid xml */
-
-            Regex fixWrongDecimalInRealElements = new Regex("<gco:Real>([0-9]+),([0-9]+)</gco:Real>");
-
-            var fixedResponse = cswRecordResponse.Replace("<gco:Boolean />", "<gco:Boolean>false</gco:Boolean>")
-                .Replace("<gco:Real />", "<gco:Real>0.0</gco:Real>")
-                .Replace("<gco:DateTime />", "")
-                .Replace("<gmd:MD_TopicCategoryCode />", "");
-
-            var rawXmlProcessed = fixWrongDecimalInRealElements.Replace(fixedResponse, "<gco:Real>$1.$2</gco:Real>");
-
-            GetRecordByIdResponseType getRecordResponse = SerializeUtil.DeserializeFromString<GetRecordByIdResponseType>(rawXmlProcessed);
-            MD_Metadata_Type metadata = getRecordResponse.Items[0] as MD_Metadata_Type;
-
-            MetadataEntry metadataEntry = ParseCswRecordResponse(uuid, metadata);
-            ValidationResult validationResult;
-            if (metadataEntry.ResourceType == "unknown")
+            MetadataEntry metadataEntry = null;
+            try
             {
-                validationResult = new ValidationResult
-                    {
-                        Messages = "Unknown resource type, please check value of hierarchyLevel element.", 
-                        Result = -1, 
-                        Timestamp = DateTime.Now
-                    };
-            }
-            else
-            {
-                if (metadataEntry.InspireResource)
+                var getCswRecordRequest = CreateGetCswRecordRequest(uuid);
+                string cswRecordResponse = _httpRequestExecutor.PostRequest(Constants.EndpointUrlGeoNorgeCsw,
+                                                                            ContentTypeXml, ContentTypeXml,
+                                                                            getCswRecordRequest);
+
+                /* Quick and dirty hacks to fix exceptions in serialization due to invalid xml */
+
+                Regex fixWrongDecimalInRealElements = new Regex("<gco:Real>([0-9]+),([0-9]+)</gco:Real>");
+
+                var fixedResponse = cswRecordResponse.Replace("<gco:Boolean />", "<gco:Boolean>false</gco:Boolean>")
+                                                     .Replace("<gco:Real />", "<gco:Real>0.0</gco:Real>")
+                                                     .Replace("<gco:DateTime />", "")
+                                                     .Replace("<gmd:MD_TopicCategoryCode />", "");
+
+                var rawXmlProcessed = fixWrongDecimalInRealElements.Replace(fixedResponse, "<gco:Real>$1.$2</gco:Real>");
+
+                GetRecordByIdResponseType getRecordResponse = SerializeUtil.DeserializeFromString<GetRecordByIdResponseType>(rawXmlProcessed);
+                MD_Metadata_Type metadata = getRecordResponse.Items[0] as MD_Metadata_Type;
+
+                metadataEntry = ParseCswRecordResponse(uuid, metadata);
+                ValidationResult validationResult;
+                if (metadataEntry.ResourceType == "unknown")
                 {
-                    validationResult = new InspireValidator(_httpRequestExecutor).Validate(rawXmlProcessed);
+                    validationResult = new ValidationResult
+                        {
+                            Messages = "Unknown resource type, please check value of hierarchyLevel element.",
+                            Result = -1,
+                            Timestamp = DateTime.Now
+                        };
                 }
                 else
                 {
-                    validationResult = new NorgeDigitaltValidator().Validate(metadataEntry, metadata, rawXmlProcessed);
-                }    
+                    if (metadataEntry.InspireResource)
+                    {
+                        validationResult = new InspireValidator(_httpRequestExecutor).Validate(rawXmlProcessed);
+                    }
+                    else
+                    {
+                        validationResult = new NorgeDigitaltValidator().Validate(metadataEntry, metadata, rawXmlProcessed);
+                    }
+                }
+                metadataEntry.ValidationResults.Add(validationResult);
             }
-            metadataEntry.ValidationResults.Add(validationResult);
+            catch (Exception e)
+            {
+                metadataEntry = ParseCswRecordResponse(uuid, null);
 
+                string message = e.Message;
+                if (e.InnerException != null)
+                    message += e.InnerException.Message;
+
+                metadataEntry.ValidationResults.Add(new ValidationResult { Messages="Exception during validation: " + message, Result = -1, Timestamp = DateTime.Now });
+                Log.Error("Exception occured for uuid=" + uuid + ", not validated. " + message);
+            }
             return metadataEntry;
         }
 

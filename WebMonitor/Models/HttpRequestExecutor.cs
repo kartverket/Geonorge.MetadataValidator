@@ -29,9 +29,9 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                 if (accept != null)
                     request.Accept = accept;
                 request.ContentType = contentType;
-                request.Timeout = 15000;
+                request.Timeout = 60000;
                 
-                Log.Info("HTTP request: [" + request.Method + "] " + url);
+                Log.Debug("HTTP request: [" + request.Method + "] " + url);
                 
                 request.CookieContainer = new CookieContainer();
                 if (cookie != null)
@@ -65,7 +65,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             request.Accept = accept;
             request.ContentType = contentType;
 
-            Log.Info("HTTP request: [" + request.Method + "] " + url);
+            Log.Debug("HTTP request: [" + request.Method + "] " + url);
 
             return (HttpWebResponse)request.GetResponse();
         }

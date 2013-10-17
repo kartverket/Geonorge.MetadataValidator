@@ -86,7 +86,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
         public ActionResult ValidateAll()
         {
            new Thread(() => {
-               new ValidatorService().RunValidateWithRegularSearch();
+               new ValidatorService().ValidateAllMetadata();
             }).Start();
                     
                 

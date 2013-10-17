@@ -7,9 +7,9 @@
         <meta name="description" content="@ViewBag.Description">
         <meta name="author" content="Arkitektum AS for Kartverket">
 
-        @Styles.Render("~/Content/css")
+        
         @Styles.Render("~/Content/bootstrap/css/bundle")
-
+        @Styles.Render("~/Content/css")
         @RenderSection("Head", required: false)
 
         @Scripts.Render("~/bundles/modernizr")
@@ -21,11 +21,11 @@
     </head>
     <body>
         
-        <div class="header"  style="background-color: #ccc">
+        <header>
             <div class="container">
                 @RenderSection("navbar", required: false)
                 <a class="brand" href="@Url.Action("Index", "Dashboard")">
-                    <h3 style="color: black;">GeoNorge Metadata Monitor
+                    <h3>GeoNorge Metadata Monitor
                         @if (!string.IsNullOrWhiteSpace(ViewBag.Title))
                         {
                             <text> - @ViewBag.Title</text>
@@ -34,27 +34,27 @@
                 </a>
                 
             </div>
-
-        </div>
-        <div class="clearfix container content-body">
-            <div class="pull-right">
-                <a href="http://www.norgedigitalt.no" target="_blank"><img src="~/Content/ND_logo_76x75.gif" width="76" height="75" alt="Norge Digitalt logo"/></a>
-                <a href="http://www.kartverket.no" target="_blank"><img src="~/Content/logo-kartverket-100x75.png" width="100" height="75" alt="Kartverket logo"/></a>
-            </div>
+        </header>
+        <div class="content-wrapper clearfix">
+            <div class="container content-body">
+                <div class="pull-right">
+                    <a href="http://www.norgedigitalt.no" target="_blank"><img src="~/Content/ND_logo_76x75.gif" width="76" height="75" alt="Norge Digitalt logo"/></a>
+                    <a href="http://www.kartverket.no" target="_blank"><img src="~/Content/logo-kartverket-100x75.png" width="100" height="75" alt="Kartverket logo"/></a>
+                </div>
             
-            @if (!string.IsNullOrWhiteSpace(ViewBag.PageHeader))
-            {
-                <h1>@ViewBag.PageHeader</h1>
-            } 
+                @if (!string.IsNullOrWhiteSpace(ViewBag.PageHeader))
+                {
+                    <h1>@ViewBag.PageHeader</h1>
+                } 
             
-            @RenderSection("PageHeader", required: false)
+                @RenderSection("PageHeader", required: false)
 
-            <div style="clear:both">
-                @RenderBody()    
+                <div style="clear:both">
+                    @RenderBody()    
+                </div>
             </div>
-        </div>
-             
-        <footer style="background-color: #333333; color: whitesmoke; min-height: 200px;">
+        </div>     
+        <footer>
             <div class="container">
                 <h4>Om tjenesten</h4>
                 <p>Tjenesten validerer hver natt alle geografiske metadata som er publisert på <a href="http://www.geonorge.no">www.geonorge.no</a>. Alle metadata behandles i utgangspunket som en del av <a href="http://159.162.103.4/norgedigitalt.no/Norge_digitalt/Norsk/Inspire/Om_direktivet/">INSPIRE-direktivet</a>. Metadata som er merket med nøkkelordet 'Annet' blir behandlet som <a href="http://159.162.103.4/norgedigitalt.no/Norge_digitalt/Norsk/Metadata/">Norge Digitalt metadata</a>.</p>

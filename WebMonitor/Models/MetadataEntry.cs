@@ -11,6 +11,17 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         public bool InspireResource { get; set; }
         public List<ValidationResult> ValidationResults { get; set; }
 
+        public string GetResultAsText()
+        {
+            string result = "unknown";
+            if (ValidationResults != null && ValidationResults[0] != null)
+            {
+                var validationResult = ValidationResults[0];
+                result = validationResult.GetResultAsText();
+            }
+            return result;
+        }
+
         public bool IsOk()
         {
             bool result = false;

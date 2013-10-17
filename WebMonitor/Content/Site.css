@@ -2,7 +2,11 @@
     font-size: .85em;
     font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
     color: #232323;
-    background-color: #fff;
+    background-color: #333333;
+}
+
+.content-wrapper {
+    background-color: white;
 }
 
 header, footer, nav, section {
@@ -10,6 +14,16 @@ header, footer, nav, section {
 }
 
 .content-body { margin-bottom: 20px;margin-top: 20px; }
+
+header, footer {
+    background-color: #333333; color: whitesmoke;
+}
+header h3 { line-height: 20px; }
+header a, header a:active, header a:visited, header a:hover { color: whitesmoke; }
+header a:hover { text-decoration: none;}
+footer {
+     min-height: 200px;
+}
 
 /* Styles for basic forms
 -----------------------------------------------------------*/

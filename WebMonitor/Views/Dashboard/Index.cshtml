@@ -101,7 +101,7 @@
 <p>Totalt <b>@Model.TotalResultCount</b> metadata elementer er undersøkt.
     @if (Model.TotalNotValidated > 0)
     {
-        <span><b>@Model.TotalNotValidated</b> elementer ble ikke gjenkjent og er ikke validert.</span>
+        <span><b>@Model.TotalNotValidated</b> elementer ble ikke validert pga. ugyldig xml, timeout eller andre feil.</span>
     }
 </p>
 

@@ -3,7 +3,8 @@
 	title VARCHAR(255),
 	responsible_organization VARCHAR(255),
 	resourcetype VARCHAR(255),
-	inspire_resource BOOLEAN DEFAULT false
+	inspire_resource BOOLEAN DEFAULT false,
+	active BOOLEAN DEFAULT true
 );
 
 CREATE TABLE validation_results (
@@ -13,3 +14,7 @@ CREATE TABLE validation_results (
 	timestamp TIMESTAMP DEFAULT now(),
 	messages TEXT
 );
+
+
+// endring 17.10.2013
+ALTER TABLE metadata ADD COLUMN active BOOLEAN DEFAULT true;

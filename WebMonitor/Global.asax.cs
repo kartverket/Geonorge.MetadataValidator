@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using log4net;
 
 namespace Arkitektum.Kartverket.MetadataMonitor
 {
@@ -15,6 +16,10 @@ namespace Arkitektum.Kartverket.MetadataMonitor
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            GlobalContext.Properties["EventID"] = 1001;
+
+            log4net.Config.XmlConfigurator.Configure();
         }
 
     }

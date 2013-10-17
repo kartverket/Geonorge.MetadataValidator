@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Threading;
 using Arkitektum.GIS.Lib.SerializeUtil;
 using www.opengis.net;
 
@@ -9,6 +10,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
 {
     public class ValidatorService
     {
+        private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly MetadataRepository _metadataRepository;
         private readonly HttpRequestExecutor _httpRequestExecutor;
 
@@ -26,22 +28,25 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             {
                 MetadataEntry metadataEntry = new MetadataValidator().RetrieveAndValidate(uuid);
                 _metadataRepository.SaveMetadata(metadataEntry);
+
+                Log.Info("Validating uuid=" + uuid + ", result=" + metadataEntry.GetResultAsText());
             }
             catch (Exception e)
             {
-                Trace.WriteLine("Exception during validation of metadata [uuid=" + uuid + "]: " + e.Message);
+                Log.Error("Exception during validation of metadata [uuid=" + uuid + "]: " + e.Message);
             }
         }
 
-        public void RunValidateWithRegularSearch()
+        public void ValidateAllMetadata()
         {
+            DeactivateAllMetadata();
+
+
             GetRecordsResponseType firstSearchResponse = RunSearch();
             var searchResults = firstSearchResponse.SearchResults;
 
             int numberOfRecordsMatched = int.Parse(searchResults.numberOfRecordsMatched);
-            //int numberOfRecordsMatched = 50;
             int next = int.Parse(searchResults.nextRecord);
-
             List<MetadataEntry> entries = ParseSearchResults(searchResults);
             ProcessMetadataEntries(entries);
 
@@ -59,6 +64,11 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             {
 
             }
+        }
+
+        private void DeactivateAllMetadata()
+        {
+            _metadataRepository.DeactivateAllMetadata();
         }
 
         private void ProcessMetadataEntries(List<MetadataEntry> entries)

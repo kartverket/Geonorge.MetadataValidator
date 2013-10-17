@@ -22,6 +22,19 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         {
             return Result == 0;
         }
+
+        public string GetResultAsText()
+        {
+            switch (Result)
+            {
+                case 1:
+                    return "OK";
+                case 0:
+                    return "Failed";
+                default:
+                    return "Not validated";
+            }
+        }
     }
 
 }
