@@ -197,6 +197,7 @@
     <Content Include="Content\logo-kartverket-100x75.png" />
     <Content Include="Content\ND_logo_76x75.gif" />
     <None Include="database.sql" />
+    <Content Include="EventView-Create.txt" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <None Include="Properties\PublishProfiles\kartverket-metadata - FTP.pubxml" />
