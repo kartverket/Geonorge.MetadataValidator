@@ -9,6 +9,8 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 {
     public class ValidatorController : Controller
     {
+        private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly MetadataRepository _metadataRepository;
         private readonly ValidatorService _validatorService;
 
@@ -85,12 +87,21 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
         [HttpGet]
         public ActionResult ValidateAll()
         {
-           new Thread(() => {
-               new ValidatorService().ValidateAllMetadata();
-            }).Start();
-                    
+            Log.Info("Start validating all metadata.");            
+
+            new Thread(() => new ValidatorService().ValidateAllMetadata(false)).Start();
                 
             return RedirectToAction("Index", new {message = "Full validering startet!"});
+        }
+
+        [HttpGet]
+        public ActionResult DeactivateValidateAll()
+        {
+            Log.Info("Start validating all metadata, with deactivating.");
+
+            new Thread(() => new ValidatorService().ValidateAllMetadata(true)).Start();
+
+            return RedirectToAction("Index", new { message = "Full validering startet! - med deaktivering" });
         }
        
     }

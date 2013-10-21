@@ -31,8 +31,6 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             if (!validationResult.IsOk())
                 validationResult.Messages = String.Join("\r\n", errors);
 
-            Trace.WriteLine("Validation result=" + validationResult.Result);
-
             return validationResult;
         }
 

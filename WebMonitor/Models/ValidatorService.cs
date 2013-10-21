@@ -37,9 +37,10 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             }
         }
 
-        public void ValidateAllMetadata()
+        public void ValidateAllMetadata(bool deactivateBeforeValidate)
         {
-            DeactivateAllMetadata();
+            if (deactivateBeforeValidate)
+                DeactivateAllMetadata();
 
 
             GetRecordsResponseType firstSearchResponse = RunSearch();
@@ -102,7 +103,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
 
         public GetRecordsResponseType RunSearch(int startPosition)
         {
-            Trace.WriteLine("Running search with start position: " + startPosition);
+            Log.Debug("Running search with start position: " + startPosition);
             string responseBody = _httpRequestExecutor.PostRequest(Constants.EndpointUrlGeoNorgeCsw, "application/xml", "application/xml",
                                             CreateRequestBody(startPosition));
 
