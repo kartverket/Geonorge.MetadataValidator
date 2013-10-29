@@ -31,7 +31,10 @@
         </label>
         <input type="submit" value="Filtrer resultater" class="btn btn-primary"/>
     </form>
-     <p class="">@Model.MetadataEntries.Count resultater</p>
+    <p class="">@Model.MetadataEntries.Count resultater</p>
+    <p class="pull-right">
+        <a href="@Url.Action("Index", "Report", new { organization = Model.Organization, resource = Model.ResourceType, inspire = Model.Inspire})" class="btn">Gå til rapportvisning</a>
+    </p>
 }
 
 @if (Model.MetadataEntries.Any())

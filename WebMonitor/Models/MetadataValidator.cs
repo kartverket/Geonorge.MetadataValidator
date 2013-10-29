@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using Arkitektum.GIS.Lib.SerializeUtil;
 using www.opengis.net;
@@ -90,7 +91,13 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             var resourceType = "unknown";
             var organization = "unknown";
             var inspireResource = true;
-            
+            string purpose = null;
+            string abstractText = null;
+
+            StringBuilder contactInformation = new StringBuilder();
+
+            List<string> keywords = new List<string>();
+
             if (metadata != null)
             {
                 if (metadata.hierarchyLevel != null && metadata.hierarchyLevel[0] != null)
@@ -105,17 +112,71 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
 
                     if (dataIdentification.pointOfContact != null
                         && dataIdentification.pointOfContact[0] != null
-                        && dataIdentification.pointOfContact[0].CI_ResponsibleParty != null
-                        && dataIdentification.pointOfContact[0].CI_ResponsibleParty.organisationName != null
-                        && dataIdentification.pointOfContact[0].CI_ResponsibleParty.organisationName.CharacterString != null)
+                        && dataIdentification.pointOfContact[0].CI_ResponsibleParty != null)
                     {
-                        var tmpOrganization = dataIdentification.pointOfContact[0].CI_ResponsibleParty.organisationName.CharacterString;
-                        if (!string.IsNullOrWhiteSpace(tmpOrganization))
+                        CI_ResponsibleParty_Type responsibleParty = dataIdentification.pointOfContact[0].CI_ResponsibleParty;
+                        
+                        if (responsibleParty.organisationName != null && !string.IsNullOrWhiteSpace(responsibleParty.organisationName.CharacterString))
+                            organization = responsibleParty.organisationName.CharacterString;
+                        
+                        if (responsibleParty.individualName != null &&
+                            !string.IsNullOrWhiteSpace(responsibleParty.individualName.CharacterString))
                         {
-                            organization = tmpOrganization;
+                            contactInformation.Append(responsibleParty.individualName.CharacterString);
                         }
+
+                        if (responsibleParty.contactInfo != null && responsibleParty.contactInfo.CI_Contact != null)
+                        {
+                            var contact = responsibleParty.contactInfo.CI_Contact;
+                            
+
+                            if (contact.address != null && contact.address.CI_Address != null)
+                            {
+                                var address = contact.address.CI_Address;
+                                if (address.electronicMailAddress != null && address.electronicMailAddress[0] != null
+                                    && !string.IsNullOrWhiteSpace(address.electronicMailAddress[0].CharacterString))
+                                {
+                                    contactInformation.Append(" - ").Append(address.electronicMailAddress[0].CharacterString).Append("\n");
+
+                                }
+                                else
+                                {
+                                    contactInformation.Append("\n");
+                                }
+
+
+                                if (address.deliveryPoint != null && address.deliveryPoint[0] != null &&
+                                    !string.IsNullOrWhiteSpace(address.deliveryPoint[0].CharacterString))
+                                {
+                                    contactInformation.Append(address.deliveryPoint[0].CharacterString).Append(", ");
+                                }
+
+                                if (address.postalCode != null && !string.IsNullOrWhiteSpace(address.postalCode.CharacterString))
+                                {
+                                    contactInformation.Append(address.postalCode.CharacterString).Append(" ");
+                                }
+
+                                if (address.city != null && !string.IsNullOrWhiteSpace(address.city.CharacterString))
+                                {
+                                    contactInformation.Append(address.city.CharacterString);
+                                }
+                            }
+                            
+
+
+                            if (contact.phone != null && contact.phone.CI_Telephone != null
+                                && contact.phone.CI_Telephone.voice != null && contact.phone.CI_Telephone.voice[0] != null
+                                && !string.IsNullOrWhiteSpace(contact.phone.CI_Telephone.voice[0].CharacterString))
+                            {
+                                contactInformation.Append("\nTlf: ").Append(contact.phone.CI_Telephone.voice[0].CharacterString);
+                            }
+                        }
+
+
                     }
 
+
+                    // collect keywords
                     if (dataIdentification.descriptiveKeywords != null)
                     {
                         foreach (var descriptiveKeyword in dataIdentification.descriptiveKeywords)
@@ -126,21 +187,36 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                                 {
                                     if (singleKeyword.CharacterString != null)
                                     {
+                                        keywords.Add(singleKeyword.CharacterString);
+
                                         if (singleKeyword.CharacterString.Equals("annet", StringComparison.InvariantCultureIgnoreCase))
                                         {
                                             inspireResource = false;
-                                            break;
                                         }
                                     }
                                 }
-                                if (!inspireResource) 
-                                    break;
                             }
                         }
                     }
-                        
+                       
+ 
+                    // collect purpose
+
+                    if (dataIdentification.purpose != null && !string.IsNullOrWhiteSpace(dataIdentification.purpose.CharacterString))
+                    {
+                        purpose = dataIdentification.purpose.CharacterString;
+                    }
+
+
+                    // collect abstract
+
+                    if (dataIdentification.@abstract != null && !string.IsNullOrWhiteSpace(dataIdentification.@abstract.CharacterString))
+                    {
+                        abstractText = dataIdentification.@abstract.CharacterString;
+                    }
                 }
     
+
                 
             }
 
@@ -156,7 +232,11 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                     ResourceType = resourceType,
                     ResponsibleOrganization = organization,
                     InspireResource = inspireResource,
-                    ValidationResults = new List<ValidationResult>()
+                    ValidationResults = new List<ValidationResult>(),
+                    ContactInformation = contactInformation.ToString(),
+                    Keywords = string.Join(", ", keywords),
+                    Purpose = purpose,
+                    Abstract = abstractText
                 };
         }
 

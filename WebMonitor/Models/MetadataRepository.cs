@@ -22,6 +22,63 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             return new NpgsqlConnection(_connectionString);
         }
 
+
+        public List<MetadataEntry> GetMetadataList(string organization, string resourceType, bool? inspireResource)
+        {
+            var metadataEntries = new List<MetadataEntry>();
+
+            NpgsqlConnection connection = GetConnection();
+            connection.Open();
+            try
+            {
+                string sql = "SELECT m.uuid, m.title, m.responsible_organization, m.resourcetype, m.inspire_resource, m.keywords, m.contact_information, m.abstract, m.purpose FROM metadata m " 
+                    + CreateMetaConditionsSql(organization, resourceType, inspireResource);
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    AddMetadataConditionParametersToCommand(null, organization, resourceType, inspireResource, command);
+
+                    using (NpgsqlDataReader dr = command.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            var metadataEntry = new MetadataEntry()
+                            {
+                                InspireResource = dr.GetBoolean(4),
+                                ResourceType = dr.GetString(3),
+                                ResponsibleOrganization = dr.GetString(2),
+                                Title = dr.GetString(1),
+                                Uuid = dr.GetString(0),
+                                Keywords = dr.IsDBNull(5) ? null : dr.GetString(5),
+                                ContactInformation = dr.IsDBNull(6) ? null : dr.GetString(6),
+                                Abstract = dr.IsDBNull(7) ? null : dr.GetString(7),
+                                Purpose = dr.IsDBNull(8) ? null : dr.GetString(8),
+                            };
+                            metadataEntries.Add(metadataEntry);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return metadataEntries;
+        }
+
+        private static void AddMetadataConditionParametersToCommand(int? status, string organization, string resourceType, bool? inspireResource, NpgsqlCommand command)
+        {
+            if (status.HasValue)
+                command.Parameters.Add(new NpgsqlParameter("status", NpgsqlDbType.Integer) { Value = status });
+            if (!string.IsNullOrWhiteSpace(organization))
+                command.Parameters.Add(new NpgsqlParameter("responsible_organization", NpgsqlDbType.Varchar) {Value = organization});
+            if (!string.IsNullOrWhiteSpace(resourceType))
+                command.Parameters.Add(new NpgsqlParameter("resourcetype", NpgsqlDbType.Varchar) {Value = resourceType});
+            if (inspireResource.HasValue)
+                command.Parameters.Add(new NpgsqlParameter("inspire_resource", NpgsqlDbType.Boolean) {Value = inspireResource});
+        }
+
         public List<MetadataEntry> GetMetadataListWithLatestValidationResult(int? status, string organization, string resourceType, bool? inspireResource)
         {
             var metadataEntries = new List<MetadataEntry>();
@@ -34,14 +91,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
-                    if (status.HasValue)
-                        command.Parameters.Add(new NpgsqlParameter("status", NpgsqlDbType.Integer) {Value = status});
-                    if (!string.IsNullOrWhiteSpace(organization))
-                        command.Parameters.Add(new NpgsqlParameter("responsible_organization", NpgsqlDbType.Varchar) { Value = organization });
-                    if (!string.IsNullOrWhiteSpace(resourceType))
-                        command.Parameters.Add(new NpgsqlParameter("resourcetype", NpgsqlDbType.Varchar) { Value = resourceType });
-                    if (inspireResource.HasValue)
-                        command.Parameters.Add(new NpgsqlParameter("inspire_resource", NpgsqlDbType.Boolean) { Value = inspireResource });
+                    AddMetadataConditionParametersToCommand(status, organization, resourceType, inspireResource, command);
 
                     using (NpgsqlDataReader dr = command.ExecuteReader())
                     {
@@ -188,7 +238,11 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                                "responsible_organization = :responsible_organization, " +
                                "resourcetype = :resourcetype, " +
                                "inspire_resource = :inspire_resource, " +
-                               "active = true " + 
+                               "active = true, " +
+                               "keywords = :keywords, " +
+                               "contact_information = :contact_information, " +
+                               "abstract = :abstract, " +
+                               "purpose = :purpose " +
                                "WHERE uuid = :uuid";
             RunInsertUpdateMetadataCommand(metadata, sql, connection);
         }
@@ -196,8 +250,8 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         private void InsertMetadataInformation(MetadataEntry metadata, NpgsqlConnection connection)
         {
             const string sql =
-                "INSERT INTO metadata (uuid, title, responsible_organization, resourcetype, inspire_resource, active) VALUES " +
-                "(:uuid, :title, :responsible_organization, :resourcetype, :inspire_resource, true)";
+                "INSERT INTO metadata (uuid, title, responsible_organization, resourcetype, inspire_resource, active, keywords, contact_information, abstract, purpose) VALUES " +
+                "(:uuid, :title, :responsible_organization, :resourcetype, :inspire_resource, true, :keywords, :contact_information, :abstract, :purpose)";
             RunInsertUpdateMetadataCommand(metadata, sql, connection);
         }
 
@@ -220,6 +274,10 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                     {
                         Value = metadata.InspireResource
                     });
+                command.Parameters.Add(new NpgsqlParameter("keywords", NpgsqlDbType.Varchar) { Value = metadata.Keywords });
+                command.Parameters.Add(new NpgsqlParameter("contact_information", NpgsqlDbType.Varchar) { Value = metadata.ContactInformation });
+                command.Parameters.Add(new NpgsqlParameter("abstract", NpgsqlDbType.Varchar) { Value = metadata.Abstract });
+                command.Parameters.Add(new NpgsqlParameter("purpose", NpgsqlDbType.Varchar) { Value = metadata.Purpose });
                 command.ExecuteNonQuery();
             }
         }
