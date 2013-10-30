@@ -6,7 +6,9 @@
 	inspire_resource BOOLEAN DEFAULT false,
 	active BOOLEAN DEFAULT true,
 	keywords TEXT,
-	contact_information TEXT
+	contact_information TEXT,
+	abstract TEXT,
+	purpose TEXT
 );
 
 CREATE TABLE validation_results (
