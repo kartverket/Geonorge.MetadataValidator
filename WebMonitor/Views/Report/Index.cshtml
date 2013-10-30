@@ -21,10 +21,11 @@
         @Html.ListBox("fields", (MultiSelectList)ViewBag.AvailableFields, new { multiple = "multiple", @class = "chzn-select", data_placeholder ="- Velg felter -"})
         <input type="submit" value="Vis rapport" class="btn btn-primary"/>
     </form>
-    <p class="">@Model.MetadataEntries.Count resultater</p>
+    
     <p class="pull-right">
         <a href="@Url.Action("Index","Validator", new { organization = Model.Organization, resource = Model.ResourceType, inspire = Model.Inspire})" class="btn">Vis valideringsresultater</a>
     </p>
+    <p class="">@Model.MetadataEntries.Count resultater</p>
 }
 
 @if (Model.MetadataEntries.Any())
