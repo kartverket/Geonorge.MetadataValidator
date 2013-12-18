@@ -32,7 +32,8 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                 request.Timeout = 60000;
                 
                 Log.Debug("HTTP request: [" + request.Method + "] " + url);
-                
+                Log.Debug(postData);
+
                 request.CookieContainer = new CookieContainer();
                 if (cookie != null)
                 {

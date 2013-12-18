@@ -23,10 +23,6 @@ namespace Arkitektum.Kartverket.MetadataMonitor
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
-            bundles.Add(new StyleBundle("~/Content/css")
-                .Include("~/Content/site.css")
-                .Include("~/Content/chosen.css"));
-
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
                         "~/Content/themes/base/jquery.ui.core.css",
                         "~/Content/themes/base/jquery.ui.resizable.css",
@@ -46,6 +42,11 @@ namespace Arkitektum.Kartverket.MetadataMonitor
                 "~/Content/bootstrap/css/bootstrap.css",
                 "~/Content/bootstrap/css/bootstrap-responsive.css"));
             bundles.Add(new ScriptBundle("~/Content/bootstrap/js/bundle").Include("~/Content/bootstrap/js/bootstrap.js"));
+
+            bundles.Add(new StyleBundle("~/Content/css")
+                .Include("~/Content/chosen.css")
+                .Include("~/Content/site.css"));
+
         }
     }
 }

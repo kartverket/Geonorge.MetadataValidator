@@ -1,5 +1,7 @@
 ﻿using System.Text;
 using System.Xml.Linq;
+using System.Security.Cryptography;
+using System;
 
 namespace Arkitektum.Kartverket.MetadataMonitor.Models
 {
@@ -39,16 +41,18 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             data = data.Replace(">nob</gco:CharacterString>", ">eng</gco:CharacterString>");
             data = data.Replace(">nor</gco:CharacterString>", ">eng</gco:CharacterString>");
 
-            string boundary = "----MetadataMonitor";
+            // formating request according to 
+            // http://inspire-geoportal.ec.europa.eu/validator2/html/usingaswebservice.html
+
+            string boundary = createHash(DateTime.Now.Ticks.ToString());
+
+            string eol = "\r\n";
             StringBuilder builder = new StringBuilder();
-            builder.Append("--");
-            builder.Append(boundary);
-            builder.Append("\r\n");
-            builder.Append("Content-Disposition: form-data; name=\"resourceRepresentation\"\r\n\r\n");
+            builder.Append("--").Append(boundary).Append(eol);
+            builder.Append("Content-Disposition: form-data; name=\"resourceRepresentation\"").Append(eol).Append(eol);
             builder.Append(data);
-            builder.Append("\r\n");
-            builder.Append("--");
-            builder.Append(boundary);
+            builder.Append(eol);
+            builder.Append("--").Append(boundary).Append("--").Append(eol).Append(eol);
 
             string postData = builder.ToString();
 
@@ -59,6 +63,18 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             return responseBody;
         }
 
-        
+        private string createHash(string input)
+        {
+            using (var md5 = MD5.Create())
+            {
+                byte[] data = md5.ComputeHash(Encoding.UTF8.GetBytes(input));
+                StringBuilder sBuilder = new StringBuilder();
+                for (int i = 0; i < data.Length; i++)
+                {
+                    sBuilder.Append(data[i].ToString("x2"));
+                }
+                return sBuilder.ToString();
+            }
+        }
     }
 }
