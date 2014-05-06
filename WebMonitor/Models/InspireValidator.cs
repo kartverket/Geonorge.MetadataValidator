@@ -7,6 +7,8 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
 {
     public class InspireValidator
     {
+        private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly HttpRequestExecutor _httpRequestExecutor;
 
         public InspireValidator() : this(new HttpRequestExecutor())
@@ -24,11 +26,11 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             return Validate(rawXmlProcessed, false);
         }
 
-        public ValidationResult Validate(string rawXmlProcessed, bool allowSpatialDataThemeError)
+        public ValidationResult Validate(string rawXmlProcessed, bool allowSpatialDataThemeError, bool allowConformityError = false)
         {
             string inspireValidationResponse = RunInspireValidation(rawXmlProcessed);
             XDocument xmlDoc = XDocument.Parse(inspireValidationResponse);
-            return new InspireValidationResponseParser(xmlDoc).ParseValidationResponse(allowSpatialDataThemeError);
+            return new InspireValidationResponseParser(xmlDoc).ParseValidationResponse(allowSpatialDataThemeError, allowConformityError);
         }
 
         private string RunInspireValidation(string data)
@@ -58,6 +60,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
 
             string contentType = "multipart/form-data; boundary=" + boundary;
 
+            Log.Info("Sending metadata to INSPIRE validator.");
             string responseBody = _httpRequestExecutor.PostRequest(Constants.EndpointUrlInspire, "application/xml", contentType, postData);
 
             return responseBody;

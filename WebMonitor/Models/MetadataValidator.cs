@@ -29,10 +29,11 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             try
             {
                 var getCswRecordRequest = CreateGetCswRecordRequest(uuid);
+                Log.Info("Henter metadata for uuid=" + uuid + " fra GeoNorge.");
                 string cswRecordResponse = _httpRequestExecutor.PostRequest(Constants.EndpointUrlGeoNorgeCsw,
                                                                             ContentTypeXml, ContentTypeXml,
                                                                             getCswRecordRequest);
-
+                
                 /* Quick and dirty hacks to fix exceptions in serialization due to invalid xml */
 
                 Regex fixWrongDecimalInRealElements = new Regex("<gco:Real>([0-9]+),([0-9]+)</gco:Real>");
@@ -62,13 +63,16 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                 {
                     if (metadataEntry.InspireResource)
                     {
+                        Log.Info("Validating metadata with INSPIRE-validator.");
                         validationResult = new InspireValidator(_httpRequestExecutor).Validate(rawXmlProcessed);
                     }
                     else
                     {
+                        Log.Info("Validating metadata with Norge Digitalt-validator.");
                         validationResult = new NorgeDigitaltValidator().Validate(metadataEntry, metadata, rawXmlProcessed);
                     }
                 }
+                Log.Info("Validation result: " + validationResult.Messages);
                 metadataEntry.ValidationResults.Add(validationResult);
             }
             catch (Exception e)
@@ -90,7 +94,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             var title = "unknown";
             var resourceType = "unknown";
             var organization = "unknown";
-            var inspireResource = true;
+            var inspireResource = false;
             string purpose = null;
             string abstractText = null;
 
@@ -189,16 +193,20 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                                     {
                                         keywords.Add(singleKeyword.CharacterString);
 
+                                        /** old way of determine inspire or norge digitalt
                                         if (singleKeyword.CharacterString.Equals("annet", StringComparison.InvariantCultureIgnoreCase))
                                         {
                                             inspireResource = false;
                                         }
+                                         **/
                                     }
                                 }
                             }
                         }
                     }
-                       
+
+
+                    inspireResource = IsInspireResource(metadata);
  
                     // collect purpose
 
@@ -238,6 +246,31 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                     Purpose = purpose,
                     Abstract = abstractText
                 };
+        }
+
+        private bool IsInspireResource(MD_Metadata_Type metadata)
+        {
+            bool isInspireResource = false;
+
+            if (metadata.dataQualityInfo != null && metadata.dataQualityInfo[0] != null && metadata.dataQualityInfo[0].DQ_DataQuality != null
+                && metadata.dataQualityInfo[0].DQ_DataQuality.report != null && metadata.dataQualityInfo[0].DQ_DataQuality.report[0] != null
+                && metadata.dataQualityInfo[0].DQ_DataQuality.report[0].AbstractDQ_Element != null
+                && metadata.dataQualityInfo[0].DQ_DataQuality.report[0].AbstractDQ_Element.result != null
+                && metadata.dataQualityInfo[0].DQ_DataQuality.report[0].AbstractDQ_Element.result[0] != null
+                && metadata.dataQualityInfo[0].DQ_DataQuality.report[0].AbstractDQ_Element.result[0].AbstractDQ_Result != null)
+            {
+                var result = metadata.dataQualityInfo[0].DQ_DataQuality.report[0].AbstractDQ_Element.result[0].AbstractDQ_Result as DQ_ConformanceResult_Type;
+
+                if (result != null && result.specification != null && result.specification.CI_Citation != null
+                    && result.specification.CI_Citation.title != null
+                    && result.specification.CI_Citation.title.CharacterString != null
+                    && result.specification.CI_Citation.title.CharacterString.ToUpper().Contains("COMMISSION REGULATION (EU)"))
+                {
+                    isInspireResource = true;
+                }
+
+            }
+            return isInspireResource;
         }
 
         private bool IsApplicableForInspireValidation(string resourceType)

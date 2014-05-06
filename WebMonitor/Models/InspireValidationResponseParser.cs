@@ -20,12 +20,12 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             _inspireValidationResponse = inspireValidationResponse;
         }
 
-        public ValidationResult ParseValidationResponse(bool allowSpatialDataThemeError)
+        public ValidationResult ParseValidationResponse(bool allowSpatialDataThemeError, bool allowConformityError)
         {
             var errors = GetErrors(_inspireValidationResponse);
 
             var validationResult = new ValidationResult();
-            validationResult.Result = ComputeValidationResult(errors, allowSpatialDataThemeError);
+            validationResult.Result = ComputeValidationResult(errors, allowSpatialDataThemeError, allowConformityError);
 
 
             if (!validationResult.IsOk())
@@ -53,28 +53,20 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             return errors;
         }
         
-        private int ComputeValidationResult(List<string> errors, bool allowSpatialDataThemeError)
+        private int ComputeValidationResult(List<string> errors, bool allowSpatialDataThemeError, bool allowConformityError)
         {
-            if (errors.Any() && allowSpatialDataThemeError)
+            if (errors.Any() && (allowSpatialDataThemeError || allowConformityError))
             {
-                var removeIndex = -1;
-                for (var i = 0; i < errors.Count(); i++)
+                for (var i = errors.Count - 1; i >= 0; i--) // loop backwards to allow removal of items while iterating
                 {
-                    var error = errors[i];
-                    if (error.Contains("Inspire Spatial Data Theme\" is missing"))
+                    if (allowSpatialDataThemeError && errors[i].Contains("Inspire Spatial Data Theme\" is missing"))
                     {
-                        removeIndex = i;
-                        break;
+                        errors.RemoveAt(i);
+                    } else if (allowConformityError && errors[i].Contains("Conformity\" is missing")) {
+                        errors.RemoveAt(i);
                     }
                 }
-                if (removeIndex != -1)
-                {
-                    errors.RemoveAt(removeIndex);
-                    
-                }
-                    
             }
-            
             return !errors.Any() ? 1 : 0;
         }
 
