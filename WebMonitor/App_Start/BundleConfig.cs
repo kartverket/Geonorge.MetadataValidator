@@ -37,16 +37,23 @@ namespace Arkitektum.Kartverket.MetadataMonitor
                         "~/Content/themes/base/jquery.ui.progressbar.css",
                         "~/Content/themes/base/jquery.ui.theme.css"));
 
-            /* setup bundle for twitter bootstrap */
+            /* setup bundle for twitter bootstrap 
             bundles.Add(new StyleBundle("~/Content/bootstrap/css/bundle").Include(
                 "~/Content/bootstrap/css/bootstrap.css",
                 "~/Content/bootstrap/css/bootstrap-responsive.css"));
+             
             bundles.Add(new ScriptBundle("~/Content/bootstrap/js/bundle").Include("~/Content/bootstrap/js/bootstrap.js"));
+            * */
+
+            bundles.Add(new ScriptBundle("~/Content/bootstrap/js/bundle").Include("~/Scripts/bootstrap.js"));
 
             bundles.Add(new StyleBundle("~/Content/css")
+                .Include("~/Content/bootstrap.css")
                 .Include("~/Content/chosen.css")
+                .Include("~/Content/geonorge-default.css")
                 .Include("~/Content/site.css")
-                .Include("~/Content/custom.css"));
+                );
+                
 
         }
     }

@@ -46,14 +46,14 @@
             <input type="submit" value="Filtrer resultater" class="btn btn-primary" />
 </form>
     <p class="pull-right">
-        <a href="@Url.Action("Index", "Report", new { organization = Model.Organization, resource = Model.ResourceType, inspire = Model.Inspire})" class="btn btn-primary btn-sm" role="button">Gå til rapportvisning</a>
+        <a href="@Url.Action("Index", "Report", new { organization = Model.Organization, resource = Model.ResourceType, inspire = Model.Inspire})" class="btn btn-default btn-sm" role="button">Gå til rapportvisning</a>
     </p>
     <p class="">@Model.MetadataEntries.Count resultater</p>
 }
 
 @if (Model.MetadataEntries.Any())
 {
-    <table class="table sortable" style="table-layout: fixed">
+    <table class="table table-striped sortable" style="table-layout: fixed">
         <thead>
             <tr>
                 <th style="width: 25%">Tittel</th>
@@ -125,7 +125,7 @@
                                                    organization=@Model.Organization,
                                                    resource=@Model.ResourceType,
                                                    inspire = @Model.Inspire
-                                               })" class="btn btn-primary btn-sm" role="button">
+                                               })" class="btn btn-default btn-sm" role="button">
                                 <i class="glyphicon glyphicon-play"></i> Validering
                             </a>
                         </p>
