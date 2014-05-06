@@ -71,7 +71,7 @@
             var linkText = result.Title;
             if (linkText == null) { linkText = result.Uuid; }
             
-            var statusClass = "";
+            var statusClass = "label-warning";
             var statusText = "Ikke validert";
             
             if (result.IsOk())
@@ -80,7 +80,7 @@
                 statusText = "OK";    
             } else if (result.IsFailed())
             {
-                statusClass = "label-important";
+                statusClass = "label-danger";
                 statusText = "FEIL";    
             }
             
