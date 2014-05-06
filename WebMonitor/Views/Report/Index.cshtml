@@ -7,23 +7,32 @@
 {
     <form class="form-inline" method="GET" action="@Url.Action("Index")">
         <p style="font-weight: bold;">Filtrering av metadata:</p>
-        <label for="organization">Organisasjon: 
-            @Html.DropDownList("organization", (SelectList) ViewBag.Organizations, "", new {style = "width: 300px;"})
-        </label>
-        <label for="resource">Ressurstype:
-            @Html.DropDownList("resource", (SelectList) ViewBag.ResourceTypes, "", new {style = "width:110px"})
-        </label>
-        <label for="inspire">Tilhørighet:
-            @Html.DropDownList("inspire", (SelectList) ViewBag.InspireOptions, "", new {style = "width:150px"})
-        </label>
-        <br/>
-        <p><label style="font-weight: bold;" for="fields">Velg felter som skal vises:</label></p>
-        @Html.ListBox("fields", (MultiSelectList)ViewBag.AvailableFields, new { multiple = "multiple", @class = "chzn-select", data_placeholder ="- Velg felter -"})
-        <input type="submit" value="Vis rapport" class="btn btn-primary"/>
-    </form>
+            <div class="form-group">
+            <label for="organization">
+                Organisasjon: 
+            </label>
+            @Html.DropDownList("organization", (SelectList)ViewBag.Organizations, "", new { @class = "form-control", style = "width: 300px;" })
+            </div>
+        <div class="form-group">
+            <label for="resource">
+                Ressurstype:
+            </label>
+            @Html.DropDownList("resource", (SelectList)ViewBag.ResourceTypes, "", new { @class = "form-control", style = "width:110px" })
+        </div>
+        <div class="form-group">
+            <label for="inspire">
+                Tilhørighet:
+            </label>
+            @Html.DropDownList("inspire", (SelectList)ViewBag.InspireOptions, "", new { @class = "form-control", style = "width:150px" })
+        </div>
+            <br />
+            <p><label style="font-weight: bold;" for="fields">Velg felter som skal vises:</label></p>
+            @Html.ListBox("fields", (MultiSelectList)ViewBag.AvailableFields, new { multiple = "multiple", @class = "chzn-select", data_placeholder = "- Velg felter -" })
+            <input type="submit" value="Vis rapport" class="btn btn-primary" />
+</form>
     
     <p class="pull-right">
-        <a href="@Url.Action("Index","Validator", new { organization = Model.Organization, resource = Model.ResourceType, inspire = Model.Inspire})" class="btn">Vis valideringsresultater</a>
+        <a href="@Url.Action("Index","Validator", new { organization = Model.Organization, resource = Model.ResourceType, inspire = Model.Inspire})" class="btn btn-primary btn-sm" role="button">Vis valideringsresultater</a>
     </p>
     <p class="">@Model.MetadataEntries.Count resultater</p>
 }
@@ -127,8 +136,8 @@ else
     else
     {
         <form method="POST" action="@Url.Action("Login", "Account")" class="navbar-form pull-right">
-            <input type="text" name="username" placeholder="Brukernavn" style="width: 80px;"/>
-            <input type="password" name="password" placeholder="Passord" style="width: 80px;"/>
+            <input type="text" class="form-control" name="username" placeholder="Brukernavn" style="width: 110px;" />
+            <input type="password" class="form-control" name="password" placeholder="Passord" style="width: 80px;" />
             <input type="submit" class="btn" value="Logg inn"/>
         </form>    
     }

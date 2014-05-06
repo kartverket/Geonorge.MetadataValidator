@@ -16,23 +16,37 @@
 @section PageHeader
 {
     <form class="form-inline" method="GET" action="@Url.Action("Index")">
-        <label for="organization">Organisasjon: 
-            @Html.DropDownList("organization", (SelectList) ViewBag.Organizations, "", new {style = "width: 300px;"})
-        </label>
-        <label for="status">Status:
-            @Html.DropDownList("status", (SelectList) ViewBag.StatusOptions, "", new {style = "width:110px"})
-        </label>
-        <br/>
-        <label for="resource">Ressurstype:
-            @Html.DropDownList("resource", (SelectList) ViewBag.ResourceTypes, "", new {style = "width:110px"})
-        </label>
-        <label for="inspire">Tilhørighet:
-            @Html.DropDownList("inspire", (SelectList) ViewBag.InspireOptions, "", new {style = "width:150px"})
-        </label>
-        <input type="submit" value="Filtrer resultater" class="btn btn-primary"/>
-    </form>
+   
+        <div class="form-group">
+            <label for="organization">
+                Organisasjon:
+            </label>
+            @Html.DropDownList("organization", (SelectList)ViewBag.Organizations, "", new { @class = "form-control", style = "width: 300px;" })
+        </div>
+        <div class="form-group">
+            <label for="status">
+                Status:
+            </label>
+            @Html.DropDownList("status", (SelectList)ViewBag.StatusOptions, "", new { @class = "form-control", style = "width:110px" })
+        </div>
+        <br />        
+        <div class="form-group">
+            <label for="resource">
+                Ressurstype:
+            </label>
+            @Html.DropDownList("resource", (SelectList)ViewBag.ResourceTypes, "", new { @class = "form-control", style = "width:110px" })
+        </div>
+        <div class="form-group">
+            <label for="inspire">
+                Tilhørighet:
+            </label>
+            @Html.DropDownList("inspire", (SelectList)ViewBag.InspireOptions, "", new { @class = "form-control", style = "width:150px" })
+        </div>
+
+            <input type="submit" value="Filtrer resultater" class="btn btn-primary" />
+</form>
     <p class="pull-right">
-        <a href="@Url.Action("Index", "Report", new { organization = Model.Organization, resource = Model.ResourceType, inspire = Model.Inspire})" class="btn">Gå til rapportvisning</a>
+        <a href="@Url.Action("Index", "Report", new { organization = Model.Organization, resource = Model.ResourceType, inspire = Model.Inspire})" class="btn btn-primary btn-sm" role="button">Gå til rapportvisning</a>
     </p>
     <p class="">@Model.MetadataEntries.Count resultater</p>
 }
@@ -106,14 +120,14 @@
                         <p>
                             <a href="@Url.Action("RunValidate", new
                                                {
-                                                   uuid = @result.Uuid, 
-                                                   status=@Model.Status, 
-                                                   organization=@Model.Organization, 
+                                                   uuid = @result.Uuid,
+                                                   status=@Model.Status,
+                                                   organization=@Model.Organization,
                                                    resource=@Model.ResourceType,
                                                    inspire = @Model.Inspire
-                                               })" class="btn btn-mini">
-                                      <i class="icon-play"></i> Validering
-                                  </a>
+                                               })" class="btn btn-primary btn-sm" role="button">
+                                <i class="glyphicon glyphicon-play"></i> Validering
+                            </a>
                         </p>
                     }
                 </td>
@@ -155,8 +169,8 @@ else
     else
     {
         <form method="POST" action="@Url.Action("Login", "Account")" class="navbar-form pull-right">
-            <input type="text" name="username" placeholder="Brukernavn" style="width: 80px;"/>
-            <input type="password" name="password" placeholder="Passord" style="width: 80px;"/>
+            <input type="text" class="form-control" name="username" placeholder="Brukernavn" style="width: 110px;" />
+            <input type="password" class="form-control" name="password" placeholder="Passord" style="width: 80px;" />
             <input type="submit" class="btn" value="Logg inn"/>
         </form>    
     }

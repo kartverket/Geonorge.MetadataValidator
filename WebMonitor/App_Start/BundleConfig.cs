@@ -45,7 +45,8 @@ namespace Arkitektum.Kartverket.MetadataMonitor
 
             bundles.Add(new StyleBundle("~/Content/css")
                 .Include("~/Content/chosen.css")
-                .Include("~/Content/site.css"));
+                .Include("~/Content/site.css")
+                .Include("~/Content/custom.css"));
 
         }
     }
