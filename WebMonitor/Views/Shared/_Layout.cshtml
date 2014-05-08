@@ -6,7 +6,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="@ViewBag.Description">
         <meta name="author" content="Arkitektum AS for Kartverket">
-
         
         <!-- Styles.Render("~/Content/bootstrap/css/bundle") -->
         @Styles.Render("~/Content/css")
@@ -41,25 +40,9 @@
                         <li><a target="_blank" href="http://www.geonorge.no">geoNorge hovedside</a></li>
                        @RenderSection("navbar", required: false)
                     </ul>
-                   
                 </div><!--/.nav-collapse -->
             </div>
         </div>
-        
-        @*<header>
-            <div class="container">
-                @RenderSection("navbar", required: false)
-                <a class="brand" href="@Url.Action("Index", "Dashboard")">
-                    <h3>GeoNorge Metadata Monitor
-                        @if (!string.IsNullOrWhiteSpace(ViewBag.Title))
-                        {
-                            <text> - @ViewBag.Title</text>
-                        }
-                    </h3>
-                </a>
-                
-            </div>
-        </header>*@
         <div class="container">
             @RenderSection("PageHeader", required: false)
 
@@ -74,6 +57,9 @@
                 <div class="footer">
                     <hr />
                     <h4>Om tjenesten</h4>
+                    <p>Denne metadata-validatoren er et hjelpemiddel for etater som leverer metadata. Den foretar en teknisk kontroll av strukturen og kodene som finnes i de metadata som etatene har levert inn. Den sjekker ikke innholdskvalitet.
+                    Tilbakemeldinger på validatoren kan sendes til <a href="mailto:post@norgedigitalt.no?subject=Tilbakemelding%20GeoNorge-metadatavalidator">post@norgedigitalt.no</a></p>
+    
                     <p>Tjenesten validerer hver natt alle geografiske metadata som er publisert på <a href="http://www.geonorge.no">www.geonorge.no</a>. Alle metadata behandles i utgangspunket som en del av <a href="http://159.162.103.4/norgedigitalt.no/Norge_digitalt/Norsk/Inspire/Om_direktivet/">INSPIRE-direktivet</a>. Metadata som er merket med nøkkelordet 'Annet' blir behandlet som <a href="http://159.162.103.4/norgedigitalt.no/Norge_digitalt/Norsk/Metadata/">Norge Digitalt metadata</a>.</p>
                     <p>
                         <strong>Ressurser:</strong>
@@ -83,17 +69,12 @@
                         </ul>
                     </p>
                     <p class="pull-right text-small">Utviklet av <a href="http://www.arkitektum.no" target="_blank">Arkitektum AS</a></p>
-
                 </div>
-            
             </div>
-
-
-            
         </div>
-                @Scripts.Render("~/bundles/jquery")
-                @Scripts.Render("~/Content/bootstrap/js/bundle")
-                @Scripts.Render("~/Scripts/Chart.js")
-                @RenderSection("scripts", required: false)
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/Content/bootstrap/js/bundle")
+        @Scripts.Render("~/Scripts/Chart.js")
+        @RenderSection("scripts", required: false)
 </body>
 </html>
