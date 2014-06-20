@@ -1,6 +1,6 @@
 ﻿@model Arkitektum.Kartverket.MetadataMonitor.Models.DashboardViewModel
 @{
-    ViewBag.PageHeader = "Validering av metadata fra www.geonorge.no";
+    ViewBag.PageHeader = "Validering av metadata fra metadatakatalogen";
 }
 <div class="row">
     <div class="col-sm-12 col-md-6">
@@ -96,6 +96,10 @@
             </tbody>
         </table>
     </div>
+</div>
+
+<div class="alert alert-info">
+    <p>2014.06.20: Tjenestevalidering fungerer pr. dags dato ikke slik vi ønsker. Ingen av tjenestene blir derfor validert ok for øyeblikket. Det jobbes med å få løst dette problemet.</p>
 </div>
 
 <p>Totalt <b>@Model.TotalResultCount</b> metadata elementer er undersøkt.
