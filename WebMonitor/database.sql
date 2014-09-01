@@ -28,3 +28,10 @@ ALTER TABLE metadata ADD COLUMN keywords TEXT;
 ALTER TABLE metadata ADD COLUMN contact_information TEXT;
 ALTER TABLE metadata ADD COLUMN abstract TEXT;
 ALTER TABLE metadata ADD COLUMN purpose TEXT;
+
+
+# rettigheter
+GRANT CONNECT ON DATABASE XXXXXXXXX to monitor;
+GRANT USAGE ON SCHEMA public to monitor;
+GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO monitor;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO monitor;

@@ -22,14 +22,11 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 
         public ValidatorController() : this(new MetadataRepository(), new ValidatorService()) { }
 
-        public ActionResult Index(string message, int? status, string organization, string resource, bool? inspire)
+        public ActionResult Index(int? status, string organization, string resource, bool? inspire)
         {
-            ViewBag.Message = message;
-            
             List<MetadataEntry> metadataEntries = _metadataRepository.GetMetadataListWithLatestValidationResult(status, organization, resource, inspire);
 
             var myTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
-            
 
             var model = new ValidatorResultViewModel()
                 {
@@ -72,11 +69,23 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
             if (string.IsNullOrEmpty(uuid))
                 uuid = "9d118d31-182c-495b-b7be-d819cc7444b1";
 
-            _validatorService.ValidateMetadata(uuid);
             
+            MetadataEntry metadataEntry = _validatorService.ValidateMetadata(uuid);
+
+            string message = "Validering gjennomført!";
+
+            if (metadataEntry == null) {
+                message = "Validering feilet pga en ukjent feil.";
+            }
+            else if (metadataEntry.isNotValidated())
+            {
+                message = "Validering feilet: " + metadataEntry.GetValidationResultMesssages();
+            }
+            
+            TempData["message"] = message;
+
             return RedirectToAction("Index", new
                 {
-                    message = "Validering gjennomført!", 
                     organization = organization, 
                     status = status, 
                     resource = resource,
@@ -90,8 +99,10 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
             Log.Info("Start validating all metadata.");            
 
             new Thread(() => new ValidatorService().ValidateAllMetadata(false)).Start();
-                
-            return RedirectToAction("Index", new {message = "Full validering startet!"});
+
+            TempData["message"] = "Full validering startet!";
+
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -101,7 +112,9 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 
             new Thread(() => new ValidatorService().ValidateAllMetadata(true)).Start();
 
-            return RedirectToAction("Index", new { message = "Full validering startet! - med deaktivering" });
+            TempData["message"] = "Full validering startet! - med deaktivering";
+
+            return RedirectToAction("Index");
         }
        
     }

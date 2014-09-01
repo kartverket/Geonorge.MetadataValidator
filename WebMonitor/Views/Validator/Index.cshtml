@@ -4,12 +4,14 @@
     ViewBag.Description = "Valideringsresultater for metadata fra www.geonorge.no";
 }
 
-@if (ViewBag.Message != null)
+
+
+@if (TempData["message"] != null)
 {
 <div class="row">
     <div class="alert alert-info span6">
-        <p>@ViewBag.Message</p>
-    </div>        
+        <p>@TempData["message"]</p>
+    </div>
 </div>
 }
 
@@ -97,7 +99,7 @@
                 </td>
                 <td class="content-align-center">
                     <a href="http://www.geonorge.no/geonetwork/srv/eng/xml_iso19139?uuid=@result.Uuid" target="_blank">
-                        <i class="icon-file"></i>
+                        <i class="glyphicon glyphicon-file"></i>
                     </a>
                 </td>
                 <td>

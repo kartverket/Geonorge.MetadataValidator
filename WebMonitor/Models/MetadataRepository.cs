@@ -204,6 +204,10 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
 
                 transaction.Commit();
             }
+            catch (NpgsqlException e)
+            {
+                throw e;
+            }
             finally
             {
                 connection.Close();

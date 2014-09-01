@@ -21,12 +21,13 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         }
 
         public ValidatorService() : this(new MetadataRepository(), new HttpRequestExecutor()) { }
-        
-        public void ValidateMetadata(string uuid)
+
+        public MetadataEntry ValidateMetadata(string uuid)
         {
+            MetadataEntry metadataEntry = null;
             try
             {
-                MetadataEntry metadataEntry = new MetadataValidator().RetrieveAndValidate(uuid);
+                metadataEntry = new MetadataValidator().RetrieveAndValidate(uuid);
                 _metadataRepository.SaveMetadata(metadataEntry);
 
                 Log.Info("Validating uuid=" + uuid + ", result=" + metadataEntry.GetResultAsText());
@@ -35,6 +36,7 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             {
                 Log.Error("Exception during validation of metadata [uuid=" + uuid + "]: " + e.Message);
             }
+            return metadataEntry;
         }
 
         public void ValidateAllMetadata(bool deactivateBeforeValidate)
@@ -128,13 +130,40 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
             var query = new QueryType();
             var queryConstraint = new QueryConstraintType();
             queryConstraint.version = "1.1.0";
-            queryConstraint.Item = new FilterType(); // using empty filter to get all records
+            //queryConstraint.Item = new FilterType(); // using empty filter to get all records
+            queryConstraint.Item = CreateFilterForServices();
             query.Constraint = queryConstraint;
 
             getRecords.Item = query;
 
             return SerializeUtil.SerializeToString(getRecords);
         }
+
+        private FilterType CreateFilterForServices()
+        {
+            var filters = new object[]
+                {
+                    new PropertyIsLikeType
+                        {
+                            escapeChar = "\\",
+                            singleChar = "_",
+                            wildCard = "%",
+                            PropertyName = new PropertyNameType {Text = new[] {"type"}},
+                            Literal = new LiteralType {Text = new[] { "service" }}
+                        }
+                };
+            var filterNames = new ItemsChoiceType23[]
+                {
+                    ItemsChoiceType23.PropertyIsLike, 
+                };
+
+            return new FilterType
+            {
+                Items = filters,
+                ItemsElementName = filterNames
+            };
+        }
+
     }
 
 }
