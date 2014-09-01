@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 namespace Arkitektum.Kartverket.MetadataMonitor.Models
 {
@@ -26,6 +27,19 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
                 result = validationResult.GetResultAsText();
             }
             return result;
+        }
+
+        public string GetValidationResultMesssages()
+        {
+            StringBuilder builder = new StringBuilder();
+            if (ValidationResults != null && ValidationResults[0] != null)
+            {
+                foreach (var result in ValidationResults)
+                {
+                    builder.Append(result.Messages);
+                }
+            }
+            return builder.ToString();
         }
 
         public bool IsOk()

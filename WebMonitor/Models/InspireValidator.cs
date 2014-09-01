@@ -29,8 +29,13 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Models
         public ValidationResult Validate(string rawXmlProcessed, bool allowSpatialDataThemeError, bool allowConformityError = false)
         {
             string inspireValidationResponse = RunInspireValidation(rawXmlProcessed);
+            
+            //Log.Debug(inspireValidationResponse);
+
             XDocument xmlDoc = XDocument.Parse(inspireValidationResponse);
-            return new InspireValidationResponseParser(xmlDoc).ParseValidationResponse(allowSpatialDataThemeError, allowConformityError);
+            InspireValidationResponseParser parser = new InspireValidationResponseParser(xmlDoc);
+
+            return parser.ParseValidationResponseWithCompletenessIndicator();
         }
 
         private string RunInspireValidation(string data)
