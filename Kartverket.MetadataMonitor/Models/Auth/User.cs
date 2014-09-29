@@ -1,4 +1,4 @@
-﻿namespace Arkitektum.Kartverket.MetadataMonitor.Models.Auth
+﻿namespace Kartverket.MetadataMonitor.Models.Auth
 {
     public class User
     {

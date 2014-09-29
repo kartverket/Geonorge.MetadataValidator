@@ -4,10 +4,10 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using Arkitektum.Kartverket.MetadataMonitor.Models.Auth;
+using Kartverket.MetadataMonitor.Models.Auth;
 using System.Configuration;
 
-namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
+namespace Kartverket.MetadataMonitor.Controllers
 {
     public class AccountController : Controller
     {

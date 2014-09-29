@@ -3,7 +3,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace Arkitektum.Kartverket.MetadataMonitor.Models
+namespace Kartverket.MetadataMonitor.Models
 {
     public class HttpRequestExecutor
     {

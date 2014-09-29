@@ -1,6 +1,6 @@
 ﻿using www.opengis.net;
 
-namespace Arkitektum.Kartverket.MetadataMonitor.Models
+namespace Kartverket.MetadataMonitor.Models
 {
     public class NorgeDigitaltValidator
     {

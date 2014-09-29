@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Arkitektum.Kartverket.MetadataMonitor.Models;
+using Kartverket.MetadataMonitor.Models;
 
-namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
+namespace Kartverket.MetadataMonitor.Controllers
 {
     public class ReportController : Controller
     {

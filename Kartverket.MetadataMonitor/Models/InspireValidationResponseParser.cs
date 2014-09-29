@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Arkitektum.Kartverket.MetadataMonitor.Models
+namespace Kartverket.MetadataMonitor.Models
 {
     public class InspireValidationResponseParser
     {

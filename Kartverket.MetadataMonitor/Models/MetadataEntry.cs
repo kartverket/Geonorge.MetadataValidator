@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace Arkitektum.Kartverket.MetadataMonitor.Models
+namespace Kartverket.MetadataMonitor.Models
 {
     public class MetadataEntry
     {

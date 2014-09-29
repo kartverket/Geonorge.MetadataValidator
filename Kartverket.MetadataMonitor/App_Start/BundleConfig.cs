@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace Arkitektum.Kartverket.MetadataMonitor
+namespace Kartverket.MetadataMonitor
 {
     public class BundleConfig
     {

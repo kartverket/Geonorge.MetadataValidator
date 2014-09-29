@@ -1,4 +1,4 @@
-﻿namespace Arkitektum.Kartverket.MetadataMonitor.Models
+﻿namespace Kartverket.MetadataMonitor.Models
 {
     public class DashboardViewModel
     {

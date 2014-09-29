@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Arkitektum.Kartverket.MetadataMonitor.Models
+namespace Kartverket.MetadataMonitor.Models
 {
     public class ValidatorResultViewModel
     {

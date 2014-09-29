@@ -6,7 +6,7 @@ using System.Threading;
 using Arkitektum.GIS.Lib.SerializeUtil;
 using www.opengis.net;
 
-namespace Arkitektum.Kartverket.MetadataMonitor.Models
+namespace Kartverket.MetadataMonitor.Models
 {
     public class ValidatorService
     {

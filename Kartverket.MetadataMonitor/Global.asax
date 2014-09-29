@@ -1,1 +1,1 @@
-﻿<%@ Application Codebehind="Global.asax.cs" Inherits="Arkitektum.Kartverket.MetadataMonitor.MvcApplication" Language="C#" %>
+﻿<%@ Application Codebehind="Global.asax.cs" Inherits="Kartverket.MetadataMonitor.MvcApplication" Language="C#" %>

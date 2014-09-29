@@ -3,7 +3,7 @@ using System.Xml.Linq;
 using System.Security.Cryptography;
 using System;
 
-namespace Arkitektum.Kartverket.MetadataMonitor.Models
+namespace Kartverket.MetadataMonitor.Models
 {
     public class InspireValidator
     {
