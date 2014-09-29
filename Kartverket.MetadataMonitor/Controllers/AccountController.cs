@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Arkitektum.Kartverket.MetadataMonitor.Models.Auth;
+using System.Configuration;
 
 namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
 {
@@ -19,23 +20,20 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
         [HttpPost]
         public ActionResult Login(User model, string returnUrl)
         {
-            // Lets first check if the Model is valid or not
             if (ModelState.IsValid)
             {
-               
-                    string username = model.Username;
-                    string password = model.Password;
+                string username = model.Username;
+                string password = model.Password;
 
-                    // Now if our password was enctypted or hashed we would have done the
-                    // same operation on the user entered password here, But for now
-                    // since the password is in plain text lets just authenticate directly
+                string hardcodedUsername = ConfigurationManager.AppSettings["LoginAdminUsername"];
+                string hardcodedPassword = ConfigurationManager.AppSettings["LoginAdminPassword"];
 
-                bool userValid = username == "admin" && password == "WeLoveInspire13";
+                bool userValid = username.Equals(hardcodedUsername) && password.Equals(hardcodedPassword);
+                
+                //WeLoveInspire13
 
-                // User found in the database
                 if (userValid)
                 {
-
                     FormsAuthentication.SetAuthCookie(username, true);
                     if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
                         && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
@@ -53,7 +51,6 @@ namespace Arkitektum.Kartverket.MetadataMonitor.Controllers
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
