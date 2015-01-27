@@ -183,6 +183,7 @@
     <Content Include="Content\chosen.css" />
     <Content Include="Content\common.css" />
     <Content Include="Content\geonorge-default.css" />
+    <Content Include="Content\img\kvlogo_col.png" />
     <Content Include="Content\kartverket_logo.png" />
     <Content Include="Content\logo-kartverket-100x75.png" />
     <Content Include="Content\navbar.css" />
@@ -202,6 +203,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\fonts\MetaComp-Book.ttf" />
+    <Content Include="Content\fonts\MetaWeb-Book.eot" />
+    <Content Include="Content\fonts\MetaWeb-Book.woff" />
     <None Include="Properties\PublishProfiles\katalog.pubxml" />
     <Content Include="Scripts\chosen.jquery.js" />
     <Content Include="Scripts\chosen.jquery.min.js" />
