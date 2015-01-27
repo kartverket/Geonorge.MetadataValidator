@@ -50,7 +50,9 @@ namespace Kartverket.MetadataMonitor
             bundles.Add(new StyleBundle("~/Content/css")
                 .Include("~/Content/bootstrap.css")
                 .Include("~/Content/chosen.css")
-                .Include("~/Content/geonorge-default.css")
+                .Include("~/Content/common.css")
+                .Include("~/Content/navbar.css")
+                .Include("~/Content/searchbar.css")
                 .Include("~/Content/site.css")
                 );
                 

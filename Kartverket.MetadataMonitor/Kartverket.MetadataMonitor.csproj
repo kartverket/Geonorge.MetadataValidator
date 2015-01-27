@@ -156,6 +156,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Models\Auth\User.cs" />
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\DashboardViewModel.cs" />
@@ -180,12 +181,15 @@
     <Content Include="Content\chosen-sprite%402x.png" />
     <Content Include="Content\chosen-sprite.png" />
     <Content Include="Content\chosen.css" />
+    <Content Include="Content\common.css" />
     <Content Include="Content\geonorge-default.css" />
     <Content Include="Content\kartverket_logo.png" />
     <Content Include="Content\logo-kartverket-100x75.png" />
+    <Content Include="Content\navbar.css" />
     <Content Include="Content\ND_logo_76x75.gif" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\searchbar.css" />
     <Content Include="database.txt" />
     <Content Include="EventView-Create.txt" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -232,6 +236,7 @@
     <Content Include="Views\Validator\Index.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Report\Index.cshtml" />
+    <Content Include="Views\Shared\_NavbarPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />
