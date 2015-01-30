@@ -35,3 +35,13 @@ GRANT CONNECT ON DATABASE XXXXXXXXX to monitor;
 GRANT USAGE ON SCHEMA public to monitor;
 GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO monitor;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO monitor;
+
+GRANT INSERT ON metadata TO monitor;
+GRANT UPDATE ON metadata TO monitor;
+GRANT DELETE ON metadata TO monitor;
+
+GRANT INSERT ON validation_results TO monitor;
+GRANT UPDATE ON validation_results TO monitor;
+GRANT UPDATE ON validation_results TO monitor;
+
+GRANT UPDATE ON validation_results_id_seq TO monitor;
