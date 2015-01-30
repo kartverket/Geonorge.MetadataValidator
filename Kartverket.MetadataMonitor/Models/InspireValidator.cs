@@ -11,6 +11,8 @@ namespace Kartverket.MetadataMonitor.Models
 
         private readonly HttpRequestExecutor _httpRequestExecutor;
 
+        string EndpointUrlInspire = System.Web.Configuration.WebConfigurationManager.AppSettings["EndpointUrlInspire"];
+
         public InspireValidator() : this(new HttpRequestExecutor())
         {
             
@@ -66,7 +68,7 @@ namespace Kartverket.MetadataMonitor.Models
             string contentType = "multipart/form-data; boundary=" + boundary;
 
             Log.Info("Sending metadata to INSPIRE validator.");
-            string responseBody = _httpRequestExecutor.PostRequest(Constants.EndpointUrlInspire, "application/xml", contentType, postData);
+            string responseBody = _httpRequestExecutor.PostRequest(EndpointUrlInspire, "application/xml", contentType, postData);
 
             return responseBody;
         }
