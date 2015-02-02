@@ -28,6 +28,8 @@ namespace Kartverket.MetadataMonitor.Controllers
 
             var myTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
 
+            ViewBag.KartkatalogUrl = System.Web.Configuration.WebConfigurationManager.AppSettings["KartkatalogUrl"];
+
             var model = new ValidatorResultViewModel()
                 {
                     Organization = organization,
