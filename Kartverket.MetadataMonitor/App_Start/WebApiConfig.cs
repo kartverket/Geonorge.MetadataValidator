@@ -10,6 +10,8 @@ namespace Kartverket.MetadataMonitor
 
         public static void Register(HttpConfiguration config)
         {
+            config.EnableCors();
+
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
