@@ -32,11 +32,11 @@ namespace Kartverket.MetadataMonitor.Models
             try
             {
                 string sql = "SELECT m.uuid, m.title, m.responsible_organization, m.resourcetype, m.inspire_resource, m.keywords, m.contact_information, m.abstract, m.purpose FROM metadata m " 
-                    + CreateMetaConditionsSql(organization, resourceType, inspireResource);
+                    + CreateMetaConditionsSql(organization, resourceType, inspireResource, null);
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
-                    AddMetadataConditionParametersToCommand(null, organization, resourceType, inspireResource, command);
+                    AddMetadataConditionParametersToCommand(null, organization, resourceType, inspireResource, null, command);
 
                     using (NpgsqlDataReader dr = command.ExecuteReader())
                     {
@@ -67,7 +67,7 @@ namespace Kartverket.MetadataMonitor.Models
             return metadataEntries;
         }
 
-        private static void AddMetadataConditionParametersToCommand(int? status, string organization, string resourceType, bool? inspireResource, NpgsqlCommand command)
+        private static void AddMetadataConditionParametersToCommand(int? status, string organization, string resourceType, bool? inspireResource, string uuid, NpgsqlCommand command)
         {
             if (status.HasValue)
                 command.Parameters.Add(new NpgsqlParameter("status", NpgsqlDbType.Integer) { Value = status });
@@ -77,9 +77,11 @@ namespace Kartverket.MetadataMonitor.Models
                 command.Parameters.Add(new NpgsqlParameter("resourcetype", NpgsqlDbType.Varchar) {Value = resourceType});
             if (inspireResource.HasValue)
                 command.Parameters.Add(new NpgsqlParameter("inspire_resource", NpgsqlDbType.Boolean) {Value = inspireResource});
+            if (!string.IsNullOrWhiteSpace(uuid))
+                command.Parameters.Add(new NpgsqlParameter("uuid", NpgsqlDbType.Varchar) { Value = uuid });
         }
 
-        public List<MetadataEntry> GetMetadataListWithLatestValidationResult(int? status, string organization, string resourceType, bool? inspireResource)
+        public List<MetadataEntry> GetMetadataListWithLatestValidationResult(int? status, string organization, string resourceType, bool? inspireResource, string uuid)
         {
             var metadataEntries = new List<MetadataEntry>();
 
@@ -87,11 +89,11 @@ namespace Kartverket.MetadataMonitor.Models
             connection.Open();
             try
             {
-                var sql = SelectWhichSqlToUse(status, organization, resourceType, inspireResource);
+                var sql = SelectWhichSqlToUse(status, organization, resourceType, inspireResource, uuid);
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
-                    AddMetadataConditionParametersToCommand(status, organization, resourceType, inspireResource, command);
+                    AddMetadataConditionParametersToCommand(status, organization, resourceType, inspireResource, uuid, command);
 
                     using (NpgsqlDataReader dr = command.ExecuteReader())
                     {
@@ -126,7 +128,7 @@ namespace Kartverket.MetadataMonitor.Models
             return metadataEntries;
         }
 
-        private string SelectWhichSqlToUse(int? status, string organization, string resourceType, bool? inspireResource)
+        private string SelectWhichSqlToUse(int? status, string organization, string resourceType, bool? inspireResource, string uuid)
         {
             string sql = "SELECT m.uuid, m.title, m.responsible_organization, m.resourcetype, m.inspire_resource, " +
                 "subQuery.result, subQuery.messages, subQuery.timestamp FROM metadata m " +
@@ -145,7 +147,7 @@ namespace Kartverket.MetadataMonitor.Models
             
             sql = sql.Replace("__RESULT_CONDITIONS__", CreateResultConditionsSql(status));
 
-            sql = sql.Replace("__META_CONDITIONS__", CreateMetaConditionsSql(organization, resourceType, inspireResource));
+            sql = sql.Replace("__META_CONDITIONS__", CreateMetaConditionsSql(organization, resourceType, inspireResource, uuid));
 
             return sql;
         }
@@ -161,12 +163,15 @@ namespace Kartverket.MetadataMonitor.Models
             return sqlResultConditions;
         }
 
-        private static string CreateMetaConditionsSql(string organization, string resourceType, bool? inspireResource)
+        private static string CreateMetaConditionsSql(string organization, string resourceType, bool? inspireResource, string uuid)
         {
             List<string> metaConditions = new List<string>();
             metaConditions.Add(" m.active = true ");
             if (!string.IsNullOrWhiteSpace(organization))
                 metaConditions.Add(" m.responsible_organization LIKE :responsible_organization ");
+
+            if (!string.IsNullOrWhiteSpace(uuid))
+                metaConditions.Add(" m.uuid LIKE :uuid ");
 
             if (!string.IsNullOrWhiteSpace(resourceType))
                 metaConditions.Add(" m.resourcetype = :resourcetype ");

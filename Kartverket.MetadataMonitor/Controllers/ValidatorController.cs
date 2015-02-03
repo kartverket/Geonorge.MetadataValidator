@@ -24,7 +24,7 @@ namespace Kartverket.MetadataMonitor.Controllers
 
         public ActionResult Index(int? status, string organization, string resource, bool? inspire)
         {
-            List<MetadataEntry> metadataEntries = _metadataRepository.GetMetadataListWithLatestValidationResult(status, organization, resource, inspire);
+            List<MetadataEntry> metadataEntries = _metadataRepository.GetMetadataListWithLatestValidationResult(status, organization, resource, inspire, null);
 
             var myTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
 
