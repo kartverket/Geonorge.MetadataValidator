@@ -39,8 +39,10 @@ namespace Kartverket.MetadataMonitor.Controllers
 
             MetadataRepository _metadataRepository = new MetadataRepository();
             List<MetadataEntry> result = _metadataRepository.GetMetadataListWithLatestValidationResult(null, null, null, null, uuid);
-
-            return result.First();
+            if (result.Count > 0)
+                return result.First();
+            else
+                return null;
 
         }
     }
