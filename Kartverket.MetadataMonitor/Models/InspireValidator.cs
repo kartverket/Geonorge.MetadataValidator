@@ -11,7 +11,7 @@ namespace Kartverket.MetadataMonitor.Models
 
         private readonly HttpRequestExecutor _httpRequestExecutor;
 
-        string EndpointUrlInspire = System.Web.Configuration.WebConfigurationManager.AppSettings["EndpointUrlInspire"] + "?dontGenerateLayerPreviews=anyvalue";
+        string EndpointUrlInspire = System.Web.Configuration.WebConfigurationManager.AppSettings["EndpointUrlInspire"];
 
         public InspireValidator() : this(new HttpRequestExecutor())
         {
