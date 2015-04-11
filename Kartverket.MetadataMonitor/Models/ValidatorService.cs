@@ -130,8 +130,8 @@ namespace Kartverket.MetadataMonitor.Models
             var query = new QueryType();
             var queryConstraint = new QueryConstraintType();
             queryConstraint.version = "1.1.0";
-            //queryConstraint.Item = new FilterType(); // using empty filter to get all records
-            queryConstraint.Item = CreateFilterForServices();
+            queryConstraint.Item = new FilterType(); // using empty filter to get all records
+            //queryConstraint.Item = CreateFilterForServices();
             query.Constraint = queryConstraint;
 
             getRecords.Item = query;
