@@ -14,6 +14,8 @@ namespace Kartverket.MetadataMonitor.Models
         private readonly MetadataRepository _metadataRepository;
         private readonly HttpRequestExecutor _httpRequestExecutor;
 
+        string EndpointUrlGeoNorgeCsw = System.Web.Configuration.WebConfigurationManager.AppSettings["EndpointUrlGeoNorgeCsw"];
+
         private ValidatorService(MetadataRepository metadataRepository, HttpRequestExecutor httpRequestExecutor)
         {
             _metadataRepository = metadataRepository;
@@ -106,7 +108,7 @@ namespace Kartverket.MetadataMonitor.Models
         public GetRecordsResponseType RunSearch(int startPosition)
         {
             Log.Debug("Running search with start position: " + startPosition);
-            string responseBody = _httpRequestExecutor.PostRequest(Constants.EndpointUrlGeoNorgeCsw, "application/xml", "application/xml",
+            string responseBody = _httpRequestExecutor.PostRequest(EndpointUrlGeoNorgeCsw, "application/xml", "application/xml",
                                             CreateRequestBody(startPosition));
 
 

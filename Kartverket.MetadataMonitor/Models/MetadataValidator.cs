@@ -15,6 +15,8 @@ namespace Kartverket.MetadataMonitor.Models
         private const string ContentTypeXml = "application/xml";
         private readonly HttpRequestExecutor _httpRequestExecutor;
 
+        string EndpointUrlGeoNorgeCsw = System.Web.Configuration.WebConfigurationManager.AppSettings["EndpointUrlGeoNorgeCsw"];
+
         private MetadataValidator(HttpRequestExecutor httpRequestExecutor)
         {
             _httpRequestExecutor = httpRequestExecutor;
@@ -30,7 +32,7 @@ namespace Kartverket.MetadataMonitor.Models
             {
                 var getCswRecordRequest = CreateGetCswRecordRequest(uuid);
                 Log.Info("Henter metadata for uuid=" + uuid + " fra GeoNorge.");
-                string cswRecordResponse = _httpRequestExecutor.PostRequest(Constants.EndpointUrlGeoNorgeCsw,
+                string cswRecordResponse = _httpRequestExecutor.PostRequest(EndpointUrlGeoNorgeCsw,
                                                                             ContentTypeXml, ContentTypeXml,
                                                                             getCswRecordRequest);
                 
