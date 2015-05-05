@@ -178,6 +178,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\ValidatorController.cs" />
     <Compile Include="Global.asax.cs">
@@ -194,6 +195,7 @@
     <Compile Include="Models\MetadataValidator.cs" />
     <Compile Include="Models\MetadataEntry.cs" />
     <Compile Include="Models\NorgeDigitaltValidator.cs" />
+    <Compile Include="Models\NotFoundModel.cs" />
     <Compile Include="Models\ReportViewModel.cs" />
     <Compile Include="Models\ValidationResult.cs" />
     <Compile Include="Models\ValidatorResultViewModel.cs" />
@@ -275,6 +277,7 @@
     <Content Include="Web.Test.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
+    <Content Include="Views\Error\NotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />

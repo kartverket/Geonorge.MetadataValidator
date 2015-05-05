@@ -7,6 +7,7 @@ using Kartverket.MetadataMonitor.Models;
 
 namespace Kartverket.MetadataMonitor.Controllers
 {
+    [HandleError]
     public class ValidatorController : Controller
     {
         private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -118,6 +119,11 @@ namespace Kartverket.MetadataMonitor.Controllers
 
             return RedirectToAction("Index");
         }
-       
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            Log.Error("Error", filterContext.Exception);
+        }
+
     }
 }
