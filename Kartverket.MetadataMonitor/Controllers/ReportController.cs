@@ -4,12 +4,16 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Kartverket.MetadataMonitor.Models;
+using log4net;
 
 namespace Kartverket.MetadataMonitor.Controllers
 {
+    [HandleError]
     public class ReportController : Controller
     {
         private readonly MetadataRepository _metadataRepository;
+
+        private static readonly ILog Log = LogManager.GetLogger(typeof(MvcApplication));
 
         public ReportController() :this(new MetadataRepository()) { }
 
@@ -58,6 +62,11 @@ namespace Kartverket.MetadataMonitor.Controllers
             };
 
             return View(model);
+        }
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            Log.Error("Error", filterContext.Exception);
         }
 
     }

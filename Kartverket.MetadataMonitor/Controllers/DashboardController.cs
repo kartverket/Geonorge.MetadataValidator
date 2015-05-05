@@ -5,9 +5,12 @@ using Kartverket.MetadataMonitor.Models;
 
 namespace Kartverket.MetadataMonitor.Controllers
 {
+    [HandleError]
     public class DashboardController : Controller
     {
         private readonly MetadataRepository _metadataRepository;
+
+        private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private DashboardController(MetadataRepository metadataRepository)
         {
@@ -56,6 +59,11 @@ namespace Kartverket.MetadataMonitor.Controllers
                     Unknown = allResourceResults.Count(n => n.isNotValidated())
                 };
             return resourceResults;
+        }
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            Log.Error("Error", filterContext.Exception);
         }
     }
 }
