@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartverket.MetadataMonitor", "Kartverket.MetadataMonitor\Kartverket.MetadataMonitor.csproj", "{2C2ABF5A-FCF5-4CA7-B127-7ED93F515EC9}"
 EndProject
