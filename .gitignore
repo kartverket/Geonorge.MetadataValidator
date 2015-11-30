@@ -118,3 +118,6 @@ App_Data/*.ldf
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+
+# Visual Studio 2015 cache/options directory
+.vs/
