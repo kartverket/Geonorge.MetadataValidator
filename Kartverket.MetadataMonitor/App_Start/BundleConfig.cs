@@ -8,11 +8,11 @@ namespace Kartverket.MetadataMonitor
         // For more information on Bundling, visit http://go.microsoft.com/fwlink/?LinkId=254725
         public static void RegisterBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+            //bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
+            //            "~/Scripts/jquery-{version}.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
-                        "~/Scripts/jquery-ui-{version}.js"));
+            //bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
+            //            "~/Scripts/jquery-ui-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.unobtrusive*",
@@ -45,15 +45,15 @@ namespace Kartverket.MetadataMonitor
             bundles.Add(new ScriptBundle("~/Content/bootstrap/js/bundle").Include("~/Content/bootstrap/js/bootstrap.js"));
             * */
 
-            bundles.Add(new ScriptBundle("~/Content/bootstrap/js/bundle").Include("~/Scripts/bootstrap.js"));
+            //bundles.Add(new ScriptBundle("~/Content/bootstrap/js/bundle").Include("~/Scripts/bootstrap.js"));
 
-            bundles.Add(new StyleBundle("~/Content/css")
+            bundles.Add(new StyleBundle(/*"~/Content/css")
                 .Include("~/Content/bootstrap.css")
                 .Include("~/Content/chosen.css")
                 .Include("~/Content/common.css")
                 .Include("~/Content/navbar.css")
                 .Include("~/Content/searchbar.css")
-                .Include("~/Content/site.css")
+                .Include(*/"~/Content/site.css")
                 );
                 
 

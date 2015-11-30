@@ -32,5 +32,10 @@ namespace Kartverket.MetadataMonitor.Helpers
             return WebConfigurationManager.AppSettings["ObjektkatalogUrl"];
         }
 
+        public static string KartkatalogUrl(this HtmlHelper helper)
+        {
+            return WebConfigurationManager.AppSettings["KartkatalogUrl"];
+        }
+
     }
 }
