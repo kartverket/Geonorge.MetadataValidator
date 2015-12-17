@@ -60,11 +60,11 @@
             <tr>
                 <th>Tittel</th>
                 <th>Organisasjon</th>
-                <th>XML</th>
+                <th width="5%">XML</th>
                 <th>Ressurstype</th>
                 <th>Type</th>
                 <th>Status</th>
-                <th>Feilmeldinger</th>
+                <th width="30%">Feilmeldinger</th>
             </tr>
         </thead>
         <tbody>
@@ -171,8 +171,8 @@ else
     else
     {
         <form method="POST" action="@Url.Action("Login", "Account")" class="navbar-form pull-right">
-            <input type="text" class="form-control" name="username" placeholder="Brukernavn" style="width: 110px;" />
-            <input type="password" class="form-control" name="password" placeholder="Passord" style="width: 80px;" />
+            <input type="text" class="form-control" name="username" placeholder="Brukernavn"  />
+            <input type="password" class="form-control" name="password" placeholder="Passord"  />
             <input type="submit" class="btn" value="Logg inn"/>
         </form>    
     }
