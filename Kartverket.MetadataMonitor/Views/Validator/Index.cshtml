@@ -87,14 +87,14 @@
             }
             
             <tr>
-                <td>
+                <td style="word-break: break-all;">
                     <p>
                         <a href="@ViewBag.KartkatalogUrl/metadata/uuid/@result.Uuid" target="_blank">@linkText</a><br/>
                         <div class="text-small">@result.Uuid</div>
                         
                     </p>
                 </td>
-                <td>
+                <td style="word-break: break-all;">
                     <p>@result.ResponsibleOrganization</p>
                 </td>
                 <td class="content-align-center">
@@ -102,7 +102,7 @@
                         <i class="glyphicon glyphicon-file"></i>
                     </a>
                 </td>
-                <td>
+                <td style="word-break: break-all;">
                     <div>@result.ResourceType</div>
                 </td>
                 <td>
@@ -115,7 +115,7 @@
                             <text>Norge Digitalt</text>
                         }
                 </td>
-                <td><span class="label @statusClass">@statusText</span>
+                <td style="word-break: break-all;"><span class="label @statusClass">@statusText</span>
                     <p class="text-small">@result.ValidationResults[0].Timestamp.ToString("dd'.'MM'.'yyyy HH':'mm':'ss")</p>
                     @if (User.Identity.IsAuthenticated)
                     {
@@ -133,7 +133,7 @@
                         </p>
                     }
                 </td>
-                <td>
+                <td style="word-break: break-all;">
                     @if (result.ValidationResults[0].Messages != null)
                     {
                         <ul>
