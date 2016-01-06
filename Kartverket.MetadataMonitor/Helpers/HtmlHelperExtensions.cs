@@ -37,5 +37,10 @@ namespace Kartverket.MetadataMonitor.Helpers
             return WebConfigurationManager.AppSettings["KartkatalogUrl"];
         }
 
+        public static string EnvironmentName(this HtmlHelper helper)
+        {
+            return WebConfigurationManager.AppSettings["EnvironmentName"];
+        }
+
     }
 }
