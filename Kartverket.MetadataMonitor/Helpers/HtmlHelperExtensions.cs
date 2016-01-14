@@ -41,6 +41,10 @@ namespace Kartverket.MetadataMonitor.Helpers
         {
             return WebConfigurationManager.AppSettings["EnvironmentName"];
         }
+        public static string WebmasterEmail(this HtmlHelper helper)
+        {
+            return WebConfigurationManager.AppSettings["WebmasterEmail"];
+        }
 
     }
 }
