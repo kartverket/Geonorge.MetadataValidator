@@ -13,14 +13,13 @@
         <link href="//fonts.googleapis.com/css?family=Raleway:400,100,300,500,600,700" rel="stylesheet" type="text/css">
 
         <!-- Stylesheets -->
-        @Styles.Render(@Html.KartkatalogUrl() + "bundles/shared-menu-styles")
-        @Styles.Render(@Html.KartkatalogUrl() + "Content/css")
-        @Styles.Render(@Html.KartkatalogUrl() + "Content/shopping-cart")
+        @Styles.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/css/styles")
 
         <!-- Scripts -->
-        @Scripts.Render(@Html.KartkatalogUrl() + "bundles/shared-menu-scripts")
-        @Scripts.Render(@Html.KartkatalogUrl() + "bundles/js")
-        @Scripts.Render(@Html.KartkatalogUrl() + "bundles/shopping-cart")
+        <script>
+            var applicationEnvironment = '@Html.EnvironmentName()';
+        </script>
+        @Scripts.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/scripts")
 
         @RenderSection("Head", required: false)
 
@@ -34,7 +33,7 @@
     </head>
 <body class="geonorge-container prototype  geonorge ng-scope" ng-app="geonorge">
 
-    @Html.Partial("_SharedMenu")
+    @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_SharedMenu.min.cshtml")
     @*<div class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
