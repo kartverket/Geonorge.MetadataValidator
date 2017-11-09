@@ -72,7 +72,7 @@ namespace Kartverket.MetadataMonitor.Controllers
             if (!string.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);
             else
-                return RedirectToAction("Index");
+                return RedirectToRoute("/");
         }
 
         private static Result GetResultsForResourceType(IEnumerable<MetadataEntry> results, string resourceType)
