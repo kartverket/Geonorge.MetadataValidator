@@ -1,11 +1,12 @@
-﻿@model Kartverket.MetadataMonitor.Models.ValidatorResultViewModel
+﻿@using Kartverket.MetadataMonitor.Resources
+@model Kartverket.MetadataMonitor.Models.ValidatorResultViewModel
 @{
-    ViewBag.Title = "Valideringsresultater";
-    ViewBag.Description = "Valideringsresultater for metadata fra www.geonorge.no";
+    ViewBag.Title = UI.ValidationResults;
+    ViewBag.Description = UI.ValidationResultsDescription;
 }
 
 @section breadcrumb{
-    <li>Valideringsresultater</li>
+    <li>UI.ValidationResults</li>
 }
 
 @if (TempData["message"] != null)

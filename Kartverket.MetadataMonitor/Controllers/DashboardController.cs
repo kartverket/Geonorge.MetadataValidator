@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
+using Kartverket.MetadataMonitor.Helpers;
 using Kartverket.MetadataMonitor.Models;
 
 namespace Kartverket.MetadataMonitor.Controllers
@@ -48,7 +51,30 @@ namespace Kartverket.MetadataMonitor.Controllers
                 };
             return View(model);
         }
-        
+
+        [Route("setculture/{culture}")]
+        public ActionResult SetCulture(string culture, string returnUrl)
+        {
+            // Validate input
+            culture = CultureHelper.GetImplementedCulture(culture);
+            // Save culture in a cookie
+            HttpCookie cookie = Request.Cookies["_culture"];
+            if (cookie != null)
+                cookie.Value = culture;   // update cookie value
+            else
+            {
+                cookie = new HttpCookie("_culture");
+                cookie.Value = culture;
+                cookie.Expires = DateTime.Now.AddYears(1);
+            }
+            Response.Cookies.Add(cookie);
+
+            if (!string.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+            else
+                return RedirectToAction("Index");
+        }
+
         private static Result GetResultsForResourceType(IEnumerable<MetadataEntry> results, string resourceType)
         {
             var allResourceResults = results.Where(n => n.ResourceType == resourceType);

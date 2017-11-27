@@ -1,10 +1,11 @@
-﻿@model Kartverket.MetadataMonitor.Models.ReportViewModel
+﻿@using Kartverket.MetadataMonitor.Resources
+@model Kartverket.MetadataMonitor.Models.ReportViewModel
 @{
-    ViewBag.Title = "Metadatarapport";
+    ViewBag.Title = @UI.ReportView;
 }
 
 @section breadcrumb{
-    <li>Rapportvisning</li>
+    <li>@UI.ReportView</li>
 }
 
 @section PageHeader
