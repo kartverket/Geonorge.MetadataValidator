@@ -210,56 +210,61 @@ angular.module('geonorge', ['ui.bootstrap']);
 angular.module('geonorge').config(["$sceDelegateProvider", function ($sceDelegateProvider) {
     $sceDelegateProvider.resourceUrlWhitelist(['**']);
 }]);
+var defaultSearchPlaceholder = "Søk etter kartdata";
+if (cultureData.currentCulture !== undefined && cultureData.currentCulture == "en") {
+	defaultSearchPlaceholder = "Search for map data";
+}
+
 var searchOptionsArray =
 {
-    "dev" : {
-        text: "Kartkatalogen",
-	    searchTitle: "Kartkatalogen",
-	    searchPlaceholder: "S\u00F8k etter kartdata",
-	    buttonCss: "edgesKartkatalogen",
-	    listCss: "left-edge-kartkatalogen",
-	    baseUrl: "//kartkatalog.dev.geonorge.no",
-	    url: "//kartkatalog.dev.geonorge.no/search",
-	    api: "//kartkatalog.dev.geonorge.no/api/search",
-	    queryParameter: '?text=',
-	    localUrl: false,
-	    autoComplete: true,
-	    geonorgeUrl: "//www.test.geonorge.no"
-    },
-    "test" : {
-        text: "Kartkatalogen",
-	    searchTitle: "Kartkatalogen",
-	    searchPlaceholder: "S\u00F8k etter kartdata",
-	    buttonCss: "edgesKartkatalogen",
-	    listCss: "left-edge-kartkatalogen",
-	    baseUrl: "//kartkatalog.test.geonorge.no",
-	    url: "//kartkatalog.test.geonorge.no/search",
-	    api: "//kartkatalog.test.geonorge.no/api/search",
-	    queryParameter: '?text=',
-	    localUrl: false,
-	    autoComplete: true,
-	    geonorgeUrl: "//www.test.geonorge.no"
-    },
-    "prod" : {
-        text: "Kartkatalogen",
-	    searchTitle: "Kartkatalogen",
-	    searchPlaceholder: "S\u00F8k etter kartdata",
-	    buttonCss: "edgesKartkatalogen",
-	    listCss: "left-edge-kartkatalogen",
-	    baseUrl: "//kartkatalog.geonorge.no",
-	    url: "//kartkatalog.geonorge.no/search",
-	    api: "//kartkatalog.geonorge.no/api/search",
-	    queryParameter: '?text=',
-	    localUrl: false,
-	    autoComplete: true,
-	    geonorgeUrl: "//www.geonorge.no"
-    }
+	"dev" : {
+		text: "Kartkatalogen",
+		searchTitle: "Kartkatalogen",
+		searchPlaceholder: defaultSearchPlaceholder,
+		buttonCss: "edgesKartkatalogen",
+		listCss: "left-edge-kartkatalogen",
+		baseUrl: "//kartkatalog.dev.geonorge.no",
+		url: "//kartkatalog.dev.geonorge.no/search",
+		api: "//kartkatalog.dev.geonorge.no/api/search",
+		queryParameter: '?text=',
+		localUrl: false,
+		autoComplete: true,
+		geonorgeUrl: "//www.test.geonorge.no"
+	},
+	"test" : {
+		text: "Kartkatalogen",
+		searchTitle: "Kartkatalogen",
+		searchPlaceholder: defaultSearchPlaceholder,
+		buttonCss: "edgesKartkatalogen",
+		listCss: "left-edge-kartkatalogen",
+		baseUrl: "//kartkatalog.test.geonorge.no",
+		url: "//kartkatalog.test.geonorge.no/search",
+		api: "//kartkatalog.test.geonorge.no/api/search",
+		queryParameter: '?text=',
+		localUrl: false,
+		autoComplete: true,
+		geonorgeUrl: "//www.test.geonorge.no"
+	},
+	"prod" : {
+		text: "Kartkatalogen",
+		searchTitle: "Kartkatalogen",
+		searchPlaceholder: defaultSearchPlaceholder,
+		buttonCss: "edgesKartkatalogen",
+		listCss: "left-edge-kartkatalogen",
+		baseUrl: "//kartkatalog.geonorge.no",
+		url: "//kartkatalog.geonorge.no/search",
+		api: "//kartkatalog.geonorge.no/api/search",
+		queryParameter: '?text=',
+		localUrl: false,
+		autoComplete: true,
+		geonorgeUrl: "//www.geonorge.no"
+	}
 };
 
 var searchOption = searchOptionsArray.prod;
 
 if (applicationEnvironment !== '' && applicationEnvironment !== null) {
-    var searchOption = searchOptionsArray[applicationEnvironment];
+	var searchOption = searchOptionsArray[applicationEnvironment];
 }
 var baseurl_local = searchOption.baseUrl;
 
@@ -300,6 +305,7 @@ var baseurl_local = searchOption.baseUrl;
       var request = $http({
         method: 'GET',
         url: menuService,
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'accept': '*/*'
@@ -318,6 +324,7 @@ var baseurl_local = searchOption.baseUrl;
       var request1 = $http({
         method: 'GET',
         url: menuService1,
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'accept': '*/*'
@@ -329,6 +336,7 @@ var baseurl_local = searchOption.baseUrl;
       var request2 = $http({
         method: 'GET',
         url: menuService2,
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'accept': '*/*'
@@ -340,6 +348,7 @@ var baseurl_local = searchOption.baseUrl;
       var request3 = $http({
         method: 'GET',
         url: menuService3,
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'accept': '*/*'
@@ -351,6 +360,7 @@ var baseurl_local = searchOption.baseUrl;
       var request4 = $http({
         method: 'GET',
         url: menuService4,
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'accept': '*/*'
@@ -377,7 +387,7 @@ var baseurl_local = searchOption.baseUrl;
     $rootScope.activePageUrl = "//" + window.location.host + window.location.pathname + window.location.search; 
 
     // Values based on selected language
-    if (cultureData === undefined || cultureData.currentCulture === undefined || cultureData.currentCulture == 'no') {
+    if (cultureData.currentCulture === undefined || cultureData.currentCulture === '' || cultureData.currentCulture == 'no') {
       $rootScope.showAllText = "Vis alle treff...";
       $rootScope.noResultsText = "Søket gir ingen treff";
       $rootScope.loadingContentText = "Henter innhold";
@@ -645,7 +655,7 @@ var baseurl_local = searchOption.baseUrl;
                   }
 
                   function getType(type) {
-                    if (cultureData.currentCulture === undefined || cultureData.currentCulture == 'no') {
+                    if (cultureData.currentCulture === undefined || cultureData.currentCulture == '' || cultureData.currentCulture == 'no') {
                       switch (type) {
                         case "dataset":
                         return "Datasett";
@@ -835,13 +845,8 @@ $(document).ready(function () {
      
       function handleSuccess(respons) {
 
-        localStorage.setItem('menuItems', JSON.stringify(respons));
-        var date = new Date();
-        var minutes = 3;
-        date.setTime(date.getTime() + (minutes * 60 * 1000));
-        Cookies.set('expire', "menu", { expires: date });
+          $scope.menuItems = respons.data;
 
-        $scope.menuItems = respons.data;
       }
 
       function handleError() {
@@ -850,9 +855,10 @@ $(document).ready(function () {
 
       $scope.getMenuData = function getMenuData() {
 
-        if (!Cookies.get('expire') || !localStorage.getItem('menuItems')) {
-
-          var menuService = baseurl + '/api/menu';
+          var language = "";
+          if (cultureData.currentCulture == "en")
+              language = '/en';
+          var menuService = baseurl + language + '/api/menu';
           var request = $http({
             method: 'GET',
             url: menuService,
@@ -862,14 +868,6 @@ $(document).ready(function () {
             data: {}
           });
           return request.then(handleSuccess, handleError);
-
-
-        }
-        else
-        {
-          response = JSON.parse(localStorage.getItem('menuItems'));
-          $scope.menuItems = response.data;
-        }
       };
       
     }]);
