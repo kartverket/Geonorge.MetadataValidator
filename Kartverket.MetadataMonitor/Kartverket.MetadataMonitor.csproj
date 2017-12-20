@@ -23,7 +23,8 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>b1fadee8</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <UseGlobalApplicationHostFile />
     <Use64BitIISExpress />
   </PropertyGroup>
@@ -249,6 +250,7 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\png\geonorge.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\png\kartverket.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\png\norgeskart-marker.png" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arealplan.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arrow-down.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arrow-right.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arrow-up.svg" />
@@ -275,7 +277,10 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-unchecked.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checked.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\danger.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\datadeling.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\dekningskart.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\den-norske-loeve.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\dok.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\eksternlink-disabled.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\eksternlink-white.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\eksternlink.svg" />
@@ -313,6 +318,7 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\info-disabled.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\info-white.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\info.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\inspire.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-disabled.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-needs-permission-disabled.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-needs-permission-white.svg" />
@@ -329,6 +335,8 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\lastned-white.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\lastned.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\lukk_968c83_50px-01-01.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\metadatatjeneste.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\norge-digitalt.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\open_fe5000_50px-01.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\produktark.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\projection-checked-disabled.svg" />
@@ -341,6 +349,7 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\radio-checked.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\radio-unchecked-disabled.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\radio-unchecked.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\seksjonstegn-circle.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\seksjonstegn.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\smile-green.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\smile-red.svg" />
@@ -490,7 +499,6 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Dev|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -499,7 +507,6 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
@@ -525,19 +532,13 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
+  <Import Project="..\packages\OctoPack.3.6.3\build\OctoPack.targets" Condition="Exists('..\packages\OctoPack.3.6.3\build\OctoPack.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
-  </Target>
-  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
-  <Import Project="..\packages\OctoPack.3.0.31\tools\OctoPack.targets" Condition="Exists('..\packages\OctoPack.3.0.31\tools\OctoPack.targets')" />
-  <Target Name="EnsureOctoPackImported" BeforeTargets="BeforeBuild" Condition="'$(OctoPackImported)' == ''">
-    <Error Condition="!Exists('..\packages\OctoPack.3.0.31\tools\OctoPack.targets') And ('$(RunOctoPack)' != '' And $(RunOctoPack))" Text="You are trying to build with OctoPack, but the NuGet targets file that OctoPack depends on is not available on this computer. This is probably because the OctoPack package has not been committed to source control, or NuGet Package Restore is not enabled. Please enable NuGet Package Restore to download them. For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
-    <Error Condition="Exists('..\packages\OctoPack.3.0.31\tools\OctoPack.targets') And ('$(RunOctoPack)' != '' And $(RunOctoPack))" Text="OctoPack cannot be run because NuGet packages were restored prior to the build running, and the targets file was unavailable when the build started. Please build the project again to include these packages in the build. You may also need to make sure that your build server does not delete packages prior to each build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+    <Error Condition="!Exists('..\packages\OctoPack.3.6.3\build\OctoPack.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\OctoPack.3.6.3\build\OctoPack.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

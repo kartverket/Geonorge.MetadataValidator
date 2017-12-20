@@ -36,7 +36,7 @@ namespace Kartverket.MetadataMonitor.Models
             }
             catch (Exception e)
             {
-                Log.Error("Exception during validation of metadata [uuid=" + uuid + "]: " + e.Message);
+                Log.Error("Exception during validation of metadata [uuid=" + uuid + "]: " + e.Message, e);
             }
             return metadataEntry;
         }
@@ -67,7 +67,7 @@ namespace Kartverket.MetadataMonitor.Models
             }
             catch (Exception e)
             {
-
+                Log.Error("Exception during validation of all metadata: " + e.Message, e);
             }
         }
 
