@@ -19,8 +19,19 @@ namespace Kartverket.MetadataMonitor.Models
             
             return responseBody;
         }
-        
-        public HttpWebResponse FullPostRequest(string url, string accept, string contentType, string postData, Cookie cookie = null)
+
+        public string GetRequest(string url, string accept, string contentType)
+        {
+            HttpWebResponse response = FullGetRequest(url, accept, contentType);
+
+            StreamReader reader = new StreamReader(response.GetResponseStream());
+            string responseBody = reader.ReadToEnd();
+            response.Close();
+
+            return responseBody;
+        }
+
+        private HttpWebResponse FullPostRequest(string url, string accept, string contentType, string postData, Cookie cookie = null)
         {
             try
             {
@@ -59,7 +70,7 @@ namespace Kartverket.MetadataMonitor.Models
             }
         }
 
-        public HttpWebResponse FullGetRequest(string url, string accept, string contentType)
+        private HttpWebResponse FullGetRequest(string url, string accept, string contentType)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "GET";

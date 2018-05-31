@@ -111,7 +111,7 @@ namespace Kartverket.MetadataMonitor.Models
                                             new ValidationResult()
                                                 {
                                                     Messages = dr.IsDBNull(6) ? null : dr.GetString(6),
-                                                    Result = dr.GetInt32(5),
+                                                    Status = (ValidationStatus)dr.GetInt32(5),
                                                     Timestamp = dr.GetTimeStamp(7)
                                                 }
                                         }
@@ -230,7 +230,7 @@ namespace Kartverket.MetadataMonitor.Models
                 command.Parameters.Add(new NpgsqlParameter("uuid", NpgsqlDbType.Varchar) {Value = metadata.Uuid});
                 command.Parameters.Add(new NpgsqlParameter("result", NpgsqlDbType.Integer)
                     {
-                        Value = validationResult.Result
+                        Value = validationResult.Status
                     });
                 command.Parameters.Add(new NpgsqlParameter("messages", NpgsqlDbType.Varchar)
                     {
