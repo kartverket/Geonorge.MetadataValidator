@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Xml.Serialization;
 
 namespace Kartverket.MetadataMonitor.Models.External.MetadataEditor
 {
     // Defined in MetadataEditor
+    [XmlRoot(Namespace = "http://schemas.datacontract.org/2004/07/Kartverket.MetadataEditor.Controllers", ElementName = "MetaDataEntry")]
     public class MetadataEntry
     {
         public string Uuid { get; set; }
