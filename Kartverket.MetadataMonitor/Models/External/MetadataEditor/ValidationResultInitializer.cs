@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 
 namespace Kartverket.MetadataMonitor.Models.External.MetadataEditor
@@ -13,7 +14,7 @@ namespace Kartverket.MetadataMonitor.Models.External.MetadataEditor
 
         public static void Initialize(this ValidationResult validationResult, MetadataEntry metadataEntry)
         {
-            validationResult.Messages = String.Join("\r\n", metadataEntry.Errors);
+            validationResult.Messages = JoinErrorMessages(metadataEntry.Errors);
 
             switch (metadataEntry.Status)
             {
@@ -27,7 +28,16 @@ namespace Kartverket.MetadataMonitor.Models.External.MetadataEditor
                     validationResult.Status = ValidationStatus.NotValidated;
                     break;
             }
+            string str = metadataEntry.Errors.ToString();
+        }
 
+        private static string JoinErrorMessages(List<Error> errors)
+        {
+            StringBuilder messages = new StringBuilder();
+
+            errors.ForEach(e => messages.Append($"{e.Key}: {e.Message}\r\n"));
+
+            return messages.ToString();
         }
     }
 }
