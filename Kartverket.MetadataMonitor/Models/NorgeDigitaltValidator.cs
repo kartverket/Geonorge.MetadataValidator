@@ -1,28 +1,43 @@
-﻿using www.opengis.net;
+﻿using Arkitektum.GIS.Lib.SerializeUtil;
+using System.Web.Configuration;
+using www.opengis.net;
+using Kartverket.MetadataMonitor.Models.External.MetadataEditor;
+using System;
 
 namespace Kartverket.MetadataMonitor.Models
 {
     public class NorgeDigitaltValidator
     {
+        private const string ContentTypeXml = "application/xml";
+        private const string ResourceTypeSoftware = "software";
+
+        private static readonly string EndpointValidatorInMetadataEditor = WebConfigurationManager.AppSettings["EndpointValidatorInMetadataEditor"];
+        private readonly HttpRequestExecutor _httpRequestExecutor = new HttpRequestExecutor();
+
         public ValidationResult Validate(MetadataEntry metadataEntry, MD_Metadata_Type metadata, string rawXmlProcessed)
         {
             ValidationResult validationResult = new ValidationResult();
             
-            if (metadataEntry.HasResourceType("software"))
+            if (metadataEntry.HasResourceType(ResourceTypeSoftware))
             {
-                validationResult = HasDistributionUrl(metadata, validationResult);
+                CheckDistributionUrl(metadata, validationResult);
             }
             else
             {
-                bool allowSpatialDataThemeError = true;
-                bool allowConformityError = true;
-                validationResult = new InspireValidator().Validate(rawXmlProcessed, allowSpatialDataThemeError, allowConformityError);
-            }
+                string response = _httpRequestExecutor.GetRequest(EndpointValidatorInMetadataEditor + metadataEntry.Uuid, ContentTypeXml, ContentTypeXml);
 
+                if (!string.IsNullOrWhiteSpace(response))
+                {
+                    External.MetadataEditor.MetadataEntry externalMetadataEntry = SerializeUtil.DeserializeFromString<External.MetadataEditor.MetadataEntry>(response);
+
+                    validationResult.Initialize(externalMetadataEntry);
+                    validationResult.Timestamp = DateTime.Now;
+                }
+            }
             return validationResult;
         }
 
-        private static ValidationResult HasDistributionUrl(MD_Metadata_Type metadata, ValidationResult validationResult)
+        private static void CheckDistributionUrl(MD_Metadata_Type metadata, ValidationResult validationResult)
         {
             if (metadata.distributionInfo != null
                 && metadata.distributionInfo.MD_Distribution != null
@@ -46,21 +61,20 @@ namespace Kartverket.MetadataMonitor.Models
                         .CI_OnlineResource.linkage.URL;
                 if (url.Trim().Length > 1)
                 {
-                    validationResult.Result = 1;
+                    validationResult.Status = ValidationStatus.Valid;
                 }
                 else
                 {
-                    validationResult.Result = 0;
+                    validationResult.Status = ValidationStatus.Invalid;
                     validationResult.Messages = "Empty URL in distributionInfo.";
                 }
             }
             else
             {
-                validationResult.Result = 0;
+                validationResult.Status = ValidationStatus.Invalid;
                 validationResult.Messages = "Missing URL in distributionInfo.";
             }
-
-            return validationResult;
+            validationResult.Timestamp = DateTime.Now;
         }
     }
 }
