@@ -18,12 +18,12 @@ namespace Kartverket.MetadataMonitor.Models
         {
             ValidationResult validationResult = new ValidationResult();
             
-            if (metadataEntry.HasResourceType(ResourceTypeSoftware))
-            {
-                CheckDistributionUrl(metadata, validationResult);
-            }
-            else
-            {
+            //if (metadataEntry.HasResourceType(ResourceTypeSoftware))
+            //{
+            //    CheckDistributionUrl(metadata, validationResult);
+            //}
+            //else
+            //{
                 string response = _httpRequestExecutor.GetRequest(EndpointValidatorInMetadataEditor + metadataEntry.Uuid, ContentTypeXml, ContentTypeXml);
 
                 if (!string.IsNullOrWhiteSpace(response))
@@ -33,7 +33,7 @@ namespace Kartverket.MetadataMonitor.Models
                     validationResult.Initialize(externalMetadataEntry);
                     validationResult.Timestamp = DateTime.Now;
                 }
-            }
+            //}
             return validationResult;
         }
 
