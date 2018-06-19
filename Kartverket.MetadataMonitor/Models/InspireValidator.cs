@@ -32,7 +32,7 @@ namespace Kartverket.MetadataMonitor.Models
         {
             string inspireValidationResponse = RunInspireValidation(rawXmlProcessed);
             
-            //Log.Debug(inspireValidationResponse);
+            Log.Debug(inspireValidationResponse);
 
             XDocument xmlDoc = XDocument.Parse(inspireValidationResponse);
             InspireValidationResponseParser parser = new InspireValidationResponseParser(xmlDoc);
