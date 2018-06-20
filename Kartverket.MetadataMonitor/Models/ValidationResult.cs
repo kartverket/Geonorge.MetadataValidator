@@ -2,34 +2,25 @@
 
 namespace Kartverket.MetadataMonitor.Models
 {
+    public enum ValidationStatus
+    {
+        Valid = 1,
+        Invalid = 0,
+        NotValidated = -1
+    }
     public class ValidationResult
     {
-        public int Result { get; set; }
+        public ValidationStatus Status { get; set; }
         public DateTime Timestamp { get; set; }
         public string Messages { get; set; }
 
-        public bool IsOk()
-        {
-            return Result == 1;
-        }
-
-        public bool IsNotValidated()
-        {
-            return Result == -1;
-        }
-
-        public bool IsFailed()
-        {
-            return Result == 0;
-        }
-
         public string GetResultAsText()
         {
-            switch (Result)
+            switch (Status)
             {
-                case 1:
+                case ValidationStatus.Valid:
                     return "OK";
-                case 0:
+                case ValidationStatus.Invalid:
                     return "Failed";
                 default:
                     return "Not validated";
