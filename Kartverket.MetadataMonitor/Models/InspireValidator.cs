@@ -1,7 +1,10 @@
 ﻿using System.Text;
 using System.Xml.Linq;
 using System.Security.Cryptography;
+using System.Web.Configuration;
 using System;
+using Newtonsoft.Json;
+using Kartverket.MetadataMonitor.Models.External.Inspire;
 
 namespace Kartverket.MetadataMonitor.Models
 {
@@ -11,7 +14,10 @@ namespace Kartverket.MetadataMonitor.Models
 
         private readonly HttpRequestExecutor _httpRequestExecutor;
 
-        string EndpointUrlInspire = System.Web.Configuration.WebConfigurationManager.AppSettings["EndpointUrlInspire"];
+        private readonly string _inspireUrl = WebConfigurationManager.AppSettings["InspireUrl"];
+        private readonly string _validationEndpoint = WebConfigurationManager.AppSettings["InsprireValidationEndpoint"];
+        private readonly string _metadataSelectorEndpoint = WebConfigurationManager.AppSettings["InsprireMetadataSelectorEndpoint"];
+        private readonly string _validationStatusEndpoint = WebConfigurationManager.AppSettings["InsprireValidationStatusEndpoint"];
 
         public InspireValidator() : this(new HttpRequestExecutor())
         {
@@ -23,11 +29,13 @@ namespace Kartverket.MetadataMonitor.Models
             _httpRequestExecutor = httpRequestExecutor;
         }
 
+        // @TODO: Check if this method is obsolete.
         public ValidationResult Validate(string rawXmlProcessed)
         {
             return Validate(rawXmlProcessed, false);
         }
 
+        // @TODO: Check if this method is obsolete.
         public ValidationResult Validate(string rawXmlProcessed, bool allowSpatialDataThemeError, bool allowConformityError = false)
         {
             string inspireValidationResponse = RunInspireValidation(rawXmlProcessed);
@@ -40,6 +48,49 @@ namespace Kartverket.MetadataMonitor.Models
             return parser.ParseValidationResponseWithCompletenessIndicator();
         }
 
+        public ValidationResult CheckValidationState(string uuid)
+        {
+            if (!string.IsNullOrWhiteSpace(uuid))
+            {
+                string inspireId = GetInspireId(uuid);
+
+                if (!string.IsNullOrWhiteSpace(inspireId))
+                {
+                    Log.Info($"Check validation state for metadata. Inspire id: {inspireId}");
+                    string inspireValidationResponse = _httpRequestExecutor.GetRequest(_inspireUrl + _validationStatusEndpoint + inspireId, "application/xml", "");
+                    XDocument xmlDoc = XDocument.Parse(inspireValidationResponse);
+                    InspireValidationResponseParser parser = new InspireValidationResponseParser(xmlDoc);
+
+                    return parser.ParseValidationResponseWithCompletenessIndicator();
+                }
+                else
+                {
+                    throw new Exception($"Cannot retrieve inspire id for {uuid}");
+                }
+            }
+            else
+            {
+                throw new Exception("Metadata id missing.");
+            }
+        }
+
+        private string GetInspireId(string uuid)
+        {
+            string inspireId = "";
+            Log.Info($"Get inspire id from geonorge id: {uuid}.");
+
+            string response = _httpRequestExecutor.GetRequest(_inspireUrl + _metadataSelectorEndpoint + uuid, "", "");
+
+            SearchResult searchResult = JsonConvert.DeserializeObject<SearchResult>(response);
+
+            if (searchResult.Response != null && searchResult.Response.Documents != null && searchResult.Response.Documents.Count == 1)
+            {
+                inspireId = searchResult.Response.Documents[0].Id;
+            }
+            return inspireId;
+        }
+
+        // @TODO: Check if this method is obsolete.
         private string RunInspireValidation(string data)
         {
             /* 
@@ -68,7 +119,7 @@ namespace Kartverket.MetadataMonitor.Models
             string contentType = "multipart/form-data; boundary=" + boundary;
 
             Log.Info("Sending metadata to INSPIRE validator.");
-            string responseBody = _httpRequestExecutor.PostRequest(EndpointUrlInspire, "application/xml", contentType, postData);
+            string responseBody = _httpRequestExecutor.PostRequest(_inspireUrl + _validationEndpoint, "application/xml", contentType, postData);
 
             return responseBody;
         }

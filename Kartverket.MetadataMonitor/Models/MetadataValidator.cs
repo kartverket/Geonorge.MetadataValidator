@@ -65,8 +65,9 @@ namespace Kartverket.MetadataMonitor.Models
                 {
                     if (metadataEntry.InspireResource)
                     {
-                        Log.Info("Validating metadata with INSPIRE-validator.");
-                        validationResult = new InspireValidator(_httpRequestExecutor).Validate(rawXmlProcessed);
+                        // Check validation state instead of valdating.
+                        Log.Info("Check validation state metadata with INSPIRE-validator.");
+                        validationResult = new InspireValidator(_httpRequestExecutor).CheckValidationState(uuid);
                     }
                     else
                     {
