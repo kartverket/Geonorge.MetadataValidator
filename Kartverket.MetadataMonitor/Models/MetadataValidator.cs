@@ -63,16 +63,17 @@ namespace Kartverket.MetadataMonitor.Models
                 }
                 else
                 {
-                    //if (metadataEntry.InspireResource)
-                    //{
-                    //    Log.Info("Validating metadata with INSPIRE-validator.");
-                    //    validationResult = new InspireValidator(_httpRequestExecutor).Validate(rawXmlProcessed);
-                    //}
-                    //else
-                    //{
+                    if (metadataEntry.InspireResource)
+                    {
+                        // Check validation state instead of valdating.
+                        Log.Info("Check validation state metadata with INSPIRE-validator.");
+                        validationResult = new InspireValidator(_httpRequestExecutor).CheckValidationState(uuid);
+                    }
+                    else
+                    {
                         Log.Info("Validating metadata with Norge Digitalt-validator.");
                         validationResult = new NorgeDigitaltValidator().Validate(metadataEntry, metadata, rawXmlProcessed);
-                    //}
+                    }
                 }
                 Log.Info("Validation result: " + validationResult.Messages);
                 metadataEntry.ValidationResults.Add(validationResult);
