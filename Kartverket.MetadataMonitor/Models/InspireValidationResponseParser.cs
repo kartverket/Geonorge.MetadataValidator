@@ -27,16 +27,17 @@ namespace Kartverket.MetadataMonitor.Models
             var errors = GetErrors(_inspireValidationResponse);
             var validationResult = new ValidationResult();
 
-            validationResult.Result = ComputeValidationResultFromCompletenessIndicator();
+            validationResult.Status = ComputeValidationResultFromCompletenessIndicator();
             validationResult.Messages = String.Join("\r\n", errors);
 
             return validationResult;
         }
 
-        private int ComputeValidationResultFromCompletenessIndicator()
+        private ValidationStatus ComputeValidationResultFromCompletenessIndicator()
         {
-            int result = 0;
+            ValidationStatus result = ValidationStatus.Invalid;
             XElement element = _inspireValidationResponse.Descendants(NsGeo + "CompletenessIndicator").FirstOrDefault();
+
             if (element != null)
             {
                 double completenessIndicator = 0.0;
@@ -44,7 +45,7 @@ namespace Kartverket.MetadataMonitor.Models
                 Log.Debug("CompletnessIndicator: " + completenessIndicator);
                 if (((int)completenessIndicator) == 100)
                 {
-                    result = 1;
+                    result = ValidationStatus.Valid;
                 }    
             }
             return result;
@@ -55,10 +56,10 @@ namespace Kartverket.MetadataMonitor.Models
             var errors = GetErrors(_inspireValidationResponse);
 
             var validationResult = new ValidationResult();
-            validationResult.Result = ComputeValidationResult(errors, allowSpatialDataThemeError, allowConformityError);
+            validationResult.Status = ComputeValidationResult(errors, allowSpatialDataThemeError, allowConformityError);
 
 
-            if (!validationResult.IsOk())
+            if (validationResult.Status != ValidationStatus.Valid)
                 validationResult.Messages = String.Join("\r\n", errors);
 
             return validationResult;
@@ -82,10 +83,8 @@ namespace Kartverket.MetadataMonitor.Models
             }
             return errors;
         }
-        
-        
 
-        private int ComputeValidationResult(List<string> errors, bool allowSpatialDataThemeError, bool allowConformityError)
+        private ValidationStatus ComputeValidationResult(List<string> errors, bool allowSpatialDataThemeError, bool allowConformityError)
         {
             if (errors.Any() && (allowSpatialDataThemeError || allowConformityError))
             {
@@ -99,10 +98,7 @@ namespace Kartverket.MetadataMonitor.Models
                     }
                 }
             }
-            return !errors.Any() ? 1 : 0;
+            return !errors.Any() ? ValidationStatus.Valid : ValidationStatus.Invalid;
         }
-
-
-        
     }
 }

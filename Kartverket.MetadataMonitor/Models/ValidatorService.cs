@@ -132,8 +132,7 @@ namespace Kartverket.MetadataMonitor.Models
             var query = new QueryType();
             var queryConstraint = new QueryConstraintType();
             queryConstraint.version = "1.1.0";
-            queryConstraint.Item = new FilterType(); // using empty filter to get all records
-            //queryConstraint.Item = CreateFilterForServices();
+            queryConstraint.Item = CreateFilterForNorwayDigital();
             query.Constraint = queryConstraint;
 
             getRecords.Item = query;
@@ -141,23 +140,41 @@ namespace Kartverket.MetadataMonitor.Models
             return SerializeUtil.SerializeToString(getRecords);
         }
 
-        private FilterType CreateFilterForServices()
+        private FilterType CreateFilterForNorwayDigital()
         {
             var filters = new object[]
-                {
-                    new PropertyIsLikeType
+            {
+                    new BinaryLogicOpType()
+                    {
+                       Items = new object[]
+                        {
+                        new PropertyIsLikeType
                         {
                             escapeChar = "\\",
                             singleChar = "_",
                             wildCard = "%",
                             PropertyName = new PropertyNameType {Text = new[] {"type"}},
-                            Literal = new LiteralType {Text = new[] { "service" }}
+                            Literal = new LiteralType {Text = new[] {"dataset"}}
+                        },
+                        new PropertyIsLikeType
+                            {
+                                PropertyName = new PropertyNameType {Text = new[] {"keyword"}},
+                                Literal = new LiteralType {Text = new[] {"Norge digitalt"}}
+                            }
+                       },
+                       ItemsElementName = new ItemsChoiceType22[]
+                        {
+                            ItemsChoiceType22.PropertyIsLike, ItemsChoiceType22.PropertyIsLike,
                         }
-                };
+                    }
+            };
+
+
             var filterNames = new ItemsChoiceType23[]
-                {
-                    ItemsChoiceType23.PropertyIsLike, 
-                };
+            {
+                        ItemsChoiceType23.And
+            };
+
 
             return new FilterType
             {

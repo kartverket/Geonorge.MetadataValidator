@@ -49,7 +49,7 @@ namespace Kartverket.MetadataMonitor.Models
             if (ValidationResults != null && ValidationResults[0] != null)
             {
                 var validationResult = ValidationResults[0];
-                result = validationResult.IsOk();
+                result = validationResult.Status == ValidationStatus.Valid;
             }
             return result;
         }
@@ -61,7 +61,7 @@ namespace Kartverket.MetadataMonitor.Models
             if (ValidationResults != null && ValidationResults[0] != null)
             {
                 var validationResult = ValidationResults[0];
-                result = validationResult.IsNotValidated();
+                result = validationResult.Status == ValidationStatus.NotValidated;
             }
             return result;
         }
@@ -73,7 +73,7 @@ namespace Kartverket.MetadataMonitor.Models
             if (ValidationResults != null && ValidationResults[0] != null)
             {
                 var validationResult = ValidationResults[0];
-                result = validationResult.IsFailed();
+                result = validationResult.Status == ValidationStatus.Invalid;
             }
             return result;
         }

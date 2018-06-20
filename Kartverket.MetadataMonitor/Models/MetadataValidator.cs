@@ -57,7 +57,7 @@ namespace Kartverket.MetadataMonitor.Models
                     validationResult = new ValidationResult
                         {
                             Messages = "Unknown resource type, please check value of hierarchyLevel element.",
-                            Result = -1,
+                            Status = ValidationStatus.NotValidated,
                             Timestamp = DateTime.Now
                         };
                 }
@@ -65,8 +65,9 @@ namespace Kartverket.MetadataMonitor.Models
                 {
                     if (metadataEntry.InspireResource)
                     {
-                        Log.Info("Validating metadata with INSPIRE-validator.");
-                        validationResult = new InspireValidator(_httpRequestExecutor).Validate(rawXmlProcessed);
+                        // Check validation state instead of valdating.
+                        Log.Info("Check validation state metadata with INSPIRE-validator.");
+                        validationResult = new InspireValidator(_httpRequestExecutor).CheckValidationState(uuid);
                     }
                     else
                     {
@@ -85,7 +86,7 @@ namespace Kartverket.MetadataMonitor.Models
                 if (e.InnerException != null)
                     message += e.InnerException.Message;
 
-                metadataEntry.ValidationResults.Add(new ValidationResult { Messages="Exception during validation: " + message, Result = -1, Timestamp = DateTime.Now });
+                metadataEntry.ValidationResults.Add(new ValidationResult { Messages="Exception during validation: " + message, Status = ValidationStatus.NotValidated, Timestamp = DateTime.Now });
                 Log.Error("Exception occured for uuid=" + uuid + ", not validated. " + message);
             }
             return metadataEntry;

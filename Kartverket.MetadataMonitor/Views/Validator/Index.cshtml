@@ -6,7 +6,7 @@
 }
 
 @section breadcrumb{
-    <li>UI.ValidationResults</li>
+    <li>@UI.ValidationResults</li>
 }
 
 @if (TempData["message"] != null)
@@ -155,11 +155,14 @@
                     </td>
                     <td style="word-break: break-all;">
                         @if (result.ValidationResults[0].Messages != null)
-                    {
+                        {
                             <ul>
                                 @foreach (var error in result.ValidationResults[0].Messages.Split('\n'))
                                 {
+                                    if (!string.IsNullOrEmpty(error))
+                                    { 
                                     <li>@error</li>
+                                    }
                                 }
                             </ul>
                         }
