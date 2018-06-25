@@ -192,7 +192,11 @@
     <Compile Include="Models\Auth\User.cs" />
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\DashboardViewModel.cs" />
+    <Compile Include="Models\External\MetadataEditor\Error.cs" />
+    <Compile Include="Models\External\MetadataEditor\MetadataEntry.cs" />
+    <Compile Include="Models\External\MetadataEditor\ValidationResultInitializer.cs" />
     <Compile Include="Models\InspireValidator.cs" />
+    <Compile Include="Models\External\Inspire\SearchResult.cs" />
     <Compile Include="Models\MetadataRepository.cs" />
     <Compile Include="Models\HttpRequestExecutor.cs" />
     <Compile Include="Models\InspireValidationResponseParser.cs" />
