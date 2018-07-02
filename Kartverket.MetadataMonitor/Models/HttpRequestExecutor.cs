@@ -35,9 +35,7 @@ namespace Kartverket.MetadataMonitor.Models
         {
             try
             {
-                System.Net.ServicePointManager.Expect100Continue = false;
                 HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
-                request.ServicePoint.Expect100Continue = false;
                 request.Method = "POST";
                 if (accept != null)
                     request.Accept = accept;
