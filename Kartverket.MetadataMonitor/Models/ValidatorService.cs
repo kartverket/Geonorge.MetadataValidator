@@ -149,14 +149,6 @@ namespace Kartverket.MetadataMonitor.Models
                        Items = new object[]
                         {
                         new PropertyIsLikeType
-                        {
-                            escapeChar = "\\",
-                            singleChar = "_",
-                            wildCard = "%",
-                            PropertyName = new PropertyNameType {Text = new[] {"type"}},
-                            Literal = new LiteralType {Text = new[] {"dataset"}}
-                        },
-                        new PropertyIsLikeType
                             {
                                 PropertyName = new PropertyNameType {Text = new[] {"keyword"}},
                                 Literal = new LiteralType {Text = new[] {"Norge digitalt"}}
