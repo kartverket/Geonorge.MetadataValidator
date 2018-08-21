@@ -86,7 +86,7 @@ namespace Kartverket.MetadataMonitor.Models
                 if (e.InnerException != null)
                     message += e.InnerException.Message;
 
-                metadataEntry.ValidationResults.Add(new ValidationResult { Messages="Exception during validation: " + message, Status = ValidationStatus.NotValidated, Timestamp = DateTime.Now });
+                metadataEntry.ValidationResults.Add(new ValidationResult { Messages = "Exception during validation: " + message, Status = ValidationStatus.NotValidated, Timestamp = DateTime.Now });
                 Log.Error("Exception occured for uuid=" + uuid + ", not validated. " + message);
             }
             return metadataEntry;
@@ -115,7 +115,15 @@ namespace Kartverket.MetadataMonitor.Models
                 var dataIdentification = metadata.identificationInfo[0].AbstractMD_Identification;
                 if (dataIdentification != null)
                 {
-                    title = dataIdentification.citation.CI_Citation.title.CharacterString;
+                    CharacterString_PropertyType titleString = null;
+
+                    Anchor_Type titleObject = dataIdentification.citation.CI_Citation.title.item as Anchor_Type;
+                    if (titleObject != null)
+                        titleString = toCharString(titleObject.Value);
+                    else
+                        titleString = dataIdentification.citation.CI_Citation.title.item as CharacterString_PropertyType;
+
+                    title = titleString.CharacterString;
 
                     if (dataIdentification.pointOfContact != null
                         && dataIdentification.pointOfContact[0] != null
@@ -192,9 +200,11 @@ namespace Kartverket.MetadataMonitor.Models
                             {
                                 foreach (var singleKeyword in descriptiveKeyword.MD_Keywords.keyword)
                                 {
-                                    if (singleKeyword.CharacterString != null)
+                                    if (singleKeyword.keyword != null)
                                     {
-                                        keywords.Add(singleKeyword.CharacterString);
+                                        string keywordValue = GetStringOrNull(singleKeyword);
+
+                                        keywords.Add(keywordValue);
 
                                         /** old way of determine inspire or norge digitalt
                                         if (singleKeyword.CharacterString.Equals("annet", StringComparison.InvariantCultureIgnoreCase))
@@ -266,10 +276,21 @@ namespace Kartverket.MetadataMonitor.Models
 
                 if (result != null && result.specification != null && result.specification.CI_Citation != null
                     && result.specification.CI_Citation.title != null
-                    && result.specification.CI_Citation.title.CharacterString != null
-                    && result.specification.CI_Citation.title.CharacterString.ToUpper().Contains("COMMISSION REGULATION (EU)"))
+                    && result.specification.CI_Citation.title.item != null
+                    && result.specification.CI_Citation.title != null)
                 {
-                    isInspireResource = true;
+                    string title = "";
+                    var anchorTitle = result.specification.CI_Citation.title.item as Anchor_Type;
+                    if (anchorTitle != null)
+                    {
+                        title = anchorTitle.Value;
+
+                    }
+                    else
+                        title = GetStringFromObject(result.specification.CI_Citation.title);
+
+                    if(title.ToUpper().Contains("COMMISSION REGULATION (EU)"))
+                        isInspireResource = true;
                 }
 
             }
@@ -299,9 +320,63 @@ namespace Kartverket.MetadataMonitor.Models
 
             return SerializeUtil.SerializeToString(getRecordbyId);
         }
-        
-        
 
+        private CharacterString_PropertyType toCharString(string input)
+        {
+            return new CharacterString_PropertyType { CharacterString = input };
+        }
 
+        private string GetStringOrNull(MD_Keyword keywordElement)
+        {
+            string keywordValue = null;
+
+            var keyword = keywordElement.keyword;
+
+            if (keyword.GetType() == typeof(PT_FreeText_PropertyType))
+            {
+                CharacterString_PropertyType charString = keyword as CharacterString_PropertyType;
+                if (charString != null)
+                {
+                    keywordValue = charString.CharacterString;
+                }
+            }
+            else if (keyword.GetType() == typeof(CharacterString_PropertyType))
+            {
+                CharacterString_PropertyType charString = keyword as CharacterString_PropertyType;
+                if (charString != null)
+                {
+                    keywordValue = charString.CharacterString;
+                }
+            }
+            else if (keyword.GetType() == typeof(Anchor_Type))
+            {
+                Anchor_Type anchor = keyword as Anchor_Type;
+                if (anchor != null)
+                {
+                    keywordValue = anchor.Value;
+                }
+            }
+
+            return keywordValue;
+        }
+
+        private string GetStringFromObject(object o)
+        {
+            Anchor_Type titleObject = o as Anchor_Type;
+            CI_Citation_Title citation = o as CI_Citation_Title;
+
+            if (titleObject != null)
+                return titleObject.Value;
+            else if (citation != null)
+            {
+                CharacterString_PropertyType title = citation.item as CharacterString_PropertyType;
+                return title.CharacterString;
+            }
+            else
+            {
+                CharacterString_PropertyType title = o as CharacterString_PropertyType;
+                return title.CharacterString;
+            }
+        }
     }
 }
