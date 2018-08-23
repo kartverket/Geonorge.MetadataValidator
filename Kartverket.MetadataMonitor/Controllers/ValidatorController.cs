@@ -37,7 +37,7 @@ namespace Kartverket.MetadataMonitor.Controllers
                     Status = status,
                     ResourceType = resource,
                     Inspire = inspire,
-                    MetadataEntries = metadataEntries,
+                    MetadataEntries = metadataEntries
                 };
 
             ViewBag.Organizations = new SelectList(_metadataRepository.GetAvailableOrganizations(), organization);
