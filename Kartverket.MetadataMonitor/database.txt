@@ -29,6 +29,9 @@ ALTER TABLE metadata ADD COLUMN contact_information TEXT;
 ALTER TABLE metadata ADD COLUMN abstract TEXT;
 ALTER TABLE metadata ADD COLUMN purpose TEXT;
 
+-- endring 23.08.2017
+ALTER TABLE validation_results ADD COLUMN inspire_resource BOOLEAN DEFAULT false;
+
 
 -- rettigheter
 GRANT CONNECT ON DATABASE XXXXXXXXX to monitor;

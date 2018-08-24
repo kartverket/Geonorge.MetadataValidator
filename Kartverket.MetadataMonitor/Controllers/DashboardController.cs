@@ -26,7 +26,7 @@ namespace Kartverket.MetadataMonitor.Controllers
         {
             var results = _metadataRepository.GetMetadataListWithLatestValidationResult(null, null, null,null, null);
 
-            var totalResultCount = results.Count();
+            var totalResultCount = results.Select(m => m.Uuid).Distinct().Count();
             var totalResultNotValidated = results.Count(n => n.isNotValidated());
             var totalResultOk = results.Count(n => n.IsOk());
             var totalResultFailed = totalResultCount - totalResultNotValidated - totalResultOk;

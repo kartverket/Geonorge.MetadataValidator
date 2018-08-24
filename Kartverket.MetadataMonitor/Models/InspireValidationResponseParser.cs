@@ -26,7 +26,7 @@ namespace Kartverket.MetadataMonitor.Models
         {
             var errors = GetErrors(_inspireValidationResponse);
             var validationResult = new ValidationResult();
-
+            validationResult.InspireResource = true;
             validationResult.Status = ComputeValidationResultFromCompletenessIndicator();
             validationResult.Messages = String.Join("\r\n", errors);
 

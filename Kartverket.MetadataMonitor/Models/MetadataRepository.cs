@@ -130,10 +130,10 @@ namespace Kartverket.MetadataMonitor.Models
 
         private string SelectWhichSqlToUse(int? status, string organization, string resourceType, bool? inspireResource, string uuid)
         {
-            string sql = "SELECT m.uuid, m.title, m.responsible_organization, m.resourcetype, m.inspire_resource, " +
+            string sql = "SELECT m.uuid, m.title, m.responsible_organization, m.resourcetype, subQuery.inspire_resource, " +
                 "subQuery.result, subQuery.messages, subQuery.timestamp FROM metadata m " +
                 "INNER JOIN " +
-                    "(SELECT res.uuid, res.result, res.messages, res.timestamp " +
+                    "(SELECT res.uuid, res.result, res.messages, res.timestamp, res.inspire_resource " +
                     "FROM validation_results res " +
                     "WHERE (res.uuid, res.timestamp) IN " +
                         "(SELECT v.uuid, MAX(timestamp) as timestamp " +
@@ -145,14 +145,14 @@ namespace Kartverket.MetadataMonitor.Models
                 " __META_CONDITIONS__ " +
                 "ORDER BY subQuery.timestamp desc";
             
-            sql = sql.Replace("__RESULT_CONDITIONS__", CreateResultConditionsSql(status));
+            sql = sql.Replace("__RESULT_CONDITIONS__", CreateResultConditionsSql(status, inspireResource));
 
             sql = sql.Replace("__META_CONDITIONS__", CreateMetaConditionsSql(organization, resourceType, inspireResource, uuid));
 
             return sql;
         }
 
-        private static string CreateResultConditionsSql(int? status)
+        private static string CreateResultConditionsSql(int? status, bool? inspireResource)
         {
             var sqlResultConditions = "";
 
@@ -160,6 +160,10 @@ namespace Kartverket.MetadataMonitor.Models
             {
                 sqlResultConditions = "AND res.result = :status";
             }
+
+            if (inspireResource.HasValue)
+                sqlResultConditions = "AND res.inspire_resource = :inspire_resource";
+
             return sqlResultConditions;
         }
 
@@ -175,9 +179,6 @@ namespace Kartverket.MetadataMonitor.Models
 
             if (!string.IsNullOrWhiteSpace(resourceType))
                 metaConditions.Add(" m.resourcetype = :resourcetype ");
-
-            if (inspireResource.HasValue)
-                metaConditions.Add(" m.inspire_resource = :inspire_resource ");
 
             StringBuilder metaConditionsSql = new StringBuilder();
             for (int i = 0; i < metaConditions.Count; i++)
@@ -221,22 +222,24 @@ namespace Kartverket.MetadataMonitor.Models
 
         private void InsertMetadataValidationResult(MetadataEntry metadata, NpgsqlConnection connection)
         {
-            var validationResult = metadata.ValidationResults[0];
-
-            const string sql =
-                "INSERT INTO validation_results (uuid, result, messages) VALUES (:uuid, :result, :messages)";
-            using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
-            {
-                command.Parameters.Add(new NpgsqlParameter("uuid", NpgsqlDbType.Varchar) {Value = metadata.Uuid});
-                command.Parameters.Add(new NpgsqlParameter("result", NpgsqlDbType.Integer)
-                    {
-                        Value = validationResult.Status
-                    });
-                command.Parameters.Add(new NpgsqlParameter("messages", NpgsqlDbType.Varchar)
-                    {
-                        Value = validationResult.Messages
-                    });
-                command.ExecuteNonQuery();
+            foreach(var validationResult in metadata.ValidationResults)
+            { 
+                const string sql =
+                    "INSERT INTO validation_results (uuid, result, messages, inspire_resource) VALUES (:uuid, :result, :messages, :inspire_resource)";
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                {
+                    command.Parameters.Add(new NpgsqlParameter("uuid", NpgsqlDbType.Varchar) {Value = metadata.Uuid});
+                    command.Parameters.Add(new NpgsqlParameter("result", NpgsqlDbType.Integer)
+                        {
+                            Value = validationResult.Status
+                        });
+                    command.Parameters.Add(new NpgsqlParameter("messages", NpgsqlDbType.Varchar)
+                        {
+                            Value = validationResult.Messages
+                        });
+                    command.Parameters.Add(new NpgsqlParameter("inspire_resource", NpgsqlDbType.Boolean) { Value = validationResult.InspireResource });
+                    command.ExecuteNonQuery();
+                }
             }
         }
 

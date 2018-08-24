@@ -60,6 +60,8 @@ namespace Kartverket.MetadataMonitor.Models
                             Status = ValidationStatus.NotValidated,
                             Timestamp = DateTime.Now
                         };
+                    Log.Info("Validation result: " + validationResult.Messages);
+                    metadataEntry.ValidationResults.Add(validationResult);
                 }
                 else
                 {
@@ -68,15 +70,17 @@ namespace Kartverket.MetadataMonitor.Models
                         // Check validation state instead of valdating.
                         Log.Info("Check validation state metadata with INSPIRE-validator.");
                         validationResult = new InspireValidator(_httpRequestExecutor).CheckValidationState(uuid);
+                        Log.Info("Validation result: " + validationResult.Messages);
+                        metadataEntry.ValidationResults.Add(validationResult);
                     }
-                    else
+                    if(metadataEntry.Keywords.Contains("Norge digitalt"))
                     {
                         Log.Info("Validating metadata with Norge Digitalt-validator.");
                         validationResult = new NorgeDigitaltValidator().Validate(metadataEntry, metadata, rawXmlProcessed);
+                        Log.Info("Validation result: " + validationResult.Messages);
+                        metadataEntry.ValidationResults.Add(validationResult);
                     }
                 }
-                Log.Info("Validation result: " + validationResult.Messages);
-                metadataEntry.ValidationResults.Add(validationResult);
             }
             catch (Exception e)
             {

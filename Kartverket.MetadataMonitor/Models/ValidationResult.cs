@@ -13,6 +13,7 @@ namespace Kartverket.MetadataMonitor.Models
         public ValidationStatus Status { get; set; }
         public DateTime Timestamp { get; set; }
         public string Messages { get; set; }
+        public bool InspireResource { get; set; }
 
         public string GetResultAsText()
         {
