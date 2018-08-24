@@ -32,6 +32,7 @@ ALTER TABLE metadata ADD COLUMN purpose TEXT;
 -- endring 23.08.2018
 ALTER TABLE validation_results ADD COLUMN completeness_indicator DOUBLE PRECISION DEFAULT -1.0;
 ALTER TABLE validation_results ADD COLUMN interoperability_indicator DOUBLE PRECISION DEFAULT -1.0;
+ALTER TABLE validation_results ADD COLUMN report_url TEXT DEFAULT '';
 
 -- rettigheter
 GRANT CONNECT ON DATABASE XXXXXXXXX to monitor;

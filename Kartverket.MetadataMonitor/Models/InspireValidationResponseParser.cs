@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Web.Configuration;
 using System.Xml.Linq;
 
 namespace Kartverket.MetadataMonitor.Models
 {
     public class InspireValidationResponseParser
     {
-        private const string CompletenessIndicator = "CompletenessIndicator";
-        private const string InteroperabilityIndicator = "InteroperabilityIndicator";
+        private const string XmlCompletenessIndicator = "CompletenessIndicator";
+        private const string XmlInteroperabilityIndicator = "InteroperabilityIndicator";
+        private const string XmlMetadataLocator = "GeoportalMetadataLocator";
+        private const string XmlReportUrl = "URL";
+
+        private static readonly string InspireResourceUrl = $"{WebConfigurationManager.AppSettings["InspireUrl"]}{WebConfigurationManager.AppSettings["InsprireValidationStatusEndpoint"]}";
 
         private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -30,12 +34,26 @@ namespace Kartverket.MetadataMonitor.Models
             var errors = GetErrors(_inspireValidationResponse);
             var validationResult = new ValidationResult();
 
-            validationResult.InteroperabilityIndicator = GetIndicator(InteroperabilityIndicator);
-            validationResult.CompletenessIndicator = GetIndicator(CompletenessIndicator);
+            validationResult.InteroperabilityIndicator = GetIndicator(XmlInteroperabilityIndicator);
+            validationResult.CompletenessIndicator = GetIndicator(XmlCompletenessIndicator);
             validationResult.Status = ComputeValidationResultFromCompletenessIndicator(validationResult.CompletenessIndicator);
             validationResult.Messages = String.Join("\r\n", errors);
+            validationResult.ReportUrl = GetReportUrl();
 
             return validationResult;
+        }
+
+        private string GetReportUrl()
+        {
+            string url = "";
+
+            XElement element = _inspireValidationResponse.Descendants(NsGeo + XmlMetadataLocator).FirstOrDefault().Descendants(NsCommon + XmlReportUrl).FirstOrDefault();
+            
+            if (element != null)
+            {
+                url = $"{InspireResourceUrl}{element.Value}";
+            }
+            return url;
         }
 
         private double GetIndicator(string indicatorName)

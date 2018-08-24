@@ -17,6 +17,7 @@ namespace Kartverket.MetadataMonitor.Models
         public double InteroperabilityIndicator { get; set; } = UndefinedIndicator;
         public DateTime Timestamp { get; set; }
         public string Messages { get; set; }
+        public string ReportUrl { get; set; }
 
         public string GetResultAsText()
         {
