@@ -18,6 +18,7 @@ namespace Kartverket.MetadataMonitor.Models
         public DateTime Timestamp { get; set; }
         public string Messages { get; set; }
         public string ReportUrl { get; set; }
+        public bool InspireResource { get; set; }
 
         public string GetResultAsText()
         {

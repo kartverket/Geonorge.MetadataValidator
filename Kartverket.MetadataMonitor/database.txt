@@ -33,6 +33,8 @@ ALTER TABLE metadata ADD COLUMN purpose TEXT;
 ALTER TABLE validation_results ADD COLUMN completeness_indicator DOUBLE PRECISION DEFAULT -1.0;
 ALTER TABLE validation_results ADD COLUMN interoperability_indicator DOUBLE PRECISION DEFAULT -1.0;
 ALTER TABLE validation_results ADD COLUMN report_url TEXT DEFAULT '';
+ALTER TABLE validation_results ADD COLUMN inspire_resource BOOLEAN DEFAULT false;
+
 
 -- rettigheter
 GRANT CONNECT ON DATABASE XXXXXXXXX to monitor;

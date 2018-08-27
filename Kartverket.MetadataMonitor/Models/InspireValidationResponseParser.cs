@@ -33,7 +33,7 @@ namespace Kartverket.MetadataMonitor.Models
         {
             var errors = GetErrors(_inspireValidationResponse);
             var validationResult = new ValidationResult();
-
+            validationResult.InspireResource = true;
             validationResult.InteroperabilityIndicator = GetIndicator(XmlInteroperabilityIndicator);
             validationResult.CompletenessIndicator = GetIndicator(XmlCompletenessIndicator);
             validationResult.Status = ComputeValidationResultFromCompletenessIndicator(validationResult.CompletenessIndicator);
