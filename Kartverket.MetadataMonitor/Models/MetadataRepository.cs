@@ -100,13 +100,13 @@ namespace Kartverket.MetadataMonitor.Models
                         while (dr.Read())
                         {
                             var metadataEntry = new MetadataEntry()
-                                {
-                                    InspireResource = dr.GetBoolean(4),
-                                    ResourceType = dr.GetString(3),
-                                    ResponsibleOrganization = dr.GetString(2),
-                                    Title = dr.GetString(1),
-                                    Uuid = dr.GetString(0),
-                                    ValidationResults = new List<ValidationResult>()
+                            {
+                                InspireResource = dr.GetBoolean(4),
+                                ResourceType = dr.GetString(3),
+                                ResponsibleOrganization = dr.GetString(2),
+                                Title = dr.GetString(1),
+                                Uuid = dr.GetString(0),
+                                ValidationResults = new List<ValidationResult>()
                                         {
                                             new ValidationResult()
                                                 {
@@ -115,7 +115,7 @@ namespace Kartverket.MetadataMonitor.Models
                                                     Timestamp = dr.GetTimeStamp(7),
                                                     CompletenessIndicator = dr.GetDouble(8),
                                                     InteroperabilityIndicator = dr.GetDouble(9),
-                                                    ReportUrl = dr.GetString(10)
+                                                    ReportUrl = dr.IsDBNull(10) ? "" : dr.GetString(10)
                                                 }
                                         }
                                 };
