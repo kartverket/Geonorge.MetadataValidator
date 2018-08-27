@@ -112,7 +112,10 @@ namespace Kartverket.MetadataMonitor.Models
                                                 {
                                                     Messages = dr.IsDBNull(6) ? null : dr.GetString(6),
                                                     Status = (ValidationStatus)dr.GetInt32(5),
-                                                    Timestamp = dr.GetTimeStamp(7)
+                                                    Timestamp = dr.GetTimeStamp(7),
+                                                    CompletenessIndicator = dr.GetDouble(8),
+                                                    InteroperabilityIndicator = dr.GetDouble(9),
+                                                    ReportUrl = dr.GetString(10)
                                                 }
                                         }
                                 };
@@ -131,9 +134,9 @@ namespace Kartverket.MetadataMonitor.Models
         private string SelectWhichSqlToUse(int? status, string organization, string resourceType, bool? inspireResource, string uuid)
         {
             string sql = "SELECT m.uuid, m.title, m.responsible_organization, m.resourcetype, subQuery.inspire_resource, " +
-                "subQuery.result, subQuery.messages, subQuery.timestamp FROM metadata m " +
+                "subQuery.result, subQuery.messages, subQuery.timestamp, subQuery.completeness_indicator, subQuery.interoperability_indicator, subQuery.report_url FROM metadata m " +
                 "INNER JOIN " +
-                    "(SELECT res.uuid, res.result, res.messages, res.timestamp, res.inspire_resource " +
+                    "(SELECT res.uuid, res.result, res.messages, res.timestamp, res.completeness_indicator, res.interoperability_indicator, res.report_url, res.inspire_resource " +
                     "FROM validation_results res " +
                     "WHERE (res.uuid, res.timestamp) IN " +
                         "(SELECT v.uuid, MAX(timestamp) as timestamp " +
@@ -222,24 +225,38 @@ namespace Kartverket.MetadataMonitor.Models
 
         private void InsertMetadataValidationResult(MetadataEntry metadata, NpgsqlConnection connection)
         {
-            foreach(var validationResult in metadata.ValidationResults)
-            { 
-                const string sql =
-                    "INSERT INTO validation_results (uuid, result, messages, inspire_resource) VALUES (:uuid, :result, :messages, :inspire_resource)";
-                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+            var validationResult = metadata.ValidationResults[0];
+
+            const string sql =
+                "INSERT INTO validation_results (uuid, result, messages, completeness_indicator, interoperability_indicator, report_url, inspire_resource) VALUES (:uuid, :result, :messages, :completeness_indicator, :interoperability_indicator, :report_url, :inspire_resource)";
+		   	using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+            {
+                command.Parameters.Add(new NpgsqlParameter("uuid", NpgsqlDbType.Varchar) {Value = metadata.Uuid});
+                command.Parameters.Add(new NpgsqlParameter("result", NpgsqlDbType.Integer)
+                    {
+                        Value = validationResult.Status
+                    });
+                command.Parameters.Add(new NpgsqlParameter("messages", NpgsqlDbType.Varchar)
+                    {
+                        Value = validationResult.Messages
+                    });
+                command.Parameters.Add(new NpgsqlParameter("completeness_indicator", NpgsqlDbType.Double)
                 {
-                    command.Parameters.Add(new NpgsqlParameter("uuid", NpgsqlDbType.Varchar) {Value = metadata.Uuid});
-                    command.Parameters.Add(new NpgsqlParameter("result", NpgsqlDbType.Integer)
-                        {
-                            Value = validationResult.Status
-                        });
-                    command.Parameters.Add(new NpgsqlParameter("messages", NpgsqlDbType.Varchar)
-                        {
-                            Value = validationResult.Messages
-                        });
-                    command.Parameters.Add(new NpgsqlParameter("inspire_resource", NpgsqlDbType.Boolean) { Value = validationResult.InspireResource });
-                    command.ExecuteNonQuery();
-                }
+                    Value = validationResult.CompletenessIndicator
+                });
+                command.Parameters.Add(new NpgsqlParameter("interoperability_indicator", NpgsqlDbType.Double)
+                {
+                    Value = validationResult.InteroperabilityIndicator
+                });
+                command.Parameters.Add(new NpgsqlParameter("report_url", NpgsqlDbType.Text)
+                {
+                    Value = validationResult.ReportUrl
+                });
+				command.Parameters.Add(new NpgsqlParameter("inspire_resource", NpgsqlDbType.Boolean) 
+				{ 
+					Value = validationResult.InspireResource 
+				});
+                command.ExecuteNonQuery();
             }
         }
 

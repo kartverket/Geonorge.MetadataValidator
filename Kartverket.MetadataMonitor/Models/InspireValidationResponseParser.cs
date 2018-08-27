@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Web.Configuration;
 using System.Xml.Linq;
 
 namespace Kartverket.MetadataMonitor.Models
 {
     public class InspireValidationResponseParser
     {
+        private const string XmlCompletenessIndicator = "CompletenessIndicator";
+        private const string XmlInteroperabilityIndicator = "InteroperabilityIndicator";
+        private const string XmlMetadataLocator = "GeoportalMetadataLocator";
+        private const string XmlReportUrl = "URL";
+
+        private static readonly string InspireResourceUrl = $"{WebConfigurationManager.AppSettings["InspireUrl"]}{WebConfigurationManager.AppSettings["InsprireValidationStatusEndpoint"]}";
+
         private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static readonly XNamespace NsCommon = "http://inspire.ec.europa.eu/schemas/common/1.0";
@@ -27,27 +34,52 @@ namespace Kartverket.MetadataMonitor.Models
             var errors = GetErrors(_inspireValidationResponse);
             var validationResult = new ValidationResult();
             validationResult.InspireResource = true;
-            validationResult.Status = ComputeValidationResultFromCompletenessIndicator();
+            validationResult.InteroperabilityIndicator = GetIndicator(XmlInteroperabilityIndicator);
+            validationResult.CompletenessIndicator = GetIndicator(XmlCompletenessIndicator);
+            validationResult.Status = ComputeValidationResultFromCompletenessIndicator(validationResult.CompletenessIndicator);
             validationResult.Messages = String.Join("\r\n", errors);
+            validationResult.ReportUrl = GetReportUrl();
 
             return validationResult;
         }
 
-        private ValidationStatus ComputeValidationResultFromCompletenessIndicator()
+        private string GetReportUrl()
         {
-            ValidationStatus result = ValidationStatus.Invalid;
-            XElement element = _inspireValidationResponse.Descendants(NsGeo + "CompletenessIndicator").FirstOrDefault();
+            string url = "";
+
+            XElement element = _inspireValidationResponse.Descendants(NsGeo + XmlMetadataLocator).FirstOrDefault().Descendants(NsCommon + XmlReportUrl).FirstOrDefault();
+            
+            if (element != null)
+            {
+                url = $"{InspireResourceUrl}{element.Value}";
+            }
+            return url;
+        }
+
+        private double GetIndicator(string indicatorName)
+        {
+            double indicator = ValidationResult.UndefinedIndicator;
+
+            XElement element = _inspireValidationResponse.Descendants(NsGeo + indicatorName).FirstOrDefault();
 
             if (element != null)
             {
-                double completenessIndicator = 0.0;
-                double.TryParse(element.Value, NumberStyles.AllowDecimalPoint ,System.Globalization.CultureInfo.CreateSpecificCulture("en-US"), out completenessIndicator);
-                Log.Debug("CompletnessIndicator: " + completenessIndicator);
-                if (((int)completenessIndicator) == 100)
-                {
-                    result = ValidationStatus.Valid;
-                }    
+                double.TryParse(element.Value, NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.CreateSpecificCulture("en-US"), out indicator);
+                Log.Debug($"{indicatorName}: " + indicator);
             }
+
+            return indicator;
+        }
+
+        private ValidationStatus ComputeValidationResultFromCompletenessIndicator(double completenessIndicator)
+        {
+            ValidationStatus result = ValidationStatus.Invalid;
+
+            if ((int)completenessIndicator == 100)
+            {
+                result = ValidationStatus.Valid;
+            }
+
             return result;
         }
 
