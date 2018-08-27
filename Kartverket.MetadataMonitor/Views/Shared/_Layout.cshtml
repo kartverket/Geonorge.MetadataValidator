@@ -10,19 +10,6 @@
     <meta name="author" content="Arkitektum AS for Kartverket">
     <link rel="shortcut icon" type="image/x-icon" href="@Html.KartkatalogUrl()Content/img/favicon.ico" />
 
-
-    <!-- Scripts -->
-    <script>
-        var applicationVersionNumber = '@Html.ApplicationVersionNumber()';
-        var applicationEnvironment = '@Html.EnvironmentName()';
-
-        var cultureData = {
-            friendlyUrlEN: '@Html.Raw(Url.Action("SetCulture", "Dashboard", new { culture = Kartverket.MetadataMonitor.Models.Translations.Culture.EnglishCode, ReturnUrl = Request.Url }))',
-            friendlyUrlNO: '@Html.Raw(Url.Action("SetCulture", "Dashboard", new { culture = Kartverket.MetadataMonitor.Models.Translations.Culture.NorwegianCode, ReturnUrl = Request.Url }))',
-            currentCulture: '@CultureHelper.GetCurrentCulture()'
-            };
-    </script>
-
     @RenderSection("Head", required: false)
 
 
@@ -87,7 +74,17 @@
     {
         @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Footer_eng.min.cshtml");
     }
+    @Scripts.Render("~/shared-partials")
+    <script>
+        var applicationVersionNumber = '@Html.ApplicationVersionNumber()';
+        var applicationEnvironment = '@Html.EnvironmentName()';
 
+        var cultureData = {
+            friendlyUrlEN: '@Html.Raw(Url.Action("SetCulture", "Dashboard", new { culture = Kartverket.MetadataMonitor.Models.Translations.Culture.EnglishCode, ReturnUrl = Request.Url }))',
+            friendlyUrlNO: '@Html.Raw(Url.Action("SetCulture", "Dashboard", new { culture = Kartverket.MetadataMonitor.Models.Translations.Culture.NorwegianCode, ReturnUrl = Request.Url }))',
+            currentCulture: '@CultureHelper.GetCurrentCulture()'
+            };
+    </script>
     <script>
         searchOption.supportsLogin = false;
         searchOption.epiBaseUrl = '@Html.GeonorgeUrl()';

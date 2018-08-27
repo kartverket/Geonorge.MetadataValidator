@@ -153,8 +153,8 @@ namespace Kartverket.MetadataMonitor.Models
                             escapeChar = "\\",
                             singleChar = "_",
                             wildCard = "%",
-                            PropertyName = new PropertyNameType {Text = new[] {"type"}},
-                            Literal = new LiteralType {Text = new[] {"dataset"}}
+                            PropertyName = new PropertyNameType {Text = new[] {"keyword"}},
+                            Literal = new LiteralType {Text = new[] {"Inspire"}}
                         },
                         new PropertyIsLikeType
                             {
@@ -172,7 +172,7 @@ namespace Kartverket.MetadataMonitor.Models
 
             var filterNames = new ItemsChoiceType23[]
             {
-                        ItemsChoiceType23.And
+                        ItemsChoiceType23.Or
             };
 
 
