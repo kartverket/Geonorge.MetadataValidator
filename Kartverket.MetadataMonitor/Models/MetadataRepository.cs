@@ -161,11 +161,13 @@ namespace Kartverket.MetadataMonitor.Models
 
             if (status.HasValue)
             {
-                sqlResultConditions = "AND res.result = :status";
+                sqlResultConditions = " AND res.result = :status";
             }
 
             if (inspireResource.HasValue)
-                sqlResultConditions = "AND res.inspire_resource = :inspire_resource";
+            {
+                sqlResultConditions += " AND res.inspire_resource = :inspire_resource";
+            }
 
             return sqlResultConditions;
         }
