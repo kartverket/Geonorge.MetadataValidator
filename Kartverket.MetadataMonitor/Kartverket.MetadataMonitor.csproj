@@ -194,6 +194,7 @@
     <Compile Include="Models\External\MetadataEditor\Error.cs" />
     <Compile Include="Models\External\MetadataEditor\MetadataEntry.cs" />
     <Compile Include="Models\External\MetadataEditor\ValidationResultInitializer.cs" />
+    <Compile Include="Models\InspireErrorCodeCommonParts.cs" />
     <Compile Include="Models\InspireValidator.cs" />
     <Compile Include="Models\External\Inspire\SearchResult.cs" />
     <Compile Include="Models\MetadataRepository.cs" />
