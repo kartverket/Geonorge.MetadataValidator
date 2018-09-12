@@ -12,17 +12,20 @@ namespace Kartverket.MetadataMonitor.Models
         private const string XmlCompletenessIndicator = "CompletenessIndicator";
         private const string XmlInteroperabilityIndicator = "InteroperabilityIndicator";
         private const string XmlMetadataLocator = "GeoportalMetadataLocator";
+        private const string XmlGeoportalErrorCode = "GeoportalErrorCode";
         private const string XmlReportUrl = "URL";
 
         private static readonly string InspireResourceUrl = $"{WebConfigurationManager.AppSettings["InspireUrl"]}{WebConfigurationManager.AppSettings["InsprireValidationStatusEndpoint"]}";
+        private static readonly List<string> ErrorCodeCommonParts = ((InspireErrorCodeCommonParts)WebConfigurationManager.GetSection("InspireErrorCodeCommonParts")).Items;
 
         private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+
+        private readonly XDocument _inspireValidationResponse;
 
         public static readonly XNamespace NsCommon = "http://inspire.ec.europa.eu/schemas/common/1.0";
         public static readonly XNamespace NsGeo = "http://inspire.ec.europa.eu/schemas/geoportal/1.0";
         public static readonly XNamespace NsRdsi = "http://inspire.ec.europa.eu/schemas/rdsi/1.0";
-
-        private readonly XDocument _inspireValidationResponse;
 
         public InspireValidationResponseParser(XDocument inspireValidationResponse)
         {
@@ -31,7 +34,7 @@ namespace Kartverket.MetadataMonitor.Models
 
         internal ValidationResult ParseValidationResponseWithCompletenessIndicator()
         {
-            var errors = GetErrors(_inspireValidationResponse);
+            var errors = GetErrors();
             var validationResult = new ValidationResult();
             validationResult.InspireResource = true;
             validationResult.InteroperabilityIndicator = GetIndicator(XmlInteroperabilityIndicator);
@@ -85,7 +88,7 @@ namespace Kartverket.MetadataMonitor.Models
 
         public ValidationResult ParseValidationResponse(bool allowSpatialDataThemeError, bool allowConformityError)
         {
-            var errors = GetErrors(_inspireValidationResponse);
+            var errors = GetErrors();
 
             var validationResult = new ValidationResult();
             validationResult.Status = ComputeValidationResult(errors, allowSpatialDataThemeError, allowConformityError);
@@ -97,23 +100,58 @@ namespace Kartverket.MetadataMonitor.Models
             return validationResult;
         }
 
-        private List<string> GetErrors(XDocument xmlDoc)
+        private List<string> GetErrors()
         {
-            List<string> errors = new List<string>();
-            var geoPortalExceptions = xmlDoc.Descendants(NsGeo + "ValidationError").Descendants(NsGeo + "GeoportalExceptionMessage");
+            List<string> errors = GetExceptionMessages();
+
+            errors.AddRange(GetValidationErrorMessages());
+            return errors;
+        }
+
+        private List<string> GetExceptionMessages()
+        {
+            List<string> messages = new List<string>();
+
+            var geoPortalExceptions = _inspireValidationResponse.Descendants(NsGeo + "ValidationError").Descendants(NsGeo + "GeoportalExceptionMessage");
+
             foreach (var element in geoPortalExceptions)
             {
                 var messageElement = element.Element(NsGeo + "Message");
+
                 if (messageElement != null)
                 {
                     var messageValue = messageElement.Value;
+
                     if (!String.IsNullOrEmpty(messageValue))
                     {
-                        errors.Add(messageValue);
+                        messages.Add(messageValue);
                     }
                 }
             }
-            return errors;
+            return messages;
+        }
+
+        private List<string> GetValidationErrorMessages()
+        {
+            List<string> messages = new List<string>();
+
+            var errors = _inspireValidationResponse.Descendants(NsGeo + XmlGeoportalErrorCode);
+
+            foreach (XElement element in errors)
+            {
+                string commonPart = ErrorCodeCommonParts.Find(cp => element.Value.StartsWith(cp));
+
+                if (commonPart != null)
+                {
+                    string message = element.Value.Remove(0, commonPart.Length);
+
+                    if (!string.IsNullOrWhiteSpace(message))
+                    {
+                        messages.Add(message);
+                    }
+                }
+            }
+            return messages;
         }
 
         private ValidationStatus ComputeValidationResult(List<string> errors, bool allowSpatialDataThemeError, bool allowConformityError)
