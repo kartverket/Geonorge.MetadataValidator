@@ -112,7 +112,7 @@ namespace Kartverket.MetadataMonitor.Models
                                                 {
                                                     Messages = dr.IsDBNull(6) ? null : dr.GetString(6),
                                                     Status = (ValidationStatus)dr.GetInt32(5),
-                                                    Timestamp = dr.GetTimeStamp(7),
+                                                    Timestamp = dr.GetDateTime(7),
                                                     CompletenessIndicator = dr.GetDouble(8),
                                                     InteroperabilityIndicator = dr.GetDouble(9),
                                                     ReportUrl = dr.IsDBNull(10) ? "" : dr.GetString(10)
