@@ -404,8 +404,6 @@
     <Content Include="robots.txt" />
     <Content Include="Scripts\Chart.js" />
     <Content Include="Scripts\Chart.min.js" />
-    <Content Include=".bowerrc" />
-    <Content Include="bower.json" />
     <Content Include="package.json" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
