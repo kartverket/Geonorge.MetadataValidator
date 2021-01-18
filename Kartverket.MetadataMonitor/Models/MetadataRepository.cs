@@ -236,7 +236,7 @@ namespace Kartverket.MetadataMonitor.Models
                 command.Parameters.Add(new NpgsqlParameter("uuid", NpgsqlDbType.Varchar) {Value = metadata.Uuid});
                 command.Parameters.Add(new NpgsqlParameter("result", NpgsqlDbType.Integer)
                     {
-                        Value = validationResult.Status
+                        Value = (int)validationResult.Status
                     });
                 command.Parameters.Add(new NpgsqlParameter("messages", NpgsqlDbType.Varchar)
                     {
