@@ -9,7 +9,8 @@
     <meta name="description" content="@ViewBag.Description">
     <meta name="author" content="Arkitektum AS for Kartverket">
     <link rel="shortcut icon" type="image/x-icon" href="@Html.KartkatalogUrl()Content/img/favicon.ico" />
-
+    <link rel="stylesheet" type="text/css" href="Content/menu.css" />
+        
     @RenderSection("Head", required: false)
     <script>
         var applicationVersionNumber = '@Html.ApplicationVersionNumber()';
@@ -27,7 +28,7 @@
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 </head>
-<body class="geonorge-container prototype geonorge">
+<body class="geonorge-container prototype geonorge fixed-menu-margin">
 
     <div id="loading-animation" class="loading-animation" style="display: none;"></div>
 
@@ -99,7 +100,7 @@
     @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Analytics.min.cshtml")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/Scripts/Chart.js")
-    <script src="https://cdn.jsdelivr.net/npm/@("@kartverket/geonorge-web-components@0.1.33/MainNavigation.js")"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@("@kartverket/geonorge-web-components@0.1.41/MainNavigation.js")"></script>
     @RenderSection("scripts", required: false)
 </body>
 
