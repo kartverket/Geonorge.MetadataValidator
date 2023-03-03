@@ -1,0 +1,1 @@
+# Geonorge.MetadataValidator (deprecated)
